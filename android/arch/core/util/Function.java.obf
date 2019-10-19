@@ -1,5 +1,5 @@
 package android.arch.core.util;
-
+//abstract interface function
 public abstract interface Function<I, O>
 {
   public abstract O apply(I paramI);
