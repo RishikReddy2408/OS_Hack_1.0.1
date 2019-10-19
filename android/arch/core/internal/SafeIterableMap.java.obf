@@ -1,35 +1,29 @@
 package android.arch.core.internal;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
-import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
-
+import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
+import java.util.Iterator;
 @RestrictTo({android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP})
-public class SafeIterableMap<K, V>
-  implements Iterable<Map.Entry<K, V>>
+public class SafeIterableMap<K, V> // using of map 
+  implements Iterable<Map.Entry<K, V>>// created an iterator to iterate to different 
 {
   private Entry<K, V> mEnd;
   private WeakHashMap<SupportRemove<K, V>, Boolean> mIterators = new WeakHashMap();
   private int mSize = 0;
   private Entry<K, V> mStart;
-  
-  public SafeIterableMap() {}
-  
+  public Map.Entry<K, V> eldest()
+  {
+    return mStart;
+  }
   public Iterator<Map.Entry<K, V>> descendingIterator()
   {
     DescendingIterator localDescendingIterator = new DescendingIterator(mEnd, mStart);
     mIterators.put(localDescendingIterator, Boolean.valueOf(false));
     return localDescendingIterator;
   }
-  
-  public Map.Entry<K, V> eldest()
-  {
-    return mStart;
-  }
-  
+  public SafeIterableMap() {}
   public boolean equals(Object paramObject)
   {
     if (paramObject == this) {
@@ -176,7 +170,7 @@ public class SafeIterableMap<K, V>
     
     SafeIterableMap.Entry<K, V> forward(SafeIterableMap.Entry<K, V> paramEntry)
     {
-      return mNext;
+      return mNext; // return a map
     }
   }
   
@@ -195,7 +189,7 @@ public class SafeIterableMap<K, V>
     
     SafeIterableMap.Entry<K, V> forward(SafeIterableMap.Entry<K, V> paramEntry)
     {
-      return mPrevious;
+      return mPrevious;// return a map
     }
   }
   
@@ -272,7 +266,7 @@ public class SafeIterableMap<K, V>
         if (mStart != null) {
           bool1 = true;
         }
-        return bool1;
+        return bool1; //return true or false
       }
       bool1 = bool2;
       if (mCurrent != null)
@@ -302,7 +296,7 @@ public class SafeIterableMap<K, V>
         }
         mCurrent = localEntry;
       }
-      return mCurrent;
+      return mCurrent; // return map entry
     }
     
     public void supportRemove(@NonNull SafeIterableMap.Entry<K, V> paramEntry)
@@ -338,25 +332,20 @@ public class SafeIterableMap<K, V>
       if ((mNext != mExpectedEnd) && (mExpectedEnd != null)) {
         return forward(mNext);
       }
-      return null;
+      return null; //map entry would be returned
     }
-    
     abstract SafeIterableMap.Entry<K, V> backward(SafeIterableMap.Entry<K, V> paramEntry);
-    
     abstract SafeIterableMap.Entry<K, V> forward(SafeIterableMap.Entry<K, V> paramEntry);
-    
     public boolean hasNext()
     {
       return mNext != null;
     }
-    
     public Map.Entry<K, V> next()
     {
       SafeIterableMap.Entry localEntry = mNext;
       mNext = nextNode();
       return localEntry;
     }
-    
     public void supportRemove(@NonNull SafeIterableMap.Entry<K, V> paramEntry)
     {
       if ((mExpectedEnd == paramEntry) && (paramEntry == mNext))
@@ -367,6 +356,7 @@ public class SafeIterableMap<K, V>
       if (mExpectedEnd == paramEntry) {
         mExpectedEnd = backward(mExpectedEnd);
       }
+      // changin gthe pharm entry
       if (mNext == paramEntry) {
         mNext = nextNode();
       }
