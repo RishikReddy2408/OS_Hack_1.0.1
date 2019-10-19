@@ -1,86 +1,78 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/sem.h>
-
-#define KEY 0x1111
-
-union semun {
-    int val;
-    struct semid_ds *buf;
-    unsigned short  *array;
-};
-
-struct sembuf p = { 0, -1, SEM_UNDO};
-struct sembuf v = { 0, +1, SEM_UNDO};
-
+#include<stdio.h>
+ // to find the minimum time for process synchronization 
+int find(int time[], int n){
+    int i, mini = time[0], position = 0;
+ 
+    for(i = 1; i < n; ++i){
+        if(time[i] < mini){
+            mini = time[i];
+            positon = i;
+        }
+    }
+    
+    return positon;
+}
+ 
 int main()
 {
-    int id = semget(KEY, 1, 0666 | IPC_CREAT);
-    if(id < 0)
-    {
-        perror("semget"); exit(11);
+	//Asking the user to input the number of frames,required pages and String referred
+    int f, p, frame[10], page[30], count = 0, time[10], flags1, flags2, i, j, pos,faults = 0;
+    printf("Enter number of frames: ");
+    scanf("%d", &f);
+    
+    printf("Enter number of pages: ");
+    scanf("%d", &p);
+    
+    printf("Enter reference string: ");
+    
+    for(i = 0; i < p; ++i){
+        scanf("%d", &page[i]);
     }
-    union semun u;
-    u.val = 1;
-    if(semctl(id, 0, SETVAL, u) < 0)
-    {
-        perror("semctl"); exit(12);
+    
+    for(i = 0; i < f; ++i){
+        frame[i] = -1;
     }
-    int pid;
-    pid =  fork();
-    srand(pid);
-    if(pid < 0)
-    {
-        perror("fork"); exit(1);
-    }
-    else if(pid)
-    {
-        char *s = "abcdefgh";
-        int l = strlen(s);
-        for(int i = 0; i < l; ++i)
-        {
-            if(semop(id, &p, 1) < 0)
-            {
-                perror("semop p"); exit(13);
-            }
-            putchar(s[i]);
-            fflush(stdout);
-            sleep(rand() % 2);
-            putchar(s[i]);
-            fflush(stdout);
-            if(semop(id, &v, 1) < 0)
-            {
-                perror("semop p"); exit(14);
-            }
-
-            sleep(rand() % 2);
+    
+    for(i = 0; i < p; ++i){
+        flags1 = flags2 = 0;
+        
+        for(j = 0; j < f; ++j){
+            if(frame[j] == page[i]){
+                count++;
+                time[j] = count;
+                   flags1 = flags2 = 1;
+                   break;
+               }
+        }
+        
+        if(flags1 == 0){
+            for(j = 0; j < f; ++j){
+                if(frame[j] == -1){
+                    count++;
+                    faults++;
+                    frames[j] = pages[i];
+                    time[j] = count;
+                    flags2 = 1;
+                    break;
+                }
+            }    
+        }
+        
+        if(flag2 == 0){
+            pos = findLRU(time, f);
+            count++;
+            faults++;
+            frame[pos] = page[i];
+            time[pos] = count;
+        }
+	// Nitish       
+        printf("\n");
+        
+        for(j = 0; j < f; ++j){
+            printf("%d\t", frame[j]);
         }
     }
-    else
-    {
-        char *s = "ABCDEFGH";
-        int l = strlen(s);
-        for(int i = 0; i < l; ++i)
-        {
-            if(semop(id, &p, 1) < 0)
-            {
-                perror("semop p"); exit(15);
-            }
-            putchar(s[i]);
-            fflush(stdout);
-            sleep(rand() % 2);
-            putchar(s[i]);
-            fflush(stdout);
-            if(semop(id, &v, 1) < 0)
-            {
-                perror("semop p"); exit(16);
-            }
-
-            sleep(rand() % 2);
-        }
-    }
+    // here the faults are going to rectified 
+    printf("\n\nTotal Page Faults = %d", faults);
+    return 0;
 }
