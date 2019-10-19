@@ -1,12 +1,11 @@
 package android.arch.core.internal;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
-
+import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
+//Restrict
 @RestrictTo({android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP})
 public class SafeIterableMap<K, V>
   implements Iterable<Map.Entry<K, V>>
@@ -15,9 +14,7 @@ public class SafeIterableMap<K, V>
   private WeakHashMap<SupportRemove<K, V>, Boolean> mIterators = new WeakHashMap();
   private int mSize = 0;
   private Entry<K, V> mStart;
-  
   public SafeIterableMap() {}
-  
   protected Entry append(Object paramObject1, Object paramObject2)
   {
     paramObject1 = new Entry(paramObject1, paramObject2);
@@ -33,19 +30,16 @@ public class SafeIterableMap<K, V>
     mEnd = paramObject1;
     return paramObject1;
   }
-  
   public Iterator descendingIterator()
   {
     DescendingIterator localDescendingIterator = new DescendingIterator(mEnd, mStart);
     mIterators.put(localDescendingIterator, Boolean.valueOf(false));
     return localDescendingIterator;
   }
-  
   public Map.Entry eldest()
   {
     return mStart;
   }
-  
   public boolean equals(Object paramObject)
   {
     if (paramObject == this) {
@@ -75,7 +69,6 @@ public class SafeIterableMap<K, V>
     label128:
     return false;
   }
-  
   protected Entry get(Object paramObject)
   {
     for (Entry localEntry = mStart; localEntry != null; localEntry = mNext) {
@@ -85,26 +78,22 @@ public class SafeIterableMap<K, V>
     }
     return localEntry;
   }
-  
   public Iterator iterator()
   {
     AscendingIterator localAscendingIterator = new AscendingIterator(mStart, mEnd);
     mIterators.put(localAscendingIterator, Boolean.valueOf(false));
     return localAscendingIterator;
   }
-  
   public IteratorWithAdditions iteratorWithAdditions()
   {
     IteratorWithAdditions localIteratorWithAdditions = new IteratorWithAdditions(null);
     mIterators.put(localIteratorWithAdditions, Boolean.valueOf(false));
     return localIteratorWithAdditions;
   }
-  
   public Map.Entry newest()
   {
     return mEnd;
   }
-  
   public Object putIfAbsent(Object paramObject1, Object paramObject2)
   {
     Entry localEntry = get(paramObject1);
@@ -114,7 +103,6 @@ public class SafeIterableMap<K, V>
     append(paramObject1, paramObject2);
     return null;
   }
-  
   public Object remove(Object paramObject)
   {
     paramObject = get(paramObject);
@@ -131,24 +119,26 @@ public class SafeIterableMap<K, V>
     }
     if (mPrevious != null) {
       mPrevious.mNext = mNext;
-    } else {
+    }
+    else
+    {
       mStart = mNext;
     }
     if (mNext != null) {
       mNext.mPrevious = mPrevious;
-    } else {
+    }
+    else
+    {
       mEnd = mPrevious;
     }
     mNext = null;
     mPrevious = null;
     return mValue;
   }
-  
   public int size()
   {
     return mSize;
   }
-  
   public String toString()
   {
     StringBuilder localStringBuilder = new StringBuilder();
@@ -164,20 +154,17 @@ public class SafeIterableMap<K, V>
     localStringBuilder.append("]");
     return localStringBuilder.toString();
   }
-  
   static class AscendingIterator<K, V>
     extends SafeIterableMap.ListIterator<K, V>
   {
     AscendingIterator(SafeIterableMap.Entry paramEntry1, SafeIterableMap.Entry paramEntry2)
     {
       super(paramEntry2);
-    }
-    
+    } 
     SafeIterableMap.Entry backward(SafeIterableMap.Entry paramEntry)
     {
       return mPrevious;
     }
-    
     SafeIterableMap.Entry forward(SafeIterableMap.Entry paramEntry)
     {
       return mNext;
@@ -261,9 +248,7 @@ public class SafeIterableMap<K, V>
   {
     private boolean mBeforeStart = true;
     private SafeIterableMap.Entry<K, V> mCurrent;
-    
     private IteratorWithAdditions() {}
-    
     public boolean hasNext()
     {
       if (mBeforeStart)
@@ -277,7 +262,6 @@ public class SafeIterableMap<K, V>
       }
       return false;
     }
-    
     public Map.Entry next()
     {
       if (mBeforeStart)
@@ -297,7 +281,6 @@ public class SafeIterableMap<K, V>
       }
       return mCurrent;
     }
-    
     public void supportRemove(SafeIterableMap.Entry paramEntry)
     {
       if (paramEntry == mCurrent)
@@ -306,26 +289,25 @@ public class SafeIterableMap<K, V>
         boolean bool;
         if (mCurrent == null) {
           bool = true;
-        } else {
+        }
+        else
+        {
           bool = false;
         }
         mBeforeStart = bool;
       }
     }
   }
-  
   private static abstract class ListIterator<K, V>
     implements Iterator<Map.Entry<K, V>>, SafeIterableMap.SupportRemove<K, V>
   {
     SafeIterableMap.Entry<K, V> mExpectedEnd;
-    SafeIterableMap.Entry<K, V> mNext;
-    
+    SafeIterableMap.Entry<K, V> mNext; 
     ListIterator(SafeIterableMap.Entry paramEntry1, SafeIterableMap.Entry paramEntry2)
     {
       mExpectedEnd = paramEntry2;
       mNext = paramEntry1;
     }
-    
     private SafeIterableMap.Entry nextNode()
     {
       if ((mNext != mExpectedEnd) && (mExpectedEnd != null)) {
@@ -333,23 +315,18 @@ public class SafeIterableMap<K, V>
       }
       return null;
     }
-    
     abstract SafeIterableMap.Entry backward(SafeIterableMap.Entry paramEntry);
-    
     abstract SafeIterableMap.Entry forward(SafeIterableMap.Entry paramEntry);
-    
     public boolean hasNext()
     {
       return mNext != null;
     }
-    
     public Map.Entry next()
     {
       SafeIterableMap.Entry localEntry = mNext;
       mNext = nextNode();
       return localEntry;
     }
-    
     public void supportRemove(SafeIterableMap.Entry paramEntry)
     {
       if ((mExpectedEnd == paramEntry) && (paramEntry == mNext))
@@ -365,7 +342,6 @@ public class SafeIterableMap<K, V>
       }
     }
   }
-  
   static abstract interface SupportRemove<K, V>
   {
     public abstract void supportRemove(SafeIterableMap.Entry paramEntry);
