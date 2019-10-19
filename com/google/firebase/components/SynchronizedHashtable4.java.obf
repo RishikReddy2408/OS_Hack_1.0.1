@@ -1,0 +1,18 @@
+package com.google.firebase.components;
+
+import com.google.firebase.inject.Provider;
+
+abstract class zza
+  implements ComponentContainer
+{
+  zza() {}
+  
+  public <T> T get(Class<T> paramClass)
+  {
+    paramClass = getProvider(paramClass);
+    if (paramClass == null) {
+      return null;
+    }
+    return paramClass.get();
+  }
+}

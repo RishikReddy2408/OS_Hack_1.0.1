@@ -1,0 +1,437 @@
+package android.support.constraint.solver.widgets;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
+public class Analyzer
+{
+  private Analyzer() {}
+  
+  public static void determineGroups(ConstraintWidgetContainer paramConstraintWidgetContainer)
+  {
+    if ((paramConstraintWidgetContainer.getOptimizationLevel() & 0x20) != 32)
+    {
+      singleGroup(paramConstraintWidgetContainer);
+      return;
+    }
+    mSkipSolver = true;
+    mGroupsWrapOptimized = false;
+    mHorizontalWrapOptimized = false;
+    mVerticalWrapOptimized = false;
+    Object localObject1 = mChildren;
+    List localList = mWidgetGroups;
+    int i;
+    if (paramConstraintWidgetContainer.getHorizontalDimensionBehaviour() == ConstraintWidget.DimensionBehaviour.WRAP_CONTENT) {
+      i = 1;
+    } else {
+      i = 0;
+    }
+    int j;
+    if (paramConstraintWidgetContainer.getVerticalDimensionBehaviour() == ConstraintWidget.DimensionBehaviour.WRAP_CONTENT) {
+      j = 1;
+    } else {
+      j = 0;
+    }
+    boolean bool;
+    if ((i == 0) && (j == 0)) {
+      bool = false;
+    } else {
+      bool = true;
+    }
+    localList.clear();
+    Object localObject2 = ((List)localObject1).iterator();
+    while (((Iterator)localObject2).hasNext())
+    {
+      ConstraintWidget localConstraintWidget = (ConstraintWidget)((Iterator)localObject2).next();
+      mBelongingGroup = null;
+      mTop.getResolutionNode().dependents.clear();
+      mBottom.getResolutionNode().dependents.clear();
+      mLeft.getResolutionNode().dependents.clear();
+      mRight.getResolutionNode().dependents.clear();
+      mBaseline.getResolutionNode().dependents.clear();
+      mCenter.getResolutionNode().dependents.clear();
+    }
+    localObject1 = ((List)localObject1).iterator();
+    while (((Iterator)localObject1).hasNext())
+    {
+      localObject2 = (ConstraintWidget)((Iterator)localObject1).next();
+      if ((mBelongingGroup == null) && (!determineGroups((ConstraintWidget)localObject2, localList, bool)))
+      {
+        singleGroup(paramConstraintWidgetContainer);
+        mSkipSolver = false;
+        return;
+      }
+    }
+    if (!mSkipSolver) {
+      return;
+    }
+    localObject1 = localList.iterator();
+    int m = 0;
+    int k = 0;
+    while (((Iterator)localObject1).hasNext())
+    {
+      localObject2 = (ConstraintWidgetGroup)((Iterator)localObject1).next();
+      int n;
+      if (i == 0)
+      {
+        n = m;
+        if (bool) {}
+      }
+      else
+      {
+        n = Math.max(m, getMaxDimension((ConstraintWidgetGroup)localObject2, 0));
+      }
+      if (j == 0)
+      {
+        m = n;
+        if (bool) {}
+      }
+      else
+      {
+        k = Math.max(k, getMaxDimension((ConstraintWidgetGroup)localObject2, 1));
+        m = n;
+      }
+    }
+    if (i != 0)
+    {
+      paramConstraintWidgetContainer.setHorizontalDimensionBehaviour(ConstraintWidget.DimensionBehaviour.FIXED);
+      paramConstraintWidgetContainer.setWidth(m);
+      mGroupsWrapOptimized = true;
+      mHorizontalWrapOptimized = true;
+      mWrapFixedWidth = m;
+    }
+    if (j != 0)
+    {
+      paramConstraintWidgetContainer.setVerticalDimensionBehaviour(ConstraintWidget.DimensionBehaviour.FIXED);
+      paramConstraintWidgetContainer.setHeight(k);
+      mGroupsWrapOptimized = true;
+      mVerticalWrapOptimized = true;
+      mWrapFixedHeight = k;
+    }
+    if (((j != 0) && (i != 0)) || (!bool))
+    {
+      mSkipSolver = true;
+      setPosition(localList, 0, m);
+      setPosition(localList, 1, k);
+      return;
+    }
+    mSkipSolver = false;
+  }
+  
+  private static boolean determineGroups(ConstraintWidget paramConstraintWidget, List paramList, boolean paramBoolean)
+  {
+    ConstraintWidgetGroup localConstraintWidgetGroup = new ConstraintWidgetGroup(new ArrayList());
+    paramList.add(localConstraintWidgetGroup);
+    return traverse(paramConstraintWidget, localConstraintWidgetGroup, paramList, paramBoolean);
+  }
+  
+  private static int getMaxDimension(ConstraintWidgetGroup paramConstraintWidgetGroup, int paramInt)
+  {
+    Iterator localIterator = paramConstraintWidgetGroup.getStartWidgets(paramInt).iterator();
+    ConstraintWidget localConstraintWidget;
+    boolean bool;
+    for (int i = 0; localIterator.hasNext(); i = Math.max(i, getMaxDimensionTraversal(localConstraintWidget, paramInt, bool, 0)))
+    {
+      localConstraintWidget = (ConstraintWidget)localIterator.next();
+      ConstraintAnchor[] arrayOfConstraintAnchor = mListAnchors;
+      bool = true;
+      if (21mTarget != null) {
+        bool = false;
+      }
+    }
+    mGroupDimensions[paramInt] = i;
+    return i;
+  }
+  
+  private static int getMaxDimensionTraversal(ConstraintWidget paramConstraintWidget, int paramInt1, boolean paramBoolean, int paramInt2)
+  {
+    if ((mBaseline.mTarget != null) && (paramInt1 == 1)) {
+      k = 1;
+    } else {
+      k = 0;
+    }
+    int j;
+    if (paramBoolean)
+    {
+      m = paramConstraintWidget.getBaselineDistance();
+      n = paramConstraintWidget.getHeight() - paramConstraintWidget.getBaselineDistance();
+      i = paramInt1 * 2;
+      j = i + 1;
+    }
+    else
+    {
+      m = paramConstraintWidget.getHeight() - paramConstraintWidget.getBaselineDistance();
+      n = paramConstraintWidget.getBaselineDistance();
+      j = paramInt1 * 2;
+      i = j + 1;
+    }
+    int i1;
+    int i3;
+    if ((mListAnchors[j].mTarget != null) && (mListAnchors[i].mTarget == null))
+    {
+      i2 = -1;
+      i1 = j;
+      i3 = i;
+      j = i2;
+    }
+    else
+    {
+      i3 = j;
+      j = 1;
+      i1 = i;
+    }
+    int i2 = paramInt2;
+    if (k != 0) {
+      i2 = paramInt2 - m;
+    }
+    int i6 = mListAnchors[i1].getMargin() * j;
+    int i5 = i6 + i2;
+    if (paramInt1 == 0) {
+      paramInt2 = paramConstraintWidget.getWidth();
+    } else {
+      paramInt2 = paramConstraintWidget.getHeight();
+    }
+    int i7 = paramInt2 * j;
+    Iterator localIterator = mListAnchors[i1].getResolutionNode().dependents.iterator();
+    for (paramInt2 = 0; localIterator.hasNext(); paramInt2 = Math.max(paramInt2, getMaxDimensionTraversal(nextmyAnchor.mOwner, paramInt1, paramBoolean, i5))) {}
+    localIterator = mListAnchors[i3].getResolutionNode().dependents.iterator();
+    for (int i = 0; localIterator.hasNext(); i = Math.max(i, getMaxDimensionTraversal(nextmyAnchor.mOwner, paramInt1, paramBoolean, i7 + i5))) {}
+    int i4;
+    if (k != 0)
+    {
+      i4 = paramInt2 - m;
+      i3 = i + n;
+    }
+    for (;;)
+    {
+      break;
+      if (paramInt1 == 0) {
+        i3 = paramConstraintWidget.getWidth();
+      } else {
+        i3 = paramConstraintWidget.getHeight();
+      }
+      i3 = i + i3 * j;
+      i4 = paramInt2;
+    }
+    if (paramInt1 == 1)
+    {
+      localIterator = mBaseline.getResolutionNode().dependents.iterator();
+      i = 0;
+      while (localIterator.hasNext())
+      {
+        ResolutionAnchor localResolutionAnchor = (ResolutionAnchor)localIterator.next();
+        if (j == 1) {
+          i = Math.max(i, getMaxDimensionTraversal(myAnchor.mOwner, paramInt1, paramBoolean, m + i5));
+        } else {
+          i = Math.max(i, getMaxDimensionTraversal(myAnchor.mOwner, paramInt1, paramBoolean, n * j + i5));
+        }
+      }
+      i5 = i;
+      paramInt2 = i5;
+      if (mBaseline.getResolutionNode().dependents.size() > 0)
+      {
+        paramInt2 = i5;
+        if (k == 0) {
+          if (j == 1) {
+            paramInt2 = i + m;
+          } else {
+            paramInt2 = i - n;
+          }
+        }
+      }
+    }
+    else
+    {
+      paramInt2 = 0;
+    }
+    int n = i6 + Math.max(i4, Math.max(i3, paramInt2));
+    paramInt2 = i2 + mListAnchors[i1].getMargin() * j;
+    int k = paramInt2 + i7;
+    int m = k;
+    i = paramInt2;
+    if (j == -1)
+    {
+      i = k;
+      m = paramInt2;
+    }
+    if (paramBoolean)
+    {
+      paramConstraintWidget.setFrame(i, m, paramInt1);
+      return n;
+    }
+    if (paramInt1 == 0)
+    {
+      mBelongingGroup.mWidgetsToSetHorizontal.add(paramConstraintWidget);
+      mRelX = i;
+      return n;
+    }
+    if (paramInt1 == 1)
+    {
+      mBelongingGroup.mWidgetsToSetVertical.add(paramConstraintWidget);
+      mRelY = i;
+    }
+    return n;
+  }
+  
+  private static void setConnection(ConstraintAnchor paramConstraintAnchor)
+  {
+    ResolutionAnchor localResolutionAnchor = paramConstraintAnchor.getResolutionNode();
+    if ((mTarget != null) && (mTarget.mTarget != paramConstraintAnchor)) {
+      mTarget.getResolutionNode().addDependent(localResolutionAnchor);
+    }
+  }
+  
+  public static void setPosition(List paramList, int paramInt1, int paramInt2)
+  {
+    paramList = paramList.iterator();
+    while (paramList.hasNext())
+    {
+      Iterator localIterator = ((ConstraintWidgetGroup)paramList.next()).getWidgetsToSet(paramInt1).iterator();
+      while (localIterator.hasNext()) {
+        traverseSetPosition((ConstraintWidget)localIterator.next(), paramInt1, paramInt2);
+      }
+    }
+  }
+  
+  private static void singleGroup(ConstraintWidgetContainer paramConstraintWidgetContainer)
+  {
+    mWidgetGroups.clear();
+    mWidgetGroups.add(0, new ConstraintWidgetGroup(mChildren));
+  }
+  
+  private static boolean traverse(ConstraintWidget paramConstraintWidget, ConstraintWidgetGroup paramConstraintWidgetGroup, List paramList, boolean paramBoolean)
+  {
+    if (paramConstraintWidget == null) {
+      return true;
+    }
+    ConstraintWidgetContainer localConstraintWidgetContainer = (ConstraintWidgetContainer)paramConstraintWidget.getParent();
+    if (mBelongingGroup == null)
+    {
+      mConstrainedGroup.add(paramConstraintWidget);
+      mBelongingGroup = paramConstraintWidgetGroup;
+      if ((mLeft.mTarget == null) && (mRight.mTarget == null) && (mTop.mTarget == null) && (mBottom.mTarget == null) && (mBaseline.mTarget == null) && (mCenter.mTarget == null))
+      {
+        mSkipSolver = false;
+        if (paramBoolean) {
+          return false;
+        }
+      }
+      if ((mTop.mTarget != null) && (mBottom.mTarget != null))
+      {
+        mSkipSolver = false;
+        if (paramBoolean) {
+          return false;
+        }
+      }
+      if ((mLeft.mTarget != null) && (mRight.mTarget != null))
+      {
+        mSkipSolver = false;
+        if (paramBoolean) {
+          return false;
+        }
+      }
+      if (paramConstraintWidget.getHorizontalDimensionBehaviour() == ConstraintWidget.DimensionBehaviour.MATCH_CONSTRAINT) {
+        i = 1;
+      } else {
+        i = 0;
+      }
+      if (paramConstraintWidget.getVerticalDimensionBehaviour() == ConstraintWidget.DimensionBehaviour.MATCH_CONSTRAINT) {
+        j = 1;
+      } else {
+        j = 0;
+      }
+      if (((i ^ j) != 0) && (mDimensionRatio != 0.0F))
+      {
+        if (paramConstraintWidget.getHorizontalDimensionBehaviour() == ConstraintWidget.DimensionBehaviour.MATCH_CONSTRAINT) {
+          paramConstraintWidget.setWidth((int)(paramConstraintWidget.getHeight() / mDimensionRatio));
+        } else if (paramConstraintWidget.getVerticalDimensionBehaviour() == ConstraintWidget.DimensionBehaviour.MATCH_CONSTRAINT) {
+          paramConstraintWidget.setHeight((int)(paramConstraintWidget.getWidth() / mDimensionRatio));
+        }
+      }
+      else if ((paramConstraintWidget.getHorizontalDimensionBehaviour() == ConstraintWidget.DimensionBehaviour.MATCH_CONSTRAINT) || (paramConstraintWidget.getVerticalDimensionBehaviour() == ConstraintWidget.DimensionBehaviour.MATCH_CONSTRAINT))
+      {
+        mSkipSolver = false;
+        if (paramBoolean) {
+          return false;
+        }
+      }
+      if (((mLeft.mTarget == null) && (mRight.mTarget == null)) || ((mLeft.mTarget != null) && (mLeft.mTarget.mOwner == mParent)) || ((mRight.mTarget != null) && (mRight.mTarget.mOwner == mParent))) {
+        mStartHorizontalWidgets.add(paramConstraintWidget);
+      }
+      if (((mTop.mTarget == null) && (mBottom.mTarget == null) && (mBaseline.mTarget == null)) || ((mTop.mTarget != null) && (mTop.mTarget.mOwner == mParent)) || ((mBottom.mTarget != null) && (mBottom.mTarget.mOwner == mParent))) {
+        mStartVerticalWidgets.add(paramConstraintWidget);
+      }
+      Object localObject;
+      if ((paramConstraintWidget instanceof HelperWidget))
+      {
+        mSkipSolver = false;
+        if (paramBoolean) {
+          return false;
+        }
+        localObject = (HelperWidget)paramConstraintWidget;
+        i = 0;
+        while (i < mWidgetsCount)
+        {
+          if (!traverse(mWidgets[i], paramConstraintWidgetGroup, paramList, paramBoolean)) {
+            return false;
+          }
+          i += 1;
+        }
+      }
+      int j = mListAnchors.length;
+      int i = 0;
+      while (i < j)
+      {
+        localObject = mListAnchors[i];
+        if ((mTarget != null) && (mTarget.mOwner != paramConstraintWidget.getParent()))
+        {
+          if (mType == ConstraintAnchor.Type.CENTER)
+          {
+            mSkipSolver = false;
+            if (paramBoolean) {
+              return false;
+            }
+          }
+          else
+          {
+            setConnection((ConstraintAnchor)localObject);
+          }
+          if (!traverse(mTarget.mOwner, paramConstraintWidgetGroup, paramList, paramBoolean)) {
+            return false;
+          }
+        }
+        i += 1;
+      }
+      return true;
+    }
+    if (mBelongingGroup != paramConstraintWidgetGroup)
+    {
+      mConstrainedGroup.addAll(mBelongingGroup.mConstrainedGroup);
+      mStartHorizontalWidgets.addAll(mBelongingGroup.mStartHorizontalWidgets);
+      mStartVerticalWidgets.addAll(mBelongingGroup.mStartVerticalWidgets);
+      paramList.remove(mBelongingGroup);
+      paramConstraintWidget = mBelongingGroup.mConstrainedGroup.iterator();
+      while (paramConstraintWidget.hasNext()) {
+        nextmBelongingGroup = paramConstraintWidgetGroup;
+      }
+    }
+    return true;
+  }
+  
+  private static void traverseSetPosition(ConstraintWidget paramConstraintWidget, int paramInt1, int paramInt2)
+  {
+    if (paramInt1 == 0)
+    {
+      paramInt1 = paramInt2 - (mRelX + paramConstraintWidget.getWidth());
+      paramConstraintWidget.setHorizontalDimension(paramInt1, paramConstraintWidget.getWidth() + paramInt1);
+      return;
+    }
+    if (paramInt1 == 1)
+    {
+      paramInt1 = paramInt2 - (mRelY + paramConstraintWidget.getHeight());
+      paramConstraintWidget.setVerticalDimension(paramInt1, paramConstraintWidget.getHeight() + paramInt1);
+    }
+  }
+}

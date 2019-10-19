@@ -1,0 +1,32 @@
+package com.google.android.gms.internal.firebase_messaging;
+
+import java.lang.ref.ReferenceQueue;
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+
+final class zze
+{
+  private final ConcurrentHashMap<zzf, List<Throwable>> zze = new ConcurrentHashMap(16, 0.75F, 10);
+  private final ReferenceQueue<Throwable> zzf = new ReferenceQueue();
+  
+  zze() {}
+  
+  public final List<Throwable> zza(Throwable paramThrowable, boolean paramBoolean)
+  {
+    for (Object localObject = zzf.poll(); localObject != null; localObject = zzf.poll()) {
+      zze.remove(localObject);
+    }
+    localObject = new zzf(paramThrowable, null);
+    localObject = (List)zze.get(localObject);
+    if (localObject != null) {
+      return localObject;
+    }
+    localObject = new Vector(2);
+    paramThrowable = (List)zze.putIfAbsent(new zzf(paramThrowable, zzf), localObject);
+    if (paramThrowable == null) {
+      return localObject;
+    }
+    return paramThrowable;
+  }
+}

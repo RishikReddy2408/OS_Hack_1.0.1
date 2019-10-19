@@ -1,0 +1,30 @@
+package com.google.android.gms.measurement.internal;
+
+import android.os.RemoteException;
+
+final class zzdv
+  implements Runnable
+{
+  zzdv(zzdr paramZzdr, zzh paramZzh) {}
+  
+  public final void run()
+  {
+    zzag localZzag = zzdr.zzd(zzasg);
+    if (localZzag == null)
+    {
+      zzasg.zzgo().zzjd().zzbx("Discarding data. Failed to send app launch");
+      return;
+    }
+    try
+    {
+      localZzag.zza(zzaqn);
+      zzasg.zza(localZzag, null, zzaqn);
+      zzdr.zze(zzasg);
+      return;
+    }
+    catch (RemoteException localRemoteException)
+    {
+      zzasg.zzgo().zzjd().zzg("Failed to send app launch to the service", localRemoteException);
+    }
+  }
+}

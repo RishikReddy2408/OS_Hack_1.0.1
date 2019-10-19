@@ -1,0 +1,126 @@
+package android.support.v4.view.accessibility;
+
+import android.os.Build.VERSION;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityNodeProvider;
+import java.util.ArrayList;
+import java.util.List;
+
+public class AccessibilityNodeProviderCompat
+{
+  public static final int HOST_VIEW_ID = -1;
+  private final Object mProvider;
+  
+  public AccessibilityNodeProviderCompat()
+  {
+    if (Build.VERSION.SDK_INT >= 19)
+    {
+      mProvider = new AccessibilityNodeProviderApi19(this);
+      return;
+    }
+    if (Build.VERSION.SDK_INT >= 16)
+    {
+      mProvider = new AccessibilityNodeProviderApi16(this);
+      return;
+    }
+    mProvider = null;
+  }
+  
+  public AccessibilityNodeProviderCompat(Object paramObject)
+  {
+    mProvider = paramObject;
+  }
+  
+  @Nullable
+  public AccessibilityNodeInfoCompat createAccessibilityNodeInfo(int paramInt)
+  {
+    return null;
+  }
+  
+  @Nullable
+  public List<AccessibilityNodeInfoCompat> findAccessibilityNodeInfosByText(String paramString, int paramInt)
+  {
+    return null;
+  }
+  
+  @Nullable
+  public AccessibilityNodeInfoCompat findFocus(int paramInt)
+  {
+    return null;
+  }
+  
+  public Object getProvider()
+  {
+    return mProvider;
+  }
+  
+  public boolean performAction(int paramInt1, int paramInt2, Bundle paramBundle)
+  {
+    return false;
+  }
+  
+  @RequiresApi(16)
+  static class AccessibilityNodeProviderApi16
+    extends AccessibilityNodeProvider
+  {
+    final AccessibilityNodeProviderCompat mCompat;
+    
+    AccessibilityNodeProviderApi16(AccessibilityNodeProviderCompat paramAccessibilityNodeProviderCompat)
+    {
+      mCompat = paramAccessibilityNodeProviderCompat;
+    }
+    
+    public AccessibilityNodeInfo createAccessibilityNodeInfo(int paramInt)
+    {
+      AccessibilityNodeInfoCompat localAccessibilityNodeInfoCompat = mCompat.createAccessibilityNodeInfo(paramInt);
+      if (localAccessibilityNodeInfoCompat == null) {
+        return null;
+      }
+      return localAccessibilityNodeInfoCompat.unwrap();
+    }
+    
+    public List<AccessibilityNodeInfo> findAccessibilityNodeInfosByText(String paramString, int paramInt)
+    {
+      paramString = mCompat.findAccessibilityNodeInfosByText(paramString, paramInt);
+      if (paramString == null) {
+        return null;
+      }
+      ArrayList localArrayList = new ArrayList();
+      int i = paramString.size();
+      paramInt = 0;
+      while (paramInt < i)
+      {
+        localArrayList.add(((AccessibilityNodeInfoCompat)paramString.get(paramInt)).unwrap());
+        paramInt += 1;
+      }
+      return localArrayList;
+    }
+    
+    public boolean performAction(int paramInt1, int paramInt2, Bundle paramBundle)
+    {
+      return mCompat.performAction(paramInt1, paramInt2, paramBundle);
+    }
+  }
+  
+  @RequiresApi(19)
+  static class AccessibilityNodeProviderApi19
+    extends AccessibilityNodeProviderCompat.AccessibilityNodeProviderApi16
+  {
+    AccessibilityNodeProviderApi19(AccessibilityNodeProviderCompat paramAccessibilityNodeProviderCompat)
+    {
+      super();
+    }
+    
+    public AccessibilityNodeInfo findFocus(int paramInt)
+    {
+      AccessibilityNodeInfoCompat localAccessibilityNodeInfoCompat = mCompat.findFocus(paramInt);
+      if (localAccessibilityNodeInfoCompat == null) {
+        return null;
+      }
+      return localAccessibilityNodeInfoCompat.unwrap();
+    }
+  }
+}

@@ -1,0 +1,447 @@
+package com.google.android.gms.measurement.internal;
+
+import android.content.Context;
+import android.net.Uri;
+import com.google.android.gms.common.GoogleApiAvailabilityLight;
+import com.google.android.gms.common.util.VisibleForTesting;
+import com.google.android.gms.internal.measurement.zzsl;
+import com.google.android.gms.internal.measurement.zzsv;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+@VisibleForTesting
+public final class zzaf
+{
+  private static volatile zzbt zzadj;
+  static zzk zzaiq;
+  static List<zza<Integer>> zzair = new ArrayList();
+  static List<zza<Long>> zzais = new ArrayList();
+  static List<zza<Boolean>> zzait = new ArrayList();
+  static List<zza<String>> zzaiu = new ArrayList();
+  static List<zza<Double>> zzaiv = new ArrayList();
+  private static final zzsv zzaiw;
+  @VisibleForTesting
+  private static Boolean zzaix;
+  private static zza<Boolean> zzaiy = zza.zzb("measurement.log_third_party_store_events_enabled", false, false);
+  private static zza<Boolean> zzaiz = zza.zzb("measurement.log_installs_enabled", false, false);
+  private static zza<Boolean> zzaja = zza.zzb("measurement.log_upgrades_enabled", false, false);
+  public static zza<Boolean> zzajb = zza.zzb("measurement.log_androidId_enabled", false, false);
+  public static zza<Boolean> zzajc = zza.zzb("measurement.upload_dsid_enabled", false, false);
+  public static zza<String> zzajd = zza.zzd("measurement.log_tag", "FA", "FA-SVC");
+  public static zza<Long> zzaje = zza.zzb("measurement.ad_id_cache_time", 10000L, 10000L);
+  public static zza<Long> zzajf = zza.zzb("measurement.monitoring.sample_period_millis", 86400000L, 86400000L);
+  public static zza<Long> zzajg = zza.zzb("measurement.config.cache_time", 86400000L, 3600000L);
+  public static zza<String> zzajh = zza.zzd("measurement.config.url_scheme", "https", "https");
+  public static zza<String> zzaji = zza.zzd("measurement.config.url_authority", "app-measurement.com", "app-measurement.com");
+  public static zza<Integer> zzajj = zza.zzc("measurement.upload.max_bundles", 100, 100);
+  public static zza<Integer> zzajk = zza.zzc("measurement.upload.max_batch_size", 65536, 65536);
+  public static zza<Integer> zzajl = zza.zzc("measurement.upload.max_bundle_size", 65536, 65536);
+  public static zza<Integer> zzajm = zza.zzc("measurement.upload.max_events_per_bundle", 1000, 1000);
+  public static zza<Integer> zzajn = zza.zzc("measurement.upload.max_events_per_day", 100000, 100000);
+  public static zza<Integer> zzajo = zza.zzc("measurement.upload.max_error_events_per_day", 1000, 1000);
+  public static zza<Integer> zzajp = zza.zzc("measurement.upload.max_public_events_per_day", 50000, 50000);
+  public static zza<Integer> zzajq = zza.zzc("measurement.upload.max_conversions_per_day", 500, 500);
+  public static zza<Integer> zzajr = zza.zzc("measurement.upload.max_realtime_events_per_day", 10, 10);
+  public static zza<Integer> zzajs = zza.zzc("measurement.store.max_stored_events_per_app", 100000, 100000);
+  public static zza<String> zzajt = zza.zzd("measurement.upload.url", "https://app-measurement.com/a", "https://app-measurement.com/a");
+  public static zza<Long> zzaju = zza.zzb("measurement.upload.backoff_period", 43200000L, 43200000L);
+  public static zza<Long> zzajv = zza.zzb("measurement.upload.window_interval", 3600000L, 3600000L);
+  public static zza<Long> zzajw = zza.zzb("measurement.upload.interval", 3600000L, 3600000L);
+  public static zza<Long> zzajx = zza.zzb("measurement.upload.realtime_upload_interval", 10000L, 10000L);
+  public static zza<Long> zzajy = zza.zzb("measurement.upload.debug_upload_interval", 1000L, 1000L);
+  public static zza<Long> zzajz = zza.zzb("measurement.upload.minimum_delay", 500L, 500L);
+  public static zza<Long> zzaka = zza.zzb("measurement.alarm_manager.minimum_interval", 60000L, 60000L);
+  public static zza<Long> zzakb = zza.zzb("measurement.upload.stale_data_deletion_interval", 86400000L, 86400000L);
+  public static zza<Long> zzakc = zza.zzb("measurement.upload.refresh_blacklisted_config_interval", 604800000L, 604800000L);
+  public static zza<Long> zzakd = zza.zzb("measurement.upload.initial_upload_delay_time", 15000L, 15000L);
+  public static zza<Long> zzake = zza.zzb("measurement.upload.retry_time", 1800000L, 1800000L);
+  public static zza<Integer> zzakf = zza.zzc("measurement.upload.retry_count", 6, 6);
+  public static zza<Long> zzakg = zza.zzb("measurement.upload.max_queue_time", 2419200000L, 2419200000L);
+  public static zza<Integer> zzakh = zza.zzc("measurement.lifetimevalue.max_currency_tracked", 4, 4);
+  public static zza<Integer> zzaki = zza.zzc("measurement.audience.filter_result_max_count", 200, 200);
+  public static zza<Long> zzakj = zza.zzb("measurement.service_client.idle_disconnect_millis", 5000L, 5000L);
+  public static zza<Boolean> zzakk = zza.zzb("measurement.test.boolean_flag", false, false);
+  public static zza<String> zzakl = zza.zzd("measurement.test.string_flag", "---", "---");
+  public static zza<Long> zzakm = zza.zzb("measurement.test.long_flag", -1L, -1L);
+  public static zza<Integer> zzakn = zza.zzc("measurement.test.int_flag", -2, -2);
+  public static zza<Double> zzako = zza.zza("measurement.test.double_flag", -3.0D, -3.0D);
+  public static zza<Boolean> zzakp = zza.zzb("measurement.lifetimevalue.user_engagement_tracking_enabled", false, false);
+  public static zza<Boolean> zzakq = zza.zzb("measurement.audience.complex_param_evaluation", false, false);
+  public static zza<Boolean> zzakr = zza.zzb("measurement.validation.internal_limits_internal_event_params", false, false);
+  public static zza<Boolean> zzaks = zza.zzb("measurement.quality.unsuccessful_update_retry_counter", false, false);
+  public static zza<Boolean> zzakt = zza.zzb("measurement.iid.disable_on_collection_disabled", true, true);
+  public static zza<Boolean> zzaku = zza.zzb("measurement.app_launch.call_only_when_enabled", true, true);
+  public static zza<Boolean> zzakv = zza.zzb("measurement.run_on_worker_inline", true, false);
+  public static zza<Boolean> zzakw = zza.zzb("measurement.audience.dynamic_filters", false, false);
+  public static zza<Boolean> zzakx = zza.zzb("measurement.reset_analytics.persist_time", false, false);
+  public static zza<Boolean> zzaky = zza.zzb("measurement.validation.value_and_currency_params", false, false);
+  public static zza<Boolean> zzakz = zza.zzb("measurement.sampling.time_zone_offset_enabled", false, false);
+  public static zza<Boolean> zzala = zza.zzb("measurement.referrer.enable_logging_install_referrer_cmp_from_apk", false, false);
+  public static zza<Boolean> zzalb = zza.zzb("measurement.disconnect_from_remote_service", false, false);
+  public static zza<Boolean> zzalc = zza.zzb("measurement.clear_local_database", false, false);
+  public static zza<Boolean> zzald = zza.zzb("measurement.fetch_config_with_admob_app_id", false, false);
+  public static zza<Boolean> zzale = zza.zzb("measurement.sessions.session_id_enabled", false, false);
+  public static zza<Boolean> zzalf = zza.zzb("measurement.sessions.immediate_start_enabled", false, false);
+  private static zza<Boolean> zzalg = zza.zzb("measurement.sessions.background_sessions_enabled", false, false);
+  public static zza<Boolean> zzalh = zza.zzb("measurement.collection.firebase_global_collection_flag_enabled", true, true);
+  private static zza<Boolean> zzali = zza.zzb("measurement.collection.efficient_engagement_reporting_enabled", false, false);
+  public static zza<Boolean> zzalj = zza.zzb("measurement.personalized_ads_feature_enabled", false, false);
+  public static zza<Boolean> zzalk = zza.zzb("measurement.remove_app_instance_id_cache_enabled", true, true);
+  
+  static
+  {
+    String str = String.valueOf(Uri.encode("com.google.android.gms.measurement"));
+    if (str.length() != 0) {
+      str = "content://com.google.android.gms.phenotype/".concat(str);
+    } else {
+      str = new String("content://com.google.android.gms.phenotype/");
+    }
+    zzaiw = new zzsv(Uri.parse(str));
+  }
+  
+  static void zza(zzbt paramZzbt)
+  {
+    zzadj = paramZzbt;
+  }
+  
+  static void zza(zzk paramZzk)
+  {
+    zzaiq = paramZzk;
+    zza.zziy();
+  }
+  
+  @VisibleForTesting
+  static void zza(Exception paramException)
+  {
+    if (zzadj == null) {
+      return;
+    }
+    Context localContext = zzadj.getContext();
+    if (zzaix == null)
+    {
+      boolean bool;
+      if (GoogleApiAvailabilityLight.getInstance().isGooglePlayServicesAvailable(localContext, 12451000) == 0) {
+        bool = true;
+      } else {
+        bool = false;
+      }
+      zzaix = Boolean.valueOf(bool);
+    }
+    if (zzaix.booleanValue()) {
+      zzadj.zzgo().zzjd().zzg("Got Exception on PhenotypeFlag.get on Play device", paramException);
+    }
+  }
+  
+  @VisibleForTesting
+  public static final class zza<V>
+  {
+    private final V zzaan;
+    private zzsl<V> zzall;
+    private final V zzalm;
+    private volatile V zzaln;
+    private final String zzoj;
+    
+    private zza(String paramString, V paramV1, V paramV2)
+    {
+      zzoj = paramString;
+      zzaan = paramV1;
+      zzalm = paramV2;
+    }
+    
+    static zza<Double> zza(String paramString, double paramDouble1, double paramDouble2)
+    {
+      paramString = new zza(paramString, Double.valueOf(-3.0D), Double.valueOf(-3.0D));
+      zzaf.zzaiv.add(paramString);
+      return paramString;
+    }
+    
+    static zza<Long> zzb(String paramString, long paramLong1, long paramLong2)
+    {
+      paramString = new zza(paramString, Long.valueOf(paramLong1), Long.valueOf(paramLong2));
+      zzaf.zzais.add(paramString);
+      return paramString;
+    }
+    
+    static zza<Boolean> zzb(String paramString, boolean paramBoolean1, boolean paramBoolean2)
+    {
+      paramString = new zza(paramString, Boolean.valueOf(paramBoolean1), Boolean.valueOf(paramBoolean2));
+      zzaf.zzait.add(paramString);
+      return paramString;
+    }
+    
+    static zza<Integer> zzc(String paramString, int paramInt1, int paramInt2)
+    {
+      paramString = new zza(paramString, Integer.valueOf(paramInt1), Integer.valueOf(paramInt2));
+      zzaf.zzair.add(paramString);
+      return paramString;
+    }
+    
+    static zza<String> zzd(String paramString1, String paramString2, String paramString3)
+    {
+      paramString1 = new zza(paramString1, paramString2, paramString3);
+      zzaf.zzaiu.add(paramString1);
+      return paramString1;
+    }
+    
+    /* Error */
+    @android.support.annotation.WorkerThread
+    private static void zzix()
+    {
+      // Byte code:
+      //   0: ldc 2
+      //   2: monitorenter
+      //   3: invokestatic 103	com/google/android/gms/measurement/internal/zzk:isMainThread	()Z
+      //   6: ifne +226 -> 232
+      //   9: getstatic 107	com/google/android/gms/measurement/internal/zzaf:zzaiq	Lcom/google/android/gms/measurement/internal/zzk;
+      //   12: astore_0
+      //   13: getstatic 75	com/google/android/gms/measurement/internal/zzaf:zzait	Ljava/util/List;
+      //   16: invokeinterface 111 1 0
+      //   21: astore_0
+      //   22: aload_0
+      //   23: invokeinterface 116 1 0
+      //   28: ifeq +27 -> 55
+      //   31: aload_0
+      //   32: invokeinterface 120 1 0
+      //   37: checkcast 2	com/google/android/gms/measurement/internal/zzaf$zza
+      //   40: astore_1
+      //   41: aload_1
+      //   42: aload_1
+      //   43: getfield 122	com/google/android/gms/measurement/internal/zzaf$zza:zzall	Lcom/google/android/gms/internal/measurement/zzsl;
+      //   46: invokevirtual 127	com/google/android/gms/internal/measurement/zzsl:get	()Ljava/lang/Object;
+      //   49: putfield 129	com/google/android/gms/measurement/internal/zzaf$zza:zzaln	Ljava/lang/Object;
+      //   52: goto -30 -> 22
+      //   55: getstatic 92	com/google/android/gms/measurement/internal/zzaf:zzaiu	Ljava/util/List;
+      //   58: invokeinterface 111 1 0
+      //   63: astore_0
+      //   64: aload_0
+      //   65: invokeinterface 116 1 0
+      //   70: ifeq +27 -> 97
+      //   73: aload_0
+      //   74: invokeinterface 120 1 0
+      //   79: checkcast 2	com/google/android/gms/measurement/internal/zzaf$zza
+      //   82: astore_1
+      //   83: aload_1
+      //   84: aload_1
+      //   85: getfield 122	com/google/android/gms/measurement/internal/zzaf$zza:zzall	Lcom/google/android/gms/internal/measurement/zzsl;
+      //   88: invokevirtual 127	com/google/android/gms/internal/measurement/zzsl:get	()Ljava/lang/Object;
+      //   91: putfield 129	com/google/android/gms/measurement/internal/zzaf$zza:zzaln	Ljava/lang/Object;
+      //   94: goto -30 -> 64
+      //   97: getstatic 65	com/google/android/gms/measurement/internal/zzaf:zzais	Ljava/util/List;
+      //   100: invokeinterface 111 1 0
+      //   105: astore_0
+      //   106: aload_0
+      //   107: invokeinterface 116 1 0
+      //   112: ifeq +27 -> 139
+      //   115: aload_0
+      //   116: invokeinterface 120 1 0
+      //   121: checkcast 2	com/google/android/gms/measurement/internal/zzaf$zza
+      //   124: astore_1
+      //   125: aload_1
+      //   126: aload_1
+      //   127: getfield 122	com/google/android/gms/measurement/internal/zzaf$zza:zzall	Lcom/google/android/gms/internal/measurement/zzsl;
+      //   130: invokevirtual 127	com/google/android/gms/internal/measurement/zzsl:get	()Ljava/lang/Object;
+      //   133: putfield 129	com/google/android/gms/measurement/internal/zzaf$zza:zzaln	Ljava/lang/Object;
+      //   136: goto -30 -> 106
+      //   139: getstatic 86	com/google/android/gms/measurement/internal/zzaf:zzair	Ljava/util/List;
+      //   142: invokeinterface 111 1 0
+      //   147: astore_0
+      //   148: aload_0
+      //   149: invokeinterface 116 1 0
+      //   154: ifeq +27 -> 181
+      //   157: aload_0
+      //   158: invokeinterface 120 1 0
+      //   163: checkcast 2	com/google/android/gms/measurement/internal/zzaf$zza
+      //   166: astore_1
+      //   167: aload_1
+      //   168: aload_1
+      //   169: getfield 122	com/google/android/gms/measurement/internal/zzaf$zza:zzall	Lcom/google/android/gms/internal/measurement/zzsl;
+      //   172: invokevirtual 127	com/google/android/gms/internal/measurement/zzsl:get	()Ljava/lang/Object;
+      //   175: putfield 129	com/google/android/gms/measurement/internal/zzaf$zza:zzaln	Ljava/lang/Object;
+      //   178: goto -30 -> 148
+      //   181: getstatic 48	com/google/android/gms/measurement/internal/zzaf:zzaiv	Ljava/util/List;
+      //   184: invokeinterface 111 1 0
+      //   189: astore_0
+      //   190: aload_0
+      //   191: invokeinterface 116 1 0
+      //   196: ifeq +32 -> 228
+      //   199: aload_0
+      //   200: invokeinterface 120 1 0
+      //   205: checkcast 2	com/google/android/gms/measurement/internal/zzaf$zza
+      //   208: astore_1
+      //   209: aload_1
+      //   210: aload_1
+      //   211: getfield 122	com/google/android/gms/measurement/internal/zzaf$zza:zzall	Lcom/google/android/gms/internal/measurement/zzsl;
+      //   214: invokevirtual 127	com/google/android/gms/internal/measurement/zzsl:get	()Ljava/lang/Object;
+      //   217: putfield 129	com/google/android/gms/measurement/internal/zzaf$zza:zzaln	Ljava/lang/Object;
+      //   220: goto -30 -> 190
+      //   223: astore_0
+      //   224: aload_0
+      //   225: invokestatic 132	com/google/android/gms/measurement/internal/zzaf:zza	(Ljava/lang/Exception;)V
+      //   228: ldc 2
+      //   230: monitorexit
+      //   231: return
+      //   232: new 134	java/lang/IllegalStateException
+      //   235: dup
+      //   236: ldc -120
+      //   238: invokespecial 139	java/lang/IllegalStateException:<init>	(Ljava/lang/String;)V
+      //   241: athrow
+      //   242: astore_0
+      //   243: ldc 2
+      //   245: monitorexit
+      //   246: aload_0
+      //   247: athrow
+      // Local variable table:
+      //   start	length	slot	name	signature
+      //   12	188	0	localObject1	Object
+      //   223	2	0	localSecurityException	SecurityException
+      //   242	5	0	localObject2	Object
+      //   40	171	1	localZza	zza
+      // Exception table:
+      //   from	to	target	type
+      //   13	22	223	java/lang/SecurityException
+      //   22	52	223	java/lang/SecurityException
+      //   55	64	223	java/lang/SecurityException
+      //   64	94	223	java/lang/SecurityException
+      //   97	106	223	java/lang/SecurityException
+      //   106	136	223	java/lang/SecurityException
+      //   139	148	223	java/lang/SecurityException
+      //   148	178	223	java/lang/SecurityException
+      //   181	190	223	java/lang/SecurityException
+      //   190	220	223	java/lang/SecurityException
+      //   3	13	242	finally
+      //   13	22	242	finally
+      //   22	52	242	finally
+      //   55	64	242	finally
+      //   64	94	242	finally
+      //   97	106	242	finally
+      //   106	136	242	finally
+      //   139	148	242	finally
+      //   148	178	242	finally
+      //   181	190	242	finally
+      //   190	220	242	finally
+      //   224	228	242	finally
+      //   228	231	242	finally
+      //   232	242	242	finally
+      //   243	246	242	finally
+    }
+    
+    private static void zzq()
+    {
+      try
+      {
+        Iterator localIterator = zzaf.zzait.iterator();
+        zza localZza;
+        zzsv localZzsv;
+        String str;
+        zzk localZzk;
+        while (localIterator.hasNext())
+        {
+          localZza = (zza)localIterator.next();
+          localZzsv = zzaf.zziw();
+          str = zzoj;
+          localZzk = zzaf.zzaiq;
+          zzall = localZzsv.zzf(str, ((Boolean)zzaan).booleanValue());
+        }
+        localIterator = zzaf.zzaiu.iterator();
+        while (localIterator.hasNext())
+        {
+          localZza = (zza)localIterator.next();
+          localZzsv = zzaf.zziw();
+          str = zzoj;
+          localZzk = zzaf.zzaiq;
+          zzall = localZzsv.zzx(str, (String)zzaan);
+        }
+        localIterator = zzaf.zzais.iterator();
+        while (localIterator.hasNext())
+        {
+          localZza = (zza)localIterator.next();
+          localZzsv = zzaf.zziw();
+          str = zzoj;
+          localZzk = zzaf.zzaiq;
+          zzall = localZzsv.zze(str, ((Long)zzaan).longValue());
+        }
+        localIterator = zzaf.zzair.iterator();
+        while (localIterator.hasNext())
+        {
+          localZza = (zza)localIterator.next();
+          localZzsv = zzaf.zziw();
+          str = zzoj;
+          localZzk = zzaf.zzaiq;
+          zzall = localZzsv.zzd(str, ((Integer)zzaan).intValue());
+        }
+        localIterator = zzaf.zzaiv.iterator();
+        while (localIterator.hasNext())
+        {
+          localZza = (zza)localIterator.next();
+          localZzsv = zzaf.zziw();
+          str = zzoj;
+          localZzk = zzaf.zzaiq;
+          zzall = localZzsv.zzb(str, ((Double)zzaan).doubleValue());
+        }
+        return;
+      }
+      finally {}
+    }
+    
+    public final V get()
+    {
+      if (zzaf.zzaiq == null) {
+        return zzaan;
+      }
+      Object localObject = zzaf.zzaiq;
+      if (zzk.isMainThread())
+      {
+        if (zzaln == null) {
+          return zzaan;
+        }
+        return zzaln;
+      }
+      zzix();
+      try
+      {
+        localObject = zzall.get();
+        return localObject;
+      }
+      catch (SecurityException localSecurityException)
+      {
+        zzaf.zza(localSecurityException);
+      }
+      return zzall.getDefaultValue();
+    }
+    
+    public final V get(V paramV)
+    {
+      if (paramV != null) {
+        return paramV;
+      }
+      if (zzaf.zzaiq == null) {
+        return zzaan;
+      }
+      paramV = zzaf.zzaiq;
+      if (zzk.isMainThread())
+      {
+        if (zzaln == null) {
+          return zzaan;
+        }
+        return zzaln;
+      }
+      zzix();
+      try
+      {
+        paramV = zzall.get();
+        return paramV;
+      }
+      catch (SecurityException paramV)
+      {
+        zzaf.zza(paramV);
+      }
+      return zzall.getDefaultValue();
+    }
+    
+    public final String getKey()
+    {
+      return zzoj;
+    }
+  }
+}

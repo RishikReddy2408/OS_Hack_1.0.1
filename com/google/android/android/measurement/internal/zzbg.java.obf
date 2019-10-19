@@ -1,0 +1,148 @@
+package com.google.android.gms.measurement.internal;
+
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.content.pm.ServiceInfo;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
+import com.google.android.gms.common.stats.ConnectionTracker;
+import com.google.android.gms.common.util.VisibleForTesting;
+import com.google.android.gms.common.wrappers.PackageManagerWrapper;
+import com.google.android.gms.common.wrappers.Wrappers;
+import com.google.android.gms.internal.measurement.zzu;
+import java.util.List;
+
+public final class zzbg
+{
+  final zzbt zzadj;
+  
+  zzbg(zzbt paramZzbt)
+  {
+    zzadj = paramZzbt;
+  }
+  
+  @VisibleForTesting
+  private final boolean zzka()
+  {
+    boolean bool = false;
+    try
+    {
+      PackageManagerWrapper localPackageManagerWrapper = Wrappers.packageManager(zzadj.getContext());
+      if (localPackageManagerWrapper == null)
+      {
+        zzadj.zzgo().zzjj().zzbx("Failed to retrieve Package Manager to check Play Store compatibility");
+        return false;
+      }
+      int i = getPackageInfo"com.android.vending"128versionCode;
+      if (i >= 80837300) {
+        bool = true;
+      }
+      return bool;
+    }
+    catch (Exception localException)
+    {
+      zzadj.zzgo().zzjj().zzg("Failed to retrieve Play Store version", localException);
+    }
+    return false;
+  }
+  
+  @Nullable
+  @WorkerThread
+  @VisibleForTesting
+  final Bundle zza(String paramString, zzu paramZzu)
+  {
+    zzadj.zzgn().zzaf();
+    if (paramZzu == null)
+    {
+      zzadj.zzgo().zzjg().zzbx("Attempting to use Install Referrer Service while it is not initialized");
+      return null;
+    }
+    Bundle localBundle = new Bundle();
+    localBundle.putString("package_name", paramString);
+    try
+    {
+      paramString = paramZzu.zza(localBundle);
+      if (paramString == null)
+      {
+        zzadj.zzgo().zzjd().zzbx("Install Referrer Service returned a null response");
+        return null;
+      }
+      return paramString;
+    }
+    catch (Exception paramString)
+    {
+      zzadj.zzgo().zzjd().zzg("Exception occurred while retrieving the Install Referrer", paramString.getMessage());
+    }
+    return null;
+  }
+  
+  @WorkerThread
+  protected final void zzcd(String paramString)
+  {
+    Object localObject1;
+    if ((paramString != null) && (!paramString.isEmpty()))
+    {
+      zzadj.zzgn().zzaf();
+      if (!zzka())
+      {
+        zzadj.zzgo().zzjj().zzbx("Install Referrer Reporter is not available");
+        return;
+      }
+      zzadj.zzgo().zzjj().zzbx("Install Referrer Reporter is initializing");
+      paramString = new zzbh(this, paramString);
+      zzadj.zzgn().zzaf();
+      localObject1 = new Intent("com.google.android.finsky.BIND_GET_INSTALL_REFERRER_SERVICE");
+      ((Intent)localObject1).setComponent(new ComponentName("com.android.vending", "com.google.android.finsky.externalreferrer.GetInstallReferrerService"));
+      Object localObject2 = zzadj.getContext().getPackageManager();
+      if (localObject2 == null)
+      {
+        zzadj.zzgo().zzjg().zzbx("Failed to obtain Package Manager to verify binding conditions");
+        return;
+      }
+      localObject2 = ((PackageManager)localObject2).queryIntentServices((Intent)localObject1, 0);
+      if ((localObject2 != null) && (!((List)localObject2).isEmpty()))
+      {
+        localObject2 = (ResolveInfo)((List)localObject2).get(0);
+        if (serviceInfo != null)
+        {
+          String str = serviceInfo.packageName;
+          if ((serviceInfo.name != null) && ("com.android.vending".equals(str)) && (zzka())) {
+            localObject1 = new Intent((Intent)localObject1);
+          }
+        }
+      }
+    }
+    for (;;)
+    {
+      try
+      {
+        boolean bool = ConnectionTracker.getInstance().bindService(zzadj.getContext(), (Intent)localObject1, paramString, 1);
+        localObject1 = zzadj.zzgo().zzjj();
+        if (!bool) {
+          break label348;
+        }
+        paramString = "available";
+        ((zzar)localObject1).zzg("Install Referrer Service is", paramString);
+        return;
+      }
+      catch (Exception paramString)
+      {
+        zzadj.zzgo().zzjd().zzg("Exception occurred while binding to Install Referrer Service", paramString.getMessage());
+        return;
+      }
+      zzadj.zzgo().zzjj().zzbx("Play Store missing or incompatible. Version 8.3.73 or later required");
+      return;
+      zzadj.zzgo().zzjj().zzbx("Play Service for fetching Install Referrer is unavailable on device");
+      return;
+      zzadj.zzgo().zzjj().zzbx("Install Referrer Reporter was called with invalid app package name");
+      return;
+      label348:
+      paramString = "not available";
+    }
+  }
+}

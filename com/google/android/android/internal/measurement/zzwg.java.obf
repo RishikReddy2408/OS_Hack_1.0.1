@@ -1,0 +1,66 @@
+package com.google.android.gms.internal.measurement;
+
+import java.util.List;
+
+final class zzwg
+  extends zzwd
+{
+  private zzwg()
+  {
+    super(null);
+  }
+  
+  private static <E> zzvs<E> zzd(Object paramObject, long paramLong)
+  {
+    return (zzvs)zzyh.zzp(paramObject, paramLong);
+  }
+  
+  final <L> List<L> zza(Object paramObject, long paramLong)
+  {
+    zzvs localZzvs2 = zzd(paramObject, paramLong);
+    zzvs localZzvs1 = localZzvs2;
+    if (!localZzvs2.zztw())
+    {
+      int i = localZzvs2.size();
+      if (i == 0) {
+        i = 10;
+      } else {
+        i <<= 1;
+      }
+      localZzvs1 = localZzvs2.zzak(i);
+      zzyh.zza(paramObject, paramLong, localZzvs1);
+    }
+    return localZzvs1;
+  }
+  
+  final <E> void zza(Object paramObject1, Object paramObject2, long paramLong)
+  {
+    Object localObject = zzd(paramObject1, paramLong);
+    zzvs localZzvs = zzd(paramObject2, paramLong);
+    int i = ((zzvs)localObject).size();
+    int j = localZzvs.size();
+    paramObject2 = localObject;
+    if (i > 0)
+    {
+      paramObject2 = localObject;
+      if (j > 0)
+      {
+        paramObject2 = localObject;
+        if (!((zzvs)localObject).zztw()) {
+          paramObject2 = ((zzvs)localObject).zzak(j + i);
+        }
+        paramObject2.addAll(localZzvs);
+      }
+    }
+    localObject = localZzvs;
+    if (i > 0) {
+      localObject = paramObject2;
+    }
+    zzyh.zza(paramObject1, paramLong, localObject);
+  }
+  
+  final void zzb(Object paramObject, long paramLong)
+  {
+    zzd(paramObject, paramLong).zzsm();
+  }
+}

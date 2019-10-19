@@ -1,0 +1,12 @@
+package com.google.android.gms.internal.measurement;
+
+final class zzxb
+  implements zzxa
+{
+  zzxb() {}
+  
+  public final Object newInstance(Object paramObject)
+  {
+    return ((zzvm)paramObject).zza(zzvm.zze.zzbyw, null, null);
+  }
+}

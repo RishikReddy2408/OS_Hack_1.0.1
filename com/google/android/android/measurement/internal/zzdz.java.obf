@@ -1,0 +1,47 @@
+package com.google.android.gms.measurement.internal;
+
+import android.os.RemoteException;
+import android.text.TextUtils;
+
+final class zzdz
+  implements Runnable
+{
+  zzdz(zzdr paramZzdr, boolean paramBoolean1, boolean paramBoolean2, zzad paramZzad, zzh paramZzh, String paramString) {}
+  
+  public final void run()
+  {
+    zzag localZzag = zzdr.zzd(zzasg);
+    if (localZzag == null)
+    {
+      zzasg.zzgo().zzjd().zzbx("Discarding data. Failed to send event to service");
+      return;
+    }
+    if (zzasi)
+    {
+      zzdr localZzdr = zzasg;
+      zzad localZzad;
+      if (zzasj) {
+        localZzad = null;
+      } else {
+        localZzad = zzaqr;
+      }
+      localZzdr.zza(localZzag, localZzad, zzaqn);
+    }
+    else
+    {
+      try
+      {
+        if (TextUtils.isEmpty(zzaqq)) {
+          localZzag.zza(zzaqr, zzaqn);
+        } else {
+          localZzag.zza(zzaqr, zzaqq, zzasg.zzgo().zzjn());
+        }
+      }
+      catch (RemoteException localRemoteException)
+      {
+        zzasg.zzgo().zzjd().zzg("Failed to send event to the service", localRemoteException);
+      }
+    }
+    zzdr.zze(zzasg);
+  }
+}

@@ -1,0 +1,192 @@
+package com.google.android.gms.internal.measurement;
+
+import java.nio.ByteBuffer;
+
+abstract class zzyl
+{
+  zzyl() {}
+  
+  static void zzc(CharSequence paramCharSequence, ByteBuffer paramByteBuffer)
+  {
+    int i2 = paramCharSequence.length();
+    k = paramByteBuffer.position();
+    j = 0;
+    for (;;)
+    {
+      int n;
+      int m;
+      if (j < i2)
+      {
+        n = k;
+        m = j;
+      }
+      try
+      {
+        i1 = paramCharSequence.charAt(j);
+        if (i1 < 128)
+        {
+          n = k;
+          m = j;
+          paramByteBuffer.put(k + j, (byte)i1);
+          j += 1;
+        }
+        else
+        {
+          if (j != i2) {
+            break label668;
+          }
+          n = k;
+          m = j;
+          paramByteBuffer.position(k + j);
+          return;
+        }
+      }
+      catch (IndexOutOfBoundsException localIndexOutOfBoundsException1)
+      {
+        for (;;)
+        {
+          int i1;
+          int i;
+          byte b;
+          char c2;
+          int i3;
+          char c1;
+          j = m;
+          continue;
+          k += j;
+          continue;
+          j += 1;
+          k += 1;
+        }
+      }
+    }
+    if (j < i2)
+    {
+      n = k;
+      m = j;
+      i = paramCharSequence.charAt(j);
+      if (i < 128)
+      {
+        n = k;
+        m = j;
+        paramByteBuffer.put(k, (byte)i);
+        break label678;
+      }
+      if (i < 2048)
+      {
+        n = k + 1;
+        b = (byte)(i >>> 6 | 0xC0);
+        m = n;
+      }
+    }
+    try
+    {
+      paramByteBuffer.put(k, b);
+      m = n;
+      paramByteBuffer.put(n, (byte)(i & 0x3F | 0x80));
+      k = n;
+    }
+    catch (IndexOutOfBoundsException localIndexOutOfBoundsException2)
+    {
+      for (;;) {}
+    }
+    n = m;
+    break label561;
+    if ((i >= 55296) && (57343 >= i))
+    {
+      m = j + 1;
+      if (m != i2) {
+        j = k;
+      }
+    }
+    try
+    {
+      c2 = paramCharSequence.charAt(m);
+      j = k;
+      if (Character.isSurrogatePair(i, c2))
+      {
+        j = k;
+        i3 = Character.toCodePoint(i, c2);
+        n = k + 1;
+        b = (byte)(i3 >>> 18 | 0xF0);
+        j = n;
+      }
+    }
+    catch (IndexOutOfBoundsException localIndexOutOfBoundsException3)
+    {
+      label414:
+      label424:
+      label435:
+      for (;;) {}
+    }
+    try
+    {
+      paramByteBuffer.put(k, b);
+      i1 = n + 1;
+      b = (byte)(i3 >>> 12 & 0x3F | 0x80);
+      j = i1;
+      paramByteBuffer.put(n, b);
+      k = i1 + 1;
+      b = (byte)(i3 >>> 6 & 0x3F | 0x80);
+      j = k;
+      paramByteBuffer.put(i1, b);
+      j = k;
+      paramByteBuffer.put(k, (byte)(i3 & 0x3F | 0x80));
+      j = m;
+    }
+    catch (IndexOutOfBoundsException localIndexOutOfBoundsException4)
+    {
+      break label414;
+    }
+    break label424;
+    j = m;
+    break label435;
+    n = j;
+    j = m;
+    break label561;
+    n = k;
+    m = j;
+    throw new zzyn(j, i2);
+    i1 = k + 1;
+    b = (byte)(i >>> 12 | 0xE0);
+    m = i1;
+    paramByteBuffer.put(k, b);
+    k = i1 + 1;
+    b = (byte)(i >>> 6 & 0x3F | 0x80);
+    n = k;
+    m = j;
+    paramByteBuffer.put(i1, b);
+    n = k;
+    m = j;
+    paramByteBuffer.put(k, (byte)(i & 0x3F | 0x80));
+    break label678;
+    n = k;
+    m = j;
+    paramByteBuffer.position(k);
+    return;
+    label561:
+    k = paramByteBuffer.position();
+    m = Math.max(j, n - paramByteBuffer.position() + 1);
+    c1 = paramCharSequence.charAt(j);
+    paramCharSequence = new StringBuilder(37);
+    paramCharSequence.append("Failed writing ");
+    paramCharSequence.append(c1);
+    paramCharSequence.append(" at index ");
+    paramCharSequence.append(k + m);
+    throw new ArrayIndexOutOfBoundsException(paramCharSequence.toString());
+  }
+  
+  abstract int zzb(int paramInt1, byte[] paramArrayOfByte, int paramInt2, int paramInt3);
+  
+  abstract int zzb(CharSequence paramCharSequence, byte[] paramArrayOfByte, int paramInt1, int paramInt2);
+  
+  abstract void zzb(CharSequence paramCharSequence, ByteBuffer paramByteBuffer);
+  
+  final boolean zzf(byte[] paramArrayOfByte, int paramInt1, int paramInt2)
+  {
+    return zzb(0, paramArrayOfByte, paramInt1, paramInt2) == 0;
+  }
+  
+  abstract String zzh(byte[] paramArrayOfByte, int paramInt1, int paramInt2)
+    throws zzvt;
+}

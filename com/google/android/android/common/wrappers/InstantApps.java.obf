@@ -1,0 +1,49 @@
+package com.google.android.gms.common.wrappers;
+
+import android.content.Context;
+import android.content.pm.PackageManager;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.util.PlatformVersion;
+
+@KeepForSdk
+public class InstantApps
+{
+  private static Context zzht;
+  private static Boolean zzhu;
+  
+  public InstantApps() {}
+  
+  @KeepForSdk
+  public static boolean isInstantApp(Context paramContext)
+  {
+    for (;;)
+    {
+      Context localContext;
+      boolean bool;
+      try
+      {
+        localContext = paramContext.getApplicationContext();
+        if ((zzht != null) && (zzhu != null) && (zzht == localContext))
+        {
+          bool = zzhu.booleanValue();
+          return bool;
+        }
+        zzhu = null;
+        if (PlatformVersion.isAtLeastO()) {
+          zzhu = Boolean.valueOf(localContext.getPackageManager().isInstantApp());
+        }
+      }
+      finally {}
+      try
+      {
+        paramContext.getClassLoader().loadClass("com.google.android.instantapps.supervisor.InstantAppsRuntime");
+        zzhu = Boolean.valueOf(true);
+      }
+      catch (ClassNotFoundException paramContext) {}
+    }
+    zzhu = Boolean.valueOf(false);
+    zzht = localContext;
+    bool = zzhu.booleanValue();
+    return bool;
+  }
+}

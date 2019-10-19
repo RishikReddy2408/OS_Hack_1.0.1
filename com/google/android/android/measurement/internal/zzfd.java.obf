@@ -1,0 +1,15 @@
+package com.google.android.gms.measurement.internal;
+
+import java.util.List;
+import java.util.Map;
+
+final class zzfd
+  implements zzav
+{
+  zzfd(zzfa paramZzfa) {}
+  
+  public final void zza(String paramString, int paramInt, Throwable paramThrowable, byte[] paramArrayOfByte, Map<String, List<String>> paramMap)
+  {
+    zzaty.zzb(paramString, paramInt, paramThrowable, paramArrayOfByte, paramMap);
+  }
+}

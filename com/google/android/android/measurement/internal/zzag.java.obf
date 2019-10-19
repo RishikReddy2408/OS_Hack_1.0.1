@@ -1,0 +1,57 @@
+package com.google.android.gms.measurement.internal;
+
+import android.os.IInterface;
+import android.os.RemoteException;
+import java.util.List;
+
+public abstract interface zzag
+  extends IInterface
+{
+  public abstract List<zzfh> zza(zzh paramZzh, boolean paramBoolean)
+    throws RemoteException;
+  
+  public abstract List<zzl> zza(String paramString1, String paramString2, zzh paramZzh)
+    throws RemoteException;
+  
+  public abstract List<zzfh> zza(String paramString1, String paramString2, String paramString3, boolean paramBoolean)
+    throws RemoteException;
+  
+  public abstract List<zzfh> zza(String paramString1, String paramString2, boolean paramBoolean, zzh paramZzh)
+    throws RemoteException;
+  
+  public abstract void zza(long paramLong, String paramString1, String paramString2, String paramString3)
+    throws RemoteException;
+  
+  public abstract void zza(zzad paramZzad, zzh paramZzh)
+    throws RemoteException;
+  
+  public abstract void zza(zzad paramZzad, String paramString1, String paramString2)
+    throws RemoteException;
+  
+  public abstract void zza(zzfh paramZzfh, zzh paramZzh)
+    throws RemoteException;
+  
+  public abstract void zza(zzh paramZzh)
+    throws RemoteException;
+  
+  public abstract void zza(zzl paramZzl, zzh paramZzh)
+    throws RemoteException;
+  
+  public abstract byte[] zza(zzad paramZzad, String paramString)
+    throws RemoteException;
+  
+  public abstract void zzb(zzh paramZzh)
+    throws RemoteException;
+  
+  public abstract void zzb(zzl paramZzl)
+    throws RemoteException;
+  
+  public abstract String zzc(zzh paramZzh)
+    throws RemoteException;
+  
+  public abstract void zzd(zzh paramZzh)
+    throws RemoteException;
+  
+  public abstract List<zzl> zze(String paramString1, String paramString2, String paramString3)
+    throws RemoteException;
+}

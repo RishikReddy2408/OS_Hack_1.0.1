@@ -1,0 +1,180 @@
+package com.google.android.android.internal.measurement;
+
+import com.google.android.gms.internal.measurement.zzvs;
+import com.google.android.gms.internal.measurement.zzxe;
+import java.util.AbstractList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.RandomAccess;
+
+final class zzvj
+  extends com.google.android.gms.internal.measurement.zztz<Float>
+  implements zzvs<Float>, zzxe, RandomAccess
+{
+  private static final zzvj zzbyi;
+  private int size;
+  private float[] zzbyj;
+  
+  static
+  {
+    zzvj localZzvj = new zzvj();
+    zzbyi = localZzvj;
+    localZzvj.zzsm();
+  }
+  
+  zzvj()
+  {
+    this(new float[10], 0);
+  }
+  
+  private zzvj(float[] paramArrayOfFloat, int paramInt)
+  {
+    zzbyj = paramArrayOfFloat;
+    size = paramInt;
+  }
+  
+  private final void add(int paramInt, float paramFloat)
+  {
+    zztx();
+    if ((paramInt >= 0) && (paramInt <= size))
+    {
+      if (size < zzbyj.length)
+      {
+        System.arraycopy(zzbyj, paramInt, zzbyj, paramInt + 1, size - paramInt);
+      }
+      else
+      {
+        float[] arrayOfFloat = new float[size * 3 / 2 + 1];
+        System.arraycopy(zzbyj, 0, arrayOfFloat, 0, paramInt);
+        System.arraycopy(zzbyj, paramInt, arrayOfFloat, paramInt + 1, size - paramInt);
+        zzbyj = arrayOfFloat;
+      }
+      zzbyj[paramInt] = paramFloat;
+      size += 1;
+      modCount += 1;
+      return;
+    }
+    throw new IndexOutOfBoundsException(zzaj(paramInt));
+  }
+  
+  private final void zzai(int paramInt)
+  {
+    if ((paramInt >= 0) && (paramInt < size)) {
+      return;
+    }
+    throw new IndexOutOfBoundsException(zzaj(paramInt));
+  }
+  
+  private final String zzaj(int paramInt)
+  {
+    int i = size;
+    StringBuilder localStringBuilder = new StringBuilder(35);
+    localStringBuilder.append("Index:");
+    localStringBuilder.append(paramInt);
+    localStringBuilder.append(", Size:");
+    localStringBuilder.append(i);
+    return localStringBuilder.toString();
+  }
+  
+  public final void add(float paramFloat)
+  {
+    add(size, paramFloat);
+  }
+  
+  public final boolean addAll(Collection paramCollection)
+  {
+    zztx();
+    zzvo.checkNotNull(paramCollection);
+    if (!(paramCollection instanceof zzvj)) {
+      return super.addAll(paramCollection);
+    }
+    paramCollection = (zzvj)paramCollection;
+    if (size == 0) {
+      return false;
+    }
+    if (Integer.MAX_VALUE - size >= size)
+    {
+      int i = size + size;
+      if (i > zzbyj.length) {
+        zzbyj = Arrays.copyOf(zzbyj, i);
+      }
+      System.arraycopy(zzbyj, 0, zzbyj, size, size);
+      size = i;
+      modCount += 1;
+      return true;
+    }
+    throw new OutOfMemoryError();
+  }
+  
+  public final boolean equals(Object paramObject)
+  {
+    if (this == paramObject) {
+      return true;
+    }
+    if (!(paramObject instanceof zzvj)) {
+      return super.equals(paramObject);
+    }
+    paramObject = (zzvj)paramObject;
+    if (size != size) {
+      return false;
+    }
+    paramObject = zzbyj;
+    int i = 0;
+    while (i < size)
+    {
+      if (zzbyj[i] != paramObject[i]) {
+        return false;
+      }
+      i += 1;
+    }
+    return true;
+  }
+  
+  public final int hashCode()
+  {
+    int j = 1;
+    int i = 0;
+    while (i < size)
+    {
+      j = j * 31 + Float.floatToIntBits(zzbyj[i]);
+      i += 1;
+    }
+    return j;
+  }
+  
+  public final boolean remove(Object paramObject)
+  {
+    zztx();
+    int i = 0;
+    while (i < size)
+    {
+      if (paramObject.equals(Float.valueOf(zzbyj[i])))
+      {
+        System.arraycopy(zzbyj, i + 1, zzbyj, i, size - i);
+        size -= 1;
+        modCount += 1;
+        return true;
+      }
+      i += 1;
+    }
+    return false;
+  }
+  
+  protected final void removeRange(int paramInt1, int paramInt2)
+  {
+    zztx();
+    if (paramInt2 >= paramInt1)
+    {
+      System.arraycopy(zzbyj, paramInt2, zzbyj, paramInt1, size - paramInt2);
+      size -= paramInt2 - paramInt1;
+      modCount += 1;
+      return;
+    }
+    throw new IndexOutOfBoundsException("toIndex < fromIndex");
+  }
+  
+  public final int size()
+  {
+    return size;
+  }
+}

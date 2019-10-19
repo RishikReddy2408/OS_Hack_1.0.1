@@ -1,0 +1,6 @@
+package com.google.android.gms.internal.measurement;
+
+public abstract interface zzvp
+{
+  public abstract int zzc();
+}

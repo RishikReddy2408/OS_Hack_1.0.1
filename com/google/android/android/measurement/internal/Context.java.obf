@@ -1,0 +1,6 @@
+package com.google.android.gms.measurement.internal;
+
+abstract interface zzp
+{
+  public abstract String zzf(String paramString1, String paramString2);
+}

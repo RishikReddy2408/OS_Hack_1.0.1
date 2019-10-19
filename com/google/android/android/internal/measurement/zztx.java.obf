@@ -1,0 +1,11 @@
+package com.google.android.gms.internal.measurement;
+
+public abstract class zztx<MessageType extends zztw<MessageType, BuilderType>, BuilderType extends zztx<MessageType, BuilderType>>
+  implements zzwu
+{
+  public zztx() {}
+  
+  protected abstract BuilderType zza(MessageType paramMessageType);
+  
+  public abstract BuilderType zztv();
+}

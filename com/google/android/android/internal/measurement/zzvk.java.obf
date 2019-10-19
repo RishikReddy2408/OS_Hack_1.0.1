@@ -1,0 +1,114 @@
+package com.google.android.gms.internal.measurement;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+abstract class zzvk<T extends zzuz>
+{
+  private static final Logger logger = Logger.getLogger(zzut.class.getName());
+  private static String zzbyk = "com.google.protobuf.BlazeGeneratedExtensionRegistryLiteLoader";
+  
+  zzvk() {}
+  
+  static <T extends zzuz> T zzd(Class<T> paramClass)
+  {
+    Object localObject2 = zzvk.class.getClassLoader();
+    Object localObject1;
+    if (paramClass.equals(zzuz.class))
+    {
+      localObject1 = zzbyk;
+    }
+    else
+    {
+      if (!paramClass.getPackage().equals(zzvk.class.getPackage())) {
+        break label349;
+      }
+      localObject1 = String.format("%s.BlazeGenerated%sLoader", new Object[] { paramClass.getPackage().getName(), paramClass.getSimpleName() });
+    }
+    try
+    {
+      localObject1 = Class.forName((String)localObject1, true, (ClassLoader)localObject2);
+      try
+      {
+        localObject1 = (zzvk)((Class)localObject1).getConstructor(new Class[0]).newInstance(new Object[0]);
+        return (zzuz)paramClass.cast(((zzvk)localObject1).zzwa());
+      }
+      catch (InvocationTargetException localInvocationTargetException)
+      {
+        throw new IllegalStateException(localInvocationTargetException);
+      }
+      catch (IllegalAccessException localIllegalAccessException)
+      {
+        throw new IllegalStateException(localIllegalAccessException);
+      }
+      catch (InstantiationException localInstantiationException)
+      {
+        throw new IllegalStateException(localInstantiationException);
+      }
+      catch (NoSuchMethodException localNoSuchMethodException)
+      {
+        throw new IllegalStateException(localNoSuchMethodException);
+      }
+    }
+    catch (ClassNotFoundException localClassNotFoundException)
+    {
+      ArrayList localArrayList;
+      for (;;) {}
+    }
+    localObject2 = ServiceLoader.load(zzvk.class, (ClassLoader)localObject2).iterator();
+    localArrayList = new ArrayList();
+    while (((Iterator)localObject2).hasNext()) {
+      try
+      {
+        localArrayList.add((zzuz)paramClass.cast(((zzvk)((Iterator)localObject2).next()).zzwa()));
+      }
+      catch (ServiceConfigurationError localServiceConfigurationError)
+      {
+        Logger localLogger = logger;
+        Level localLevel = Level.SEVERE;
+        String str = String.valueOf(paramClass.getSimpleName());
+        if (str.length() != 0) {
+          str = "Unable to load ".concat(str);
+        } else {
+          str = new String("Unable to load ");
+        }
+        localLogger.logp(localLevel, "com.google.protobuf.GeneratedExtensionRegistryLoader", "load", str, localServiceConfigurationError);
+      }
+    }
+    if (localArrayList.size() == 1) {
+      return (zzuz)localArrayList.get(0);
+    }
+    if (localArrayList.size() == 0) {
+      return null;
+    }
+    try
+    {
+      paramClass = (zzuz)paramClass.getMethod("combine", new Class[] { Collection.class }).invoke(null, new Object[] { localArrayList });
+      return paramClass;
+    }
+    catch (InvocationTargetException paramClass)
+    {
+      throw new IllegalStateException(paramClass);
+    }
+    catch (IllegalAccessException paramClass)
+    {
+      throw new IllegalStateException(paramClass);
+    }
+    catch (NoSuchMethodException paramClass)
+    {
+      throw new IllegalStateException(paramClass);
+    }
+    label349:
+    throw new IllegalArgumentException(paramClass.getName());
+  }
+  
+  protected abstract T zzwa();
+}

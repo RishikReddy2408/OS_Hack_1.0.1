@@ -1,0 +1,65 @@
+package com.google.android.gms.common.api.internal;
+
+import android.app.Activity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.internal.ApiExceptionUtil;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import java.util.concurrent.CancellationException;
+
+public class zabu
+  extends zal
+{
+  private TaskCompletionSource<Void> zajo = new TaskCompletionSource();
+  
+  private zabu(LifecycleFragment paramLifecycleFragment)
+  {
+    super(paramLifecycleFragment);
+    mLifecycleFragment.addCallback("GmsAvailabilityHelper", this);
+  }
+  
+  public static zabu zac(Activity paramActivity)
+  {
+    paramActivity = getFragment(paramActivity);
+    zabu localZabu = (zabu)paramActivity.getCallbackOrNull("GmsAvailabilityHelper", zabu.class);
+    if (localZabu != null)
+    {
+      if (zajo.getTask().isComplete()) {
+        zajo = new TaskCompletionSource();
+      }
+      return localZabu;
+    }
+    return new zabu(paramActivity);
+  }
+  
+  public final Task<Void> getTask()
+  {
+    return zajo.getTask();
+  }
+  
+  public void onDestroy()
+  {
+    super.onDestroy();
+    zajo.trySetException(new CancellationException("Host activity was destroyed before Google Play services could be made available."));
+  }
+  
+  protected final void zaa(ConnectionResult paramConnectionResult, int paramInt)
+  {
+    zajo.setException(ApiExceptionUtil.fromStatus(new Status(paramConnectionResult.getErrorCode(), paramConnectionResult.getErrorMessage(), paramConnectionResult.getResolution())));
+  }
+  
+  protected final void zao()
+  {
+    int i = zacc.isGooglePlayServicesAvailable(mLifecycleFragment.getLifecycleActivity());
+    if (i == 0)
+    {
+      zajo.setResult(null);
+      return;
+    }
+    if (!zajo.getTask().isComplete()) {
+      zab(new ConnectionResult(i, null), 0);
+    }
+  }
+}

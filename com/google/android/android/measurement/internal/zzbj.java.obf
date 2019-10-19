@@ -1,0 +1,119 @@
+package com.google.android.gms.measurement.internal;
+
+import android.content.BroadcastReceiver.PendingResult;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.MainThread;
+import com.google.android.gms.common.internal.Preconditions;
+
+public final class zzbj
+{
+  private final zzbm zzaoi;
+  
+  public zzbj(zzbm paramZzbm)
+  {
+    Preconditions.checkNotNull(paramZzbm);
+    zzaoi = paramZzbm;
+  }
+  
+  public static boolean zza(Context paramContext)
+  {
+    Preconditions.checkNotNull(paramContext);
+    try
+    {
+      PackageManager localPackageManager = paramContext.getPackageManager();
+      if (localPackageManager == null) {
+        return false;
+      }
+      paramContext = localPackageManager.getReceiverInfo(new ComponentName(paramContext, "com.google.android.gms.measurement.AppMeasurementReceiver"), 0);
+      if (paramContext != null)
+      {
+        boolean bool = enabled;
+        if (bool) {
+          return true;
+        }
+      }
+      return false;
+    }
+    catch (PackageManager.NameNotFoundException paramContext) {}
+    return false;
+  }
+  
+  @MainThread
+  public final void onReceive(Context paramContext, Intent paramIntent)
+  {
+    zzbt localZzbt = zzbt.zza(paramContext, null);
+    zzap localZzap = localZzbt.zzgo();
+    if (paramIntent == null)
+    {
+      localZzap.zzjg().zzbx("Receiver called with null intent");
+      return;
+    }
+    localZzbt.zzgr();
+    String str1 = paramIntent.getAction();
+    localZzap.zzjl().zzg("Local receiver got", str1);
+    if ("com.google.android.gms.measurement.UPLOAD".equals(str1))
+    {
+      paramIntent = new Intent().setClassName(paramContext, "com.google.android.gms.measurement.AppMeasurementService");
+      paramIntent.setAction("com.google.android.gms.measurement.UPLOAD");
+      localZzap.zzjl().zzbx("Starting wakeful intent.");
+      zzaoi.doStartService(paramContext, paramIntent);
+      return;
+    }
+    if ("com.android.vending.INSTALL_REFERRER".equals(str1))
+    {
+      try
+      {
+        localZzbt.zzgn().zzc(new zzbk(this, localZzbt, localZzap));
+      }
+      catch (Exception localException)
+      {
+        localZzap.zzjg().zzg("Install Referrer Reporter encountered a problem", localException);
+      }
+      BroadcastReceiver.PendingResult localPendingResult = zzaoi.doGoAsync();
+      String str2 = paramIntent.getStringExtra("referrer");
+      if (str2 == null)
+      {
+        localZzap.zzjl().zzbx("Install referrer extras are null");
+        if (localPendingResult != null) {
+          localPendingResult.finish();
+        }
+        return;
+      }
+      localZzap.zzjj().zzg("Install referrer extras are", str2);
+      Object localObject = str2;
+      if (!str2.contains("?"))
+      {
+        localObject = String.valueOf(str2);
+        if (((String)localObject).length() != 0) {
+          localObject = "?".concat((String)localObject);
+        } else {
+          localObject = new String("?");
+        }
+      }
+      localObject = Uri.parse((String)localObject);
+      localObject = localZzbt.zzgm().zza((Uri)localObject);
+      if (localObject == null)
+      {
+        localZzap.zzjl().zzbx("No campaign defined in install referrer broadcast");
+        if (localPendingResult != null) {
+          localPendingResult.finish();
+        }
+      }
+      else
+      {
+        long l = paramIntent.getLongExtra("referrer_timestamp_seconds", 0L) * 1000L;
+        if (l == 0L) {
+          localZzap.zzjg().zzbx("Install referrer is missing timestamp");
+        }
+        localZzbt.zzgn().zzc(new zzbl(this, localZzbt, l, (Bundle)localObject, paramContext, localZzap, localPendingResult));
+      }
+    }
+  }
+}

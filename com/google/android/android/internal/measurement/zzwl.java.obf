@@ -1,0 +1,18 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.IOException;
+
+public final class zzwl<K, V>
+{
+  static <K, V> int zza(zzwm<K, V> paramZzwm, K paramK, V paramV)
+  {
+    return zzvd.zza(zzcar, 1, paramK) + zzvd.zza(zzcat, 2, paramV);
+  }
+  
+  static <K, V> void zza(zzut paramZzut, zzwm<K, V> paramZzwm, K paramK, V paramV)
+    throws IOException
+  {
+    zzvd.zza(paramZzut, zzcar, 1, paramK);
+    zzvd.zza(paramZzut, zzcat, 2, paramV);
+  }
+}

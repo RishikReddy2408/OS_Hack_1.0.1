@@ -1,0 +1,21 @@
+package com.google.android.gms.dynamic;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+
+final class zaa
+  implements OnDelegateCreatedListener<T>
+{
+  zaa(DeferredLifecycleHelper paramDeferredLifecycleHelper) {}
+  
+  public final void onDelegateCreated(T paramT)
+  {
+    DeferredLifecycleHelper.zaa(zari, paramT);
+    paramT = DeferredLifecycleHelper.zaa(zari).iterator();
+    while (paramT.hasNext()) {
+      ((DeferredLifecycleHelper.zaa)paramT.next()).zaa(DeferredLifecycleHelper.zab(zari));
+    }
+    DeferredLifecycleHelper.zaa(zari).clear();
+    DeferredLifecycleHelper.zaa(zari, null);
+  }
+}

@@ -1,0 +1,129 @@
+package com.google.android.gms.internal.measurement;
+
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
+import android.net.Uri;
+import android.support.annotation.GuardedBy;
+import android.util.Log;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+public final class zzsi
+{
+  private static final Object zzbqp = new Object();
+  @GuardedBy("loadersLock")
+  private static final Map<Uri, zzsi> zzbqq = new HashMap();
+  private static final String[] zzbqw = { "key", "value" };
+  private final Uri uri;
+  private final ContentResolver zzbqr;
+  private final Object zzbqs = new Object();
+  private volatile Map<String, String> zzbqt;
+  private final Object zzbqu = new Object();
+  @GuardedBy("listenersLock")
+  private final List<zzsk> zzbqv = new ArrayList();
+  
+  private zzsi(ContentResolver paramContentResolver, Uri paramUri)
+  {
+    zzbqr = paramContentResolver;
+    uri = paramUri;
+    zzbqr.registerContentObserver(paramUri, false, new zzsj(this, null));
+  }
+  
+  public static zzsi zza(ContentResolver paramContentResolver, Uri paramUri)
+  {
+    synchronized (zzbqp)
+    {
+      zzsi localZzsi2 = (zzsi)zzbqq.get(paramUri);
+      zzsi localZzsi1 = localZzsi2;
+      if (localZzsi2 == null)
+      {
+        localZzsi1 = new zzsi(paramContentResolver, paramUri);
+        zzbqq.put(paramUri, localZzsi1);
+      }
+      return localZzsi1;
+    }
+  }
+  
+  private final Map<String, String> zztb()
+  {
+    try
+    {
+      HashMap localHashMap = new HashMap();
+      Cursor localCursor = zzbqr.query(uri, zzbqw, null, null, null);
+      if (localCursor != null) {
+        try
+        {
+          while (localCursor.moveToNext()) {
+            localHashMap.put(localCursor.getString(0), localCursor.getString(1));
+          }
+          return localHashMap;
+        }
+        finally
+        {
+          localCursor.close();
+        }
+      }
+      return localMap;
+    }
+    catch (SecurityException|SQLiteException localSecurityException)
+    {
+      for (;;) {}
+    }
+    Log.e("ConfigurationContentLoader", "PhenotypeFlag unable to load ContentProvider, using default values");
+    return null;
+  }
+  
+  private final void zztc()
+  {
+    synchronized (zzbqu)
+    {
+      Iterator localIterator = zzbqv.iterator();
+      while (localIterator.hasNext()) {
+        ((zzsk)localIterator.next()).zztd();
+      }
+      return;
+    }
+  }
+  
+  public final Map<String, String> zzsz()
+  {
+    Object localObject1;
+    if (zzsl.zzd("gms:phenotype:phenotype_flag:debug_disable_caching", false)) {
+      localObject1 = zztb();
+    } else {
+      localObject1 = zzbqt;
+    }
+    Object localObject3 = localObject1;
+    if (localObject1 == null) {
+      synchronized (zzbqs)
+      {
+        localObject3 = zzbqt;
+        localObject1 = localObject3;
+        if (localObject3 == null)
+        {
+          localObject1 = zztb();
+          zzbqt = ((Map)localObject1);
+        }
+        localObject3 = localObject1;
+      }
+    }
+    if (localObject3 != null) {
+      return localObject3;
+    }
+    return Collections.emptyMap();
+  }
+  
+  public final void zzta()
+  {
+    synchronized (zzbqs)
+    {
+      zzbqt = null;
+      return;
+    }
+  }
+}

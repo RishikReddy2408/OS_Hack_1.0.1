@@ -1,0 +1,245 @@
+package android.support.constraint.utils;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.support.constraint.R.styleable;
+import android.support.v7.widget.AppCompatImageView;
+import android.util.AttributeSet;
+
+public class ImageFilterView
+  extends AppCompatImageView
+{
+  float[] m = new float[20];
+  ColorMatrix mColorMatrix = new ColorMatrix();
+  private float mContrast = 1.0F;
+  private float mCrossfade = 0.0F;
+  LayerDrawable mLayer;
+  Drawable[] mLayers;
+  private float mSaturation = 1.0F;
+  ColorMatrix mTmpColorMatrix = new ColorMatrix();
+  private float mWarmth = 1.0F;
+  
+  public ImageFilterView(Context paramContext)
+  {
+    super(paramContext);
+    init(paramContext, null);
+  }
+  
+  public ImageFilterView(Context paramContext, AttributeSet paramAttributeSet)
+  {
+    super(paramContext, paramAttributeSet);
+    init(paramContext, paramAttributeSet);
+  }
+  
+  public ImageFilterView(Context paramContext, AttributeSet paramAttributeSet, int paramInt)
+  {
+    super(paramContext, paramAttributeSet, paramInt);
+    init(paramContext, paramAttributeSet);
+  }
+  
+  private void init(Context paramContext, AttributeSet paramAttributeSet)
+  {
+    if (paramAttributeSet != null)
+    {
+      paramContext = getContext().obtainStyledAttributes(paramAttributeSet, R.styleable.ImageFilterView);
+      int j = paramContext.getIndexCount();
+      paramAttributeSet = paramContext.getDrawable(R.styleable.ImageFilterView_altSrc);
+      int i = 0;
+      while (i < j)
+      {
+        int k = paramContext.getIndex(i);
+        if (k == R.styleable.ImageFilterView_crossfade) {
+          mCrossfade = paramContext.getFloat(k, 0.0F);
+        }
+        i += 1;
+      }
+      paramContext.recycle();
+      if (paramAttributeSet != null)
+      {
+        mLayers = new Drawable[2];
+        mLayers[0] = getDrawable();
+        mLayers[1] = paramAttributeSet;
+        mLayer = new LayerDrawable(mLayers);
+        mLayer.getDrawable(1).setAlpha((int)(mCrossfade * 255.0F));
+        super.setImageDrawable(mLayer);
+      }
+    }
+  }
+  
+  private void saturation(float paramFloat)
+  {
+    float f3 = 1.0F - paramFloat;
+    float f1 = 0.2999F * f3;
+    float f2 = 0.587F * f3;
+    f3 *= 0.114F;
+    m[0] = (f1 + paramFloat);
+    m[1] = f2;
+    m[2] = f3;
+    m[3] = 0.0F;
+    m[4] = 0.0F;
+    m[5] = f1;
+    m[6] = (f2 + paramFloat);
+    m[7] = f3;
+    m[8] = 0.0F;
+    m[9] = 0.0F;
+    m[10] = f1;
+    m[11] = f2;
+    m[12] = (f3 + paramFloat);
+    m[13] = 0.0F;
+    m[14] = 0.0F;
+    m[15] = 0.0F;
+    m[16] = 0.0F;
+    m[17] = 0.0F;
+    m[18] = 1.0F;
+    m[19] = 0.0F;
+  }
+  
+  private void updateMatrix()
+  {
+    mColorMatrix.reset();
+    int i;
+    if (mSaturation != 1.0F)
+    {
+      saturation(mSaturation);
+      mColorMatrix.set(m);
+      i = 1;
+    }
+    else
+    {
+      i = 0;
+    }
+    if (mContrast != 1.0F)
+    {
+      mTmpColorMatrix.setScale(mContrast, mContrast, mContrast, 1.0F);
+      mColorMatrix.postConcat(mTmpColorMatrix);
+      i = 1;
+    }
+    if (mWarmth != 1.0F)
+    {
+      warmth(mWarmth);
+      mTmpColorMatrix.set(m);
+      mColorMatrix.postConcat(mTmpColorMatrix);
+      i = 1;
+    }
+    if (i != 0)
+    {
+      setColorFilter(new ColorMatrixColorFilter(mColorMatrix));
+      return;
+    }
+    clearColorFilter();
+  }
+  
+  private void warmth(float paramFloat)
+  {
+    float f1 = paramFloat;
+    if (paramFloat <= 0.0F) {
+      f1 = 0.01F;
+    }
+    paramFloat = 5000.0F / f1 / 100.0F;
+    if (paramFloat > 66.0F)
+    {
+      double d = paramFloat - 60.0F;
+      f2 = (float)Math.pow(d, -0.13320475816726685D) * 329.69873F;
+      f1 = (float)Math.pow(d, 0.07551484555006027D) * 288.12216F;
+    }
+    else
+    {
+      f1 = (float)Math.log(paramFloat) * 99.4708F - 161.11957F;
+      f2 = 255.0F;
+    }
+    if (paramFloat < 66.0F)
+    {
+      if (paramFloat > 19.0F) {
+        paramFloat = (float)Math.log(paramFloat - 10.0F) * 138.51773F - 305.0448F;
+      } else {
+        paramFloat = 0.0F;
+      }
+    }
+    else {
+      paramFloat = 255.0F;
+    }
+    float f2 = Math.min(255.0F, Math.max(f2, 0.0F));
+    f1 = Math.min(255.0F, Math.max(f1, 0.0F));
+    paramFloat = Math.min(255.0F, Math.max(paramFloat, 0.0F));
+    float f4 = (float)Math.log(50.0F);
+    float f5 = (float)Math.log(40.0F);
+    float f3 = Math.min(255.0F, Math.max(255.0F, 0.0F));
+    f4 = Math.min(255.0F, Math.max(f4 * 99.4708F - 161.11957F, 0.0F));
+    f5 = Math.min(255.0F, Math.max(f5 * 138.51773F - 305.0448F, 0.0F));
+    f2 /= f3;
+    f1 /= f4;
+    paramFloat /= f5;
+    m[0] = f2;
+    m[1] = 0.0F;
+    m[2] = 0.0F;
+    m[3] = 0.0F;
+    m[4] = 0.0F;
+    m[5] = 0.0F;
+    m[6] = f1;
+    m[7] = 0.0F;
+    m[8] = 0.0F;
+    m[9] = 0.0F;
+    m[10] = 0.0F;
+    m[11] = 0.0F;
+    m[12] = paramFloat;
+    m[13] = 0.0F;
+    m[14] = 0.0F;
+    m[15] = 0.0F;
+    m[16] = 0.0F;
+    m[17] = 0.0F;
+    m[18] = 1.0F;
+    m[19] = 0.0F;
+  }
+  
+  public float getContrast()
+  {
+    return mContrast;
+  }
+  
+  public float getCrossfade()
+  {
+    return mCrossfade;
+  }
+  
+  public float getSaturation()
+  {
+    return mSaturation;
+  }
+  
+  public float getWarmth()
+  {
+    return mWarmth;
+  }
+  
+  public void setContrast(float paramFloat)
+  {
+    mContrast = paramFloat;
+    updateMatrix();
+  }
+  
+  public void setCrossfade(float paramFloat)
+  {
+    mCrossfade = paramFloat;
+    if (mLayers != null)
+    {
+      mLayer.getDrawable(1).setAlpha((int)(mCrossfade * 255.0F));
+      super.setImageDrawable(mLayer);
+    }
+  }
+  
+  public void setSaturation(float paramFloat)
+  {
+    mSaturation = paramFloat;
+    updateMatrix();
+  }
+  
+  public void setWarmth(float paramFloat)
+  {
+    mWarmth = paramFloat;
+    updateMatrix();
+  }
+}

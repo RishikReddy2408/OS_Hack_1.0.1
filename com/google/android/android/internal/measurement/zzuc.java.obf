@@ -1,0 +1,11 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.IOException;
+
+public abstract class zzuc
+{
+  public zzuc() {}
+  
+  public abstract void zza(byte[] paramArrayOfByte, int paramInt1, int paramInt2)
+    throws IOException;
+}

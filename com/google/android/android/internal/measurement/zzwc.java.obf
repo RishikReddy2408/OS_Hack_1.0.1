@@ -1,0 +1,15 @@
+package com.google.android.gms.internal.measurement;
+
+import java.util.List;
+
+public abstract interface zzwc
+  extends List
+{
+  public abstract Object getRaw(int paramInt);
+  
+  public abstract void zzc(zzud paramZzud);
+  
+  public abstract List<?> zzwv();
+  
+  public abstract zzwc zzww();
+}

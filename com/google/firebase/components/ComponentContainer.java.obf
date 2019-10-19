@@ -1,0 +1,14 @@
+package com.google.firebase.components;
+
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.firebase.inject.Provider;
+
+@KeepForSdk
+public abstract interface ComponentContainer
+{
+  @KeepForSdk
+  public abstract <T> T get(Class<T> paramClass);
+  
+  @KeepForSdk
+  public abstract <T> Provider<T> getProvider(Class<T> paramClass);
+}

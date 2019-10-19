@@ -1,0 +1,66 @@
+package com.google.android.gms.internal.measurement;
+
+import java.util.ArrayList;
+import java.util.List;
+
+final class zzxg<E>
+  extends zztz<E>
+{
+  private static final zzxg<Object> zzcbv;
+  private final List<E> zzcai;
+  
+  static
+  {
+    zzxg localZzxg = new zzxg();
+    zzcbv = localZzxg;
+    localZzxg.zzsm();
+  }
+  
+  zzxg()
+  {
+    this(new ArrayList(10));
+  }
+  
+  private zzxg(List<E> paramList)
+  {
+    zzcai = paramList;
+  }
+  
+  public static <E> zzxg<E> zzxo()
+  {
+    return zzcbv;
+  }
+  
+  public final void add(int paramInt, E paramE)
+  {
+    zztx();
+    zzcai.add(paramInt, paramE);
+    modCount += 1;
+  }
+  
+  public final E get(int paramInt)
+  {
+    return zzcai.get(paramInt);
+  }
+  
+  public final E remove(int paramInt)
+  {
+    zztx();
+    Object localObject = zzcai.remove(paramInt);
+    modCount += 1;
+    return localObject;
+  }
+  
+  public final E set(int paramInt, E paramE)
+  {
+    zztx();
+    paramE = zzcai.set(paramInt, paramE);
+    modCount += 1;
+    return paramE;
+  }
+  
+  public final int size()
+  {
+    return zzcai.size();
+  }
+}

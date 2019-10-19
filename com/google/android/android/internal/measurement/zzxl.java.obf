@@ -1,0 +1,783 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.util.Iterator;
+import java.util.List;
+import java.util.RandomAccess;
+
+final class zzxl
+{
+  private static final Class<?> zzcbw = ;
+  private static final zzyb<?, ?> zzcbx = zzx(false);
+  private static final zzyb<?, ?> zzcby = zzx(true);
+  private static final zzyb<?, ?> zzcbz = new zzyd();
+  
+  static <UT, UB> UB zza(int paramInt1, int paramInt2, UB paramUB, zzyb<UT, UB> paramZzyb)
+  {
+    Object localObject = paramUB;
+    if (paramUB == null) {
+      localObject = paramZzyb.zzye();
+    }
+    paramZzyb.zza(localObject, paramInt1, paramInt2);
+    return localObject;
+  }
+  
+  static <UT, UB> UB zza(int paramInt, List<Integer> paramList, zzvr paramZzvr, UB paramUB, zzyb<UT, UB> paramZzyb)
+  {
+    if (paramZzvr == null) {
+      return paramUB;
+    }
+    int i;
+    UB ?;
+    if ((paramList instanceof RandomAccess))
+    {
+      int k = paramList.size();
+      i = 0;
+      int j = 0;
+      while (i < k)
+      {
+        int m = ((Integer)paramList.get(i)).intValue();
+        if (paramZzvr.zzb(m))
+        {
+          if (i != j) {
+            paramList.set(j, Integer.valueOf(m));
+          }
+          j += 1;
+        }
+        else
+        {
+          paramUB = zza(paramInt, m, paramUB, paramZzyb);
+        }
+        i += 1;
+      }
+      ? = paramUB;
+      if (j != k)
+      {
+        paramList.subList(j, k).clear();
+        return paramUB;
+      }
+    }
+    else
+    {
+      paramList = paramList.iterator();
+      for (;;)
+      {
+        ? = paramUB;
+        if (!paramList.hasNext()) {
+          break;
+        }
+        i = ((Integer)paramList.next()).intValue();
+        if (!paramZzvr.zzb(i))
+        {
+          paramUB = zza(paramInt, i, paramUB, paramZzyb);
+          paramList.remove();
+        }
+      }
+    }
+    return ?;
+  }
+  
+  public static void zza(int paramInt, List<String> paramList, zzyw paramZzyw)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zza(paramInt, paramList);
+    }
+  }
+  
+  public static void zza(int paramInt, List<?> paramList, zzyw paramZzyw, zzxj paramZzxj)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zza(paramInt, paramList, paramZzxj);
+    }
+  }
+  
+  public static void zza(int paramInt, List<Double> paramList, zzyw paramZzyw, boolean paramBoolean)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zzg(paramInt, paramList, paramBoolean);
+    }
+  }
+  
+  static <T, FT extends zzvf<FT>> void zza(zzva<FT> paramZzva, T paramT1, T paramT2)
+  {
+    paramT2 = paramZzva.zzs(paramT2);
+    if (!paramT2.isEmpty()) {
+      paramZzva.zzt(paramT1).zza(paramT2);
+    }
+  }
+  
+  static <T> void zza(zzwo paramZzwo, T paramT1, T paramT2, long paramLong)
+  {
+    zzyh.zza(paramT1, paramLong, paramZzwo.zzc(zzyh.zzp(paramT1, paramLong), zzyh.zzp(paramT2, paramLong)));
+  }
+  
+  static <T, UT, UB> void zza(zzyb<UT, UB> paramZzyb, T paramT1, T paramT2)
+  {
+    paramZzyb.zzf(paramT1, paramZzyb.zzh(paramZzyb.zzah(paramT1), paramZzyb.zzah(paramT2)));
+  }
+  
+  static int zzaa(List<Integer> paramList)
+  {
+    int m = paramList.size();
+    int j = 0;
+    int k = 0;
+    if (m == 0) {
+      return 0;
+    }
+    if ((paramList instanceof zzvn))
+    {
+      paramList = (zzvn)paramList;
+      i = 0;
+      for (;;)
+      {
+        j = i;
+        if (k >= m) {
+          break;
+        }
+        i += zzut.zzbh(paramList.getInt(k));
+        k += 1;
+      }
+    }
+    int i = 0;
+    k = j;
+    for (;;)
+    {
+      j = i;
+      if (k >= m) {
+        break;
+      }
+      i += zzut.zzbh(((Integer)paramList.get(k)).intValue());
+      k += 1;
+    }
+    return j;
+  }
+  
+  static int zzab(List<Integer> paramList)
+  {
+    int m = paramList.size();
+    int j = 0;
+    int k = 0;
+    if (m == 0) {
+      return 0;
+    }
+    if ((paramList instanceof zzvn))
+    {
+      paramList = (zzvn)paramList;
+      i = 0;
+      for (;;)
+      {
+        j = i;
+        if (k >= m) {
+          break;
+        }
+        i += zzut.zzbc(paramList.getInt(k));
+        k += 1;
+      }
+    }
+    int i = 0;
+    k = j;
+    for (;;)
+    {
+      j = i;
+      if (k >= m) {
+        break;
+      }
+      i += zzut.zzbc(((Integer)paramList.get(k)).intValue());
+      k += 1;
+    }
+    return j;
+  }
+  
+  static int zzac(List<Integer> paramList)
+  {
+    int m = paramList.size();
+    int j = 0;
+    int k = 0;
+    if (m == 0) {
+      return 0;
+    }
+    if ((paramList instanceof zzvn))
+    {
+      paramList = (zzvn)paramList;
+      i = 0;
+      for (;;)
+      {
+        j = i;
+        if (k >= m) {
+          break;
+        }
+        i += zzut.zzbd(paramList.getInt(k));
+        k += 1;
+      }
+    }
+    int i = 0;
+    k = j;
+    for (;;)
+    {
+      j = i;
+      if (k >= m) {
+        break;
+      }
+      i += zzut.zzbd(((Integer)paramList.get(k)).intValue());
+      k += 1;
+    }
+    return j;
+  }
+  
+  static int zzad(List<Integer> paramList)
+  {
+    int m = paramList.size();
+    int j = 0;
+    int k = 0;
+    if (m == 0) {
+      return 0;
+    }
+    if ((paramList instanceof zzvn))
+    {
+      paramList = (zzvn)paramList;
+      i = 0;
+      for (;;)
+      {
+        j = i;
+        if (k >= m) {
+          break;
+        }
+        i += zzut.zzbe(paramList.getInt(k));
+        k += 1;
+      }
+    }
+    int i = 0;
+    k = j;
+    for (;;)
+    {
+      j = i;
+      if (k >= m) {
+        break;
+      }
+      i += zzut.zzbe(((Integer)paramList.get(k)).intValue());
+      k += 1;
+    }
+    return j;
+  }
+  
+  static int zzae(List<?> paramList)
+  {
+    return paramList.size() << 2;
+  }
+  
+  static int zzaf(List<?> paramList)
+  {
+    return paramList.size() << 3;
+  }
+  
+  static int zzag(List<?> paramList)
+  {
+    return paramList.size();
+  }
+  
+  public static void zzb(int paramInt, List<zzud> paramList, zzyw paramZzyw)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zzb(paramInt, paramList);
+    }
+  }
+  
+  public static void zzb(int paramInt, List<?> paramList, zzyw paramZzyw, zzxj paramZzxj)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zzb(paramInt, paramList, paramZzxj);
+    }
+  }
+  
+  public static void zzb(int paramInt, List<Float> paramList, zzyw paramZzyw, boolean paramBoolean)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zzf(paramInt, paramList, paramBoolean);
+    }
+  }
+  
+  static int zzc(int paramInt, Object paramObject, zzxj paramZzxj)
+  {
+    if ((paramObject instanceof zzwa)) {
+      return zzut.zza(paramInt, (zzwa)paramObject);
+    }
+    return zzut.zzb(paramInt, (zzwt)paramObject, paramZzxj);
+  }
+  
+  static int zzc(int paramInt, List<?> paramList)
+  {
+    int m = paramList.size();
+    int i = 0;
+    int k = 0;
+    if (m == 0) {
+      return 0;
+    }
+    int j = zzut.zzbb(paramInt) * m;
+    paramInt = j;
+    Object localObject;
+    if ((paramList instanceof zzwc))
+    {
+      paramList = (zzwc)paramList;
+      paramInt = j;
+      i = k;
+      for (;;)
+      {
+        j = paramInt;
+        if (i >= m) {
+          break;
+        }
+        localObject = paramList.getRaw(i);
+        if ((localObject instanceof zzud)) {
+          paramInt += zzut.zzb((zzud)localObject);
+        } else {
+          paramInt += zzut.zzfx((String)localObject);
+        }
+        i += 1;
+      }
+    }
+    for (;;)
+    {
+      j = paramInt;
+      if (i >= m) {
+        break;
+      }
+      localObject = paramList.get(i);
+      if ((localObject instanceof zzud)) {
+        paramInt += zzut.zzb((zzud)localObject);
+      } else {
+        paramInt += zzut.zzfx((String)localObject);
+      }
+      i += 1;
+    }
+    return j;
+  }
+  
+  static int zzc(int paramInt, List<?> paramList, zzxj paramZzxj)
+  {
+    int j = paramList.size();
+    int i = 0;
+    if (j == 0) {
+      return 0;
+    }
+    paramInt = zzut.zzbb(paramInt) * j;
+    while (i < j)
+    {
+      Object localObject = paramList.get(i);
+      if ((localObject instanceof zzwa)) {
+        paramInt += zzut.zza((zzwa)localObject);
+      } else {
+        paramInt += zzut.zzb((zzwt)localObject, paramZzxj);
+      }
+      i += 1;
+    }
+    return paramInt;
+  }
+  
+  public static void zzc(int paramInt, List<Long> paramList, zzyw paramZzyw, boolean paramBoolean)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zzc(paramInt, paramList, paramBoolean);
+    }
+  }
+  
+  static int zzd(int paramInt, List<zzud> paramList)
+  {
+    int j = paramList.size();
+    int i = 0;
+    if (j == 0) {
+      return 0;
+    }
+    j *= zzut.zzbb(paramInt);
+    paramInt = i;
+    i = j;
+    while (paramInt < paramList.size())
+    {
+      i += zzut.zzb((zzud)paramList.get(paramInt));
+      paramInt += 1;
+    }
+    return i;
+  }
+  
+  static int zzd(int paramInt, List<zzwt> paramList, zzxj paramZzxj)
+  {
+    int k = paramList.size();
+    int i = 0;
+    if (k == 0) {
+      return 0;
+    }
+    int j = 0;
+    while (i < k)
+    {
+      j += zzut.zzc(paramInt, (zzwt)paramList.get(i), paramZzxj);
+      i += 1;
+    }
+    return j;
+  }
+  
+  public static void zzd(int paramInt, List<Long> paramList, zzyw paramZzyw, boolean paramBoolean)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zzd(paramInt, paramList, paramBoolean);
+    }
+  }
+  
+  public static void zze(int paramInt, List<Long> paramList, zzyw paramZzyw, boolean paramBoolean)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zzn(paramInt, paramList, paramBoolean);
+    }
+  }
+  
+  static boolean zze(Object paramObject1, Object paramObject2)
+  {
+    return (paramObject1 == paramObject2) || ((paramObject1 != null) && (paramObject1.equals(paramObject2)));
+  }
+  
+  public static void zzf(int paramInt, List<Long> paramList, zzyw paramZzyw, boolean paramBoolean)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zze(paramInt, paramList, paramBoolean);
+    }
+  }
+  
+  public static void zzg(int paramInt, List<Long> paramList, zzyw paramZzyw, boolean paramBoolean)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zzl(paramInt, paramList, paramBoolean);
+    }
+  }
+  
+  public static void zzh(int paramInt, List<Integer> paramList, zzyw paramZzyw, boolean paramBoolean)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zza(paramInt, paramList, paramBoolean);
+    }
+  }
+  
+  public static void zzi(int paramInt, List<Integer> paramList, zzyw paramZzyw, boolean paramBoolean)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zzj(paramInt, paramList, paramBoolean);
+    }
+  }
+  
+  public static void zzj(int paramInt, List<Integer> paramList, zzyw paramZzyw, boolean paramBoolean)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zzm(paramInt, paramList, paramBoolean);
+    }
+  }
+  
+  public static void zzj(Class<?> paramClass)
+  {
+    if ((!zzvm.class.isAssignableFrom(paramClass)) && (zzcbw != null))
+    {
+      if (zzcbw.isAssignableFrom(paramClass)) {
+        return;
+      }
+      throw new IllegalArgumentException("Message classes must extend GeneratedMessage or GeneratedMessageLite");
+    }
+  }
+  
+  public static void zzk(int paramInt, List<Integer> paramList, zzyw paramZzyw, boolean paramBoolean)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zzb(paramInt, paramList, paramBoolean);
+    }
+  }
+  
+  public static void zzl(int paramInt, List<Integer> paramList, zzyw paramZzyw, boolean paramBoolean)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zzk(paramInt, paramList, paramBoolean);
+    }
+  }
+  
+  public static void zzm(int paramInt, List<Integer> paramList, zzyw paramZzyw, boolean paramBoolean)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zzh(paramInt, paramList, paramBoolean);
+    }
+  }
+  
+  public static void zzn(int paramInt, List<Boolean> paramList, zzyw paramZzyw, boolean paramBoolean)
+    throws IOException
+  {
+    if ((paramList != null) && (!paramList.isEmpty())) {
+      paramZzyw.zzi(paramInt, paramList, paramBoolean);
+    }
+  }
+  
+  static int zzo(int paramInt, List<Long> paramList, boolean paramBoolean)
+  {
+    if (paramList.size() == 0) {
+      return 0;
+    }
+    return zzx(paramList) + paramList.size() * zzut.zzbb(paramInt);
+  }
+  
+  static int zzp(int paramInt, List<Long> paramList, boolean paramBoolean)
+  {
+    int i = paramList.size();
+    if (i == 0) {
+      return 0;
+    }
+    return zzy(paramList) + i * zzut.zzbb(paramInt);
+  }
+  
+  static int zzq(int paramInt, List<Long> paramList, boolean paramBoolean)
+  {
+    int i = paramList.size();
+    if (i == 0) {
+      return 0;
+    }
+    return zzz(paramList) + i * zzut.zzbb(paramInt);
+  }
+  
+  static int zzr(int paramInt, List<Integer> paramList, boolean paramBoolean)
+  {
+    int i = paramList.size();
+    if (i == 0) {
+      return 0;
+    }
+    return zzaa(paramList) + i * zzut.zzbb(paramInt);
+  }
+  
+  static int zzs(int paramInt, List<Integer> paramList, boolean paramBoolean)
+  {
+    int i = paramList.size();
+    if (i == 0) {
+      return 0;
+    }
+    return zzab(paramList) + i * zzut.zzbb(paramInt);
+  }
+  
+  static int zzt(int paramInt, List<Integer> paramList, boolean paramBoolean)
+  {
+    int i = paramList.size();
+    if (i == 0) {
+      return 0;
+    }
+    return zzac(paramList) + i * zzut.zzbb(paramInt);
+  }
+  
+  static int zzu(int paramInt, List<Integer> paramList, boolean paramBoolean)
+  {
+    int i = paramList.size();
+    if (i == 0) {
+      return 0;
+    }
+    return zzad(paramList) + i * zzut.zzbb(paramInt);
+  }
+  
+  static int zzv(int paramInt, List<?> paramList, boolean paramBoolean)
+  {
+    int i = paramList.size();
+    if (i == 0) {
+      return 0;
+    }
+    return i * zzut.zzk(paramInt, 0);
+  }
+  
+  static int zzw(int paramInt, List<?> paramList, boolean paramBoolean)
+  {
+    int i = paramList.size();
+    if (i == 0) {
+      return 0;
+    }
+    return i * zzut.zzg(paramInt, 0L);
+  }
+  
+  static int zzx(int paramInt, List<?> paramList, boolean paramBoolean)
+  {
+    int i = paramList.size();
+    if (i == 0) {
+      return 0;
+    }
+    return i * zzut.zzc(paramInt, true);
+  }
+  
+  static int zzx(List<Long> paramList)
+  {
+    int m = paramList.size();
+    int j = 0;
+    int k = 0;
+    if (m == 0) {
+      return 0;
+    }
+    if ((paramList instanceof zzwh))
+    {
+      paramList = (zzwh)paramList;
+      i = 0;
+      for (;;)
+      {
+        j = i;
+        if (k >= m) {
+          break;
+        }
+        i += zzut.zzay(paramList.getLong(k));
+        k += 1;
+      }
+    }
+    int i = 0;
+    k = j;
+    for (;;)
+    {
+      j = i;
+      if (k >= m) {
+        break;
+      }
+      i += zzut.zzay(((Long)paramList.get(k)).longValue());
+      k += 1;
+    }
+    return j;
+  }
+  
+  private static zzyb<?, ?> zzx(boolean paramBoolean)
+  {
+    try
+    {
+      Object localObject = zzxv();
+      if (localObject == null) {
+        return null;
+      }
+      localObject = (zzyb)((Class)localObject).getConstructor(new Class[] { Boolean.TYPE }).newInstance(new Object[] { Boolean.valueOf(paramBoolean) });
+      return localObject;
+    }
+    catch (Throwable localThrowable) {}
+    return null;
+  }
+  
+  public static zzyb<?, ?> zzxr()
+  {
+    return zzcbx;
+  }
+  
+  public static zzyb<?, ?> zzxs()
+  {
+    return zzcby;
+  }
+  
+  public static zzyb<?, ?> zzxt()
+  {
+    return zzcbz;
+  }
+  
+  private static Class<?> zzxu()
+  {
+    try
+    {
+      Class localClass = Class.forName("com.google.protobuf.GeneratedMessage");
+      return localClass;
+    }
+    catch (Throwable localThrowable)
+    {
+      for (;;) {}
+    }
+    return null;
+  }
+  
+  private static Class<?> zzxv()
+  {
+    try
+    {
+      Class localClass = Class.forName("com.google.protobuf.UnknownFieldSetSchema");
+      return localClass;
+    }
+    catch (Throwable localThrowable)
+    {
+      for (;;) {}
+    }
+    return null;
+  }
+  
+  static int zzy(List<Long> paramList)
+  {
+    int m = paramList.size();
+    int j = 0;
+    int k = 0;
+    if (m == 0) {
+      return 0;
+    }
+    if ((paramList instanceof zzwh))
+    {
+      paramList = (zzwh)paramList;
+      i = 0;
+      for (;;)
+      {
+        j = i;
+        if (k >= m) {
+          break;
+        }
+        i += zzut.zzaz(paramList.getLong(k));
+        k += 1;
+      }
+    }
+    int i = 0;
+    k = j;
+    for (;;)
+    {
+      j = i;
+      if (k >= m) {
+        break;
+      }
+      i += zzut.zzaz(((Long)paramList.get(k)).longValue());
+      k += 1;
+    }
+    return j;
+  }
+  
+  static int zzz(List<Long> paramList)
+  {
+    int m = paramList.size();
+    int j = 0;
+    int k = 0;
+    if (m == 0) {
+      return 0;
+    }
+    if ((paramList instanceof zzwh))
+    {
+      paramList = (zzwh)paramList;
+      i = 0;
+      for (;;)
+      {
+        j = i;
+        if (k >= m) {
+          break;
+        }
+        i += zzut.zzba(paramList.getLong(k));
+        k += 1;
+      }
+    }
+    int i = 0;
+    k = j;
+    for (;;)
+    {
+      j = i;
+      if (k >= m) {
+        break;
+      }
+      i += zzut.zzba(((Long)paramList.get(k)).longValue());
+      k += 1;
+    }
+    return j;
+  }
+}

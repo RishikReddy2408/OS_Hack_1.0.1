@@ -1,0 +1,35 @@
+package com.google.android.gms.internal.measurement;
+
+import android.util.Log;
+
+final class zzsp
+  extends zzsl<Long>
+{
+  zzsp(zzsv paramZzsv, String paramString, Long paramLong)
+  {
+    super(paramZzsv, paramString, paramLong, null);
+  }
+  
+  private final Long zzfk(String paramString)
+  {
+    try
+    {
+      long l = Long.parseLong(paramString);
+      return Long.valueOf(l);
+    }
+    catch (NumberFormatException localNumberFormatException)
+    {
+      String str;
+      StringBuilder localStringBuilder;
+      for (;;) {}
+    }
+    str = zzbrc;
+    localStringBuilder = new StringBuilder(String.valueOf(str).length() + 25 + String.valueOf(paramString).length());
+    localStringBuilder.append("Invalid long value for ");
+    localStringBuilder.append(str);
+    localStringBuilder.append(": ");
+    localStringBuilder.append(paramString);
+    Log.e("PhenotypeFlag", localStringBuilder.toString());
+    return null;
+  }
+}

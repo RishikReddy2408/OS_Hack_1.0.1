@@ -1,0 +1,399 @@
+package com.google.android.gms.tasks;
+
+import android.app.Activity;
+import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import com.google.android.gms.common.api.internal.LifecycleCallback;
+import com.google.android.gms.common.api.internal.LifecycleFragment;
+import com.google.android.gms.common.internal.Preconditions;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.Executor;
+import javax.annotation.concurrent.GuardedBy;
+
+final class zzu<TResult>
+  extends Task<TResult>
+{
+  private final Object mLock = new Object();
+  @GuardedBy("mLock")
+  private TResult zzaa;
+  @GuardedBy("mLock")
+  private Exception zzab;
+  private final zzr<TResult> zzx = new zzr();
+  @GuardedBy("mLock")
+  private boolean zzy;
+  private volatile boolean zzz;
+  
+  zzu() {}
+  
+  @GuardedBy("mLock")
+  private final void zzb()
+  {
+    Preconditions.checkState(zzy, "Task is not yet complete");
+  }
+  
+  @GuardedBy("mLock")
+  private final void zzc()
+  {
+    Preconditions.checkState(zzy ^ true, "Task is already complete");
+  }
+  
+  @GuardedBy("mLock")
+  private final void zzd()
+  {
+    if (!zzz) {
+      return;
+    }
+    throw new CancellationException("Task is already canceled.");
+  }
+  
+  private final void zze()
+  {
+    synchronized (mLock)
+    {
+      if (!zzy) {
+        return;
+      }
+      zzx.zza(this);
+      return;
+    }
+  }
+  
+  @NonNull
+  public final Task<TResult> addOnCanceledListener(@NonNull Activity paramActivity, @NonNull OnCanceledListener paramOnCanceledListener)
+  {
+    paramOnCanceledListener = new zzg(TaskExecutors.MAIN_THREAD, paramOnCanceledListener);
+    zzx.zza(paramOnCanceledListener);
+    zza.zza(paramActivity).zzb(paramOnCanceledListener);
+    zze();
+    return this;
+  }
+  
+  @NonNull
+  public final Task<TResult> addOnCanceledListener(@NonNull OnCanceledListener paramOnCanceledListener)
+  {
+    return addOnCanceledListener(TaskExecutors.MAIN_THREAD, paramOnCanceledListener);
+  }
+  
+  @NonNull
+  public final Task<TResult> addOnCanceledListener(@NonNull Executor paramExecutor, @NonNull OnCanceledListener paramOnCanceledListener)
+  {
+    zzx.zza(new zzg(paramExecutor, paramOnCanceledListener));
+    zze();
+    return this;
+  }
+  
+  @NonNull
+  public final Task<TResult> addOnCompleteListener(@NonNull Activity paramActivity, @NonNull OnCompleteListener<TResult> paramOnCompleteListener)
+  {
+    paramOnCompleteListener = new zzi(TaskExecutors.MAIN_THREAD, paramOnCompleteListener);
+    zzx.zza(paramOnCompleteListener);
+    zza.zza(paramActivity).zzb(paramOnCompleteListener);
+    zze();
+    return this;
+  }
+  
+  @NonNull
+  public final Task<TResult> addOnCompleteListener(@NonNull OnCompleteListener<TResult> paramOnCompleteListener)
+  {
+    return addOnCompleteListener(TaskExecutors.MAIN_THREAD, paramOnCompleteListener);
+  }
+  
+  @NonNull
+  public final Task<TResult> addOnCompleteListener(@NonNull Executor paramExecutor, @NonNull OnCompleteListener<TResult> paramOnCompleteListener)
+  {
+    zzx.zza(new zzi(paramExecutor, paramOnCompleteListener));
+    zze();
+    return this;
+  }
+  
+  @NonNull
+  public final Task<TResult> addOnFailureListener(@NonNull Activity paramActivity, @NonNull OnFailureListener paramOnFailureListener)
+  {
+    paramOnFailureListener = new zzk(TaskExecutors.MAIN_THREAD, paramOnFailureListener);
+    zzx.zza(paramOnFailureListener);
+    zza.zza(paramActivity).zzb(paramOnFailureListener);
+    zze();
+    return this;
+  }
+  
+  @NonNull
+  public final Task<TResult> addOnFailureListener(@NonNull OnFailureListener paramOnFailureListener)
+  {
+    return addOnFailureListener(TaskExecutors.MAIN_THREAD, paramOnFailureListener);
+  }
+  
+  @NonNull
+  public final Task<TResult> addOnFailureListener(@NonNull Executor paramExecutor, @NonNull OnFailureListener paramOnFailureListener)
+  {
+    zzx.zza(new zzk(paramExecutor, paramOnFailureListener));
+    zze();
+    return this;
+  }
+  
+  @NonNull
+  public final Task<TResult> addOnSuccessListener(@NonNull Activity paramActivity, @NonNull OnSuccessListener<? super TResult> paramOnSuccessListener)
+  {
+    paramOnSuccessListener = new zzm(TaskExecutors.MAIN_THREAD, paramOnSuccessListener);
+    zzx.zza(paramOnSuccessListener);
+    zza.zza(paramActivity).zzb(paramOnSuccessListener);
+    zze();
+    return this;
+  }
+  
+  @NonNull
+  public final Task<TResult> addOnSuccessListener(@NonNull OnSuccessListener<? super TResult> paramOnSuccessListener)
+  {
+    return addOnSuccessListener(TaskExecutors.MAIN_THREAD, paramOnSuccessListener);
+  }
+  
+  @NonNull
+  public final Task<TResult> addOnSuccessListener(@NonNull Executor paramExecutor, @NonNull OnSuccessListener<? super TResult> paramOnSuccessListener)
+  {
+    zzx.zza(new zzm(paramExecutor, paramOnSuccessListener));
+    zze();
+    return this;
+  }
+  
+  @NonNull
+  public final <TContinuationResult> Task<TContinuationResult> continueWith(@NonNull Continuation<TResult, TContinuationResult> paramContinuation)
+  {
+    return continueWith(TaskExecutors.MAIN_THREAD, paramContinuation);
+  }
+  
+  @NonNull
+  public final <TContinuationResult> Task<TContinuationResult> continueWith(@NonNull Executor paramExecutor, @NonNull Continuation<TResult, TContinuationResult> paramContinuation)
+  {
+    zzu localZzu = new zzu();
+    zzx.zza(new zzc(paramExecutor, paramContinuation, localZzu));
+    zze();
+    return localZzu;
+  }
+  
+  @NonNull
+  public final <TContinuationResult> Task<TContinuationResult> continueWithTask(@NonNull Continuation<TResult, Task<TContinuationResult>> paramContinuation)
+  {
+    return continueWithTask(TaskExecutors.MAIN_THREAD, paramContinuation);
+  }
+  
+  @NonNull
+  public final <TContinuationResult> Task<TContinuationResult> continueWithTask(@NonNull Executor paramExecutor, @NonNull Continuation<TResult, Task<TContinuationResult>> paramContinuation)
+  {
+    zzu localZzu = new zzu();
+    zzx.zza(new zze(paramExecutor, paramContinuation, localZzu));
+    zze();
+    return localZzu;
+  }
+  
+  @Nullable
+  public final Exception getException()
+  {
+    synchronized (mLock)
+    {
+      Exception localException = zzab;
+      return localException;
+    }
+  }
+  
+  public final TResult getResult()
+  {
+    synchronized (mLock)
+    {
+      zzb();
+      zzd();
+      if (zzab == null)
+      {
+        Object localObject2 = zzaa;
+        return localObject2;
+      }
+      throw new RuntimeExecutionException(zzab);
+    }
+  }
+  
+  public final <X extends Throwable> TResult getResult(@NonNull Class<X> paramClass)
+    throws Throwable
+  {
+    synchronized (mLock)
+    {
+      zzb();
+      zzd();
+      if (!paramClass.isInstance(zzab))
+      {
+        if (zzab == null)
+        {
+          paramClass = zzaa;
+          return paramClass;
+        }
+        throw new RuntimeExecutionException(zzab);
+      }
+      throw ((Throwable)paramClass.cast(zzab));
+    }
+  }
+  
+  public final boolean isCanceled()
+  {
+    return zzz;
+  }
+  
+  public final boolean isComplete()
+  {
+    synchronized (mLock)
+    {
+      boolean bool = zzy;
+      return bool;
+    }
+  }
+  
+  public final boolean isSuccessful()
+  {
+    for (;;)
+    {
+      synchronized (mLock)
+      {
+        if ((zzy) && (!zzz) && (zzab == null))
+        {
+          bool = true;
+          return bool;
+        }
+      }
+      boolean bool = false;
+    }
+  }
+  
+  @NonNull
+  public final <TContinuationResult> Task<TContinuationResult> onSuccessTask(@NonNull SuccessContinuation<TResult, TContinuationResult> paramSuccessContinuation)
+  {
+    return onSuccessTask(TaskExecutors.MAIN_THREAD, paramSuccessContinuation);
+  }
+  
+  @NonNull
+  public final <TContinuationResult> Task<TContinuationResult> onSuccessTask(Executor paramExecutor, SuccessContinuation<TResult, TContinuationResult> paramSuccessContinuation)
+  {
+    zzu localZzu = new zzu();
+    zzx.zza(new zzo(paramExecutor, paramSuccessContinuation, localZzu));
+    zze();
+    return localZzu;
+  }
+  
+  public final void setException(@NonNull Exception paramException)
+  {
+    Preconditions.checkNotNull(paramException, "Exception must not be null");
+    synchronized (mLock)
+    {
+      zzc();
+      zzy = true;
+      zzab = paramException;
+      zzx.zza(this);
+      return;
+    }
+  }
+  
+  public final void setResult(TResult paramTResult)
+  {
+    synchronized (mLock)
+    {
+      zzc();
+      zzy = true;
+      zzaa = paramTResult;
+      zzx.zza(this);
+      return;
+    }
+  }
+  
+  public final boolean trySetException(@NonNull Exception paramException)
+  {
+    Preconditions.checkNotNull(paramException, "Exception must not be null");
+    synchronized (mLock)
+    {
+      if (zzy) {
+        return false;
+      }
+      zzy = true;
+      zzab = paramException;
+      zzx.zza(this);
+      return true;
+    }
+  }
+  
+  public final boolean trySetResult(TResult paramTResult)
+  {
+    synchronized (mLock)
+    {
+      if (zzy) {
+        return false;
+      }
+      zzy = true;
+      zzaa = paramTResult;
+      zzx.zza(this);
+      return true;
+    }
+  }
+  
+  public final boolean zza()
+  {
+    synchronized (mLock)
+    {
+      if (zzy) {
+        return false;
+      }
+      zzy = true;
+      zzz = true;
+      zzx.zza(this);
+      return true;
+    }
+  }
+  
+  private static class zza
+    extends LifecycleCallback
+  {
+    private final List<WeakReference<zzq<?>>> zzac = new ArrayList();
+    
+    private zza(LifecycleFragment paramLifecycleFragment)
+    {
+      super();
+      mLifecycleFragment.addCallback("TaskOnStopCallback", this);
+    }
+    
+    public static zza zza(Activity paramActivity)
+    {
+      LifecycleFragment localLifecycleFragment = getFragment(paramActivity);
+      zza localZza = (zza)localLifecycleFragment.getCallbackOrNull("TaskOnStopCallback", zza.class);
+      paramActivity = localZza;
+      if (localZza == null) {
+        paramActivity = new zza(localLifecycleFragment);
+      }
+      return paramActivity;
+    }
+    
+    @MainThread
+    public void onStop()
+    {
+      synchronized (zzac)
+      {
+        Iterator localIterator = zzac.iterator();
+        while (localIterator.hasNext())
+        {
+          zzq localZzq = (zzq)((WeakReference)localIterator.next()).get();
+          if (localZzq != null) {
+            localZzq.cancel();
+          }
+        }
+        zzac.clear();
+        return;
+      }
+    }
+    
+    public final <T> void zzb(zzq<T> paramZzq)
+    {
+      synchronized (zzac)
+      {
+        zzac.add(new WeakReference(paramZzq));
+        return;
+      }
+    }
+  }
+}

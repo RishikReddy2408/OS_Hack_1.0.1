@@ -1,0 +1,241 @@
+package com.google.android.android.internal.measurement;
+
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+public final class zzzh
+{
+  public static String print(zzzg paramZzzg)
+  {
+    if (paramZzzg == null) {
+      return "";
+    }
+    StringBuffer localStringBuffer = new StringBuffer();
+    try
+    {
+      print(null, paramZzzg, new StringBuffer(), localStringBuffer);
+      return localStringBuffer.toString();
+    }
+    catch (InvocationTargetException paramZzzg)
+    {
+      paramZzzg = String.valueOf(paramZzzg.getMessage());
+      if (paramZzzg.length() != 0) {
+        return "Error printing proto: ".concat(paramZzzg);
+      }
+      return new String("Error printing proto: ");
+    }
+    catch (IllegalAccessException paramZzzg)
+    {
+      paramZzzg = String.valueOf(paramZzzg.getMessage());
+      if (paramZzzg.length() != 0) {
+        return "Error printing proto: ".concat(paramZzzg);
+      }
+    }
+    return new String("Error printing proto: ");
+  }
+  
+  private static void print(String paramString, Object paramObject, StringBuffer paramStringBuffer1, StringBuffer paramStringBuffer2)
+    throws IllegalAccessException, InvocationTargetException
+  {
+    if (paramObject != null)
+    {
+      int i;
+      int j;
+      if ((paramObject instanceof zzzg))
+      {
+        int m = paramStringBuffer1.length();
+        if (paramString != null)
+        {
+          paramStringBuffer2.append(paramStringBuffer1);
+          paramStringBuffer2.append(zzgc(paramString));
+          paramStringBuffer2.append(" <\n");
+          paramStringBuffer1.append("  ");
+        }
+        Class localClass = paramObject.getClass();
+        Object localObject1 = localClass.getFields();
+        int n = localObject1.length;
+        i = 0;
+        Object localObject3;
+        int k;
+        while (i < n)
+        {
+          Object localObject4 = localObject1[i];
+          j = localObject4.getModifiers();
+          localObject2 = localObject4.getName();
+          if ((!"cachedSize".equals(localObject2)) && ((j & 0x1) == 1) && ((j & 0x8) != 8) && (!((String)localObject2).startsWith("_")) && (!((String)localObject2).endsWith("_")))
+          {
+            localObject3 = localObject4.getType();
+            localObject4 = localObject4.get(paramObject);
+            if ((((Class)localObject3).isArray()) && (((Class)localObject3).getComponentType() != Byte.TYPE))
+            {
+              if (localObject4 == null) {
+                j = 0;
+              } else {
+                j = Array.getLength(localObject4);
+              }
+              k = 0;
+            }
+            while (k < j)
+            {
+              print((String)localObject2, Array.get(localObject4, k), paramStringBuffer1, paramStringBuffer2);
+              k += 1;
+              continue;
+              print((String)localObject2, localObject4, paramStringBuffer1, paramStringBuffer2);
+            }
+          }
+          i += 1;
+        }
+        Object localObject2 = localClass.getMethods();
+        j = localObject2.length;
+        i = 0;
+        while (i < j)
+        {
+          localObject1 = localObject2[i].getName();
+          if (((String)localObject1).startsWith("set")) {
+            localObject3 = ((String)localObject1).substring(3);
+          }
+          for (;;)
+          {
+            try
+            {
+              localObject1 = String.valueOf(localObject3);
+              k = ((String)localObject1).length();
+              if (k != 0) {
+                localObject1 = "has".concat((String)localObject1);
+              } else {
+                localObject1 = new String("has");
+              }
+              localObject1 = localClass.getMethod((String)localObject1, new Class[0]);
+              if (!((Boolean)((Method)localObject1).invoke(paramObject, new Object[0])).booleanValue()) {}
+            }
+            catch (NoSuchMethodException localNoSuchMethodException1)
+            {
+              continue;
+            }
+            try
+            {
+              localObject1 = String.valueOf(localObject3);
+              k = ((String)localObject1).length();
+              if (k != 0) {
+                localObject1 = "get".concat((String)localObject1);
+              } else {
+                localObject1 = new String("get");
+              }
+              localObject1 = localClass.getMethod((String)localObject1, new Class[0]);
+              print((String)localObject3, ((Method)localObject1).invoke(paramObject, new Object[0]), paramStringBuffer1, paramStringBuffer2);
+            }
+            catch (NoSuchMethodException localNoSuchMethodException2) {}
+          }
+          i += 1;
+        }
+        if (paramString != null)
+        {
+          paramStringBuffer1.setLength(m);
+          paramStringBuffer2.append(paramStringBuffer1);
+          paramStringBuffer2.append(">\n");
+        }
+      }
+      else
+      {
+        paramString = zzgc(paramString);
+        paramStringBuffer2.append(paramStringBuffer1);
+        paramStringBuffer2.append(paramString);
+        paramStringBuffer2.append(": ");
+        if ((paramObject instanceof String))
+        {
+          paramObject = (String)paramObject;
+          paramString = paramObject;
+          if (!paramObject.startsWith("http"))
+          {
+            paramString = paramObject;
+            if (paramObject.length() > 200) {
+              paramString = String.valueOf(paramObject.substring(0, 200)).concat("[...]");
+            }
+          }
+          j = paramString.length();
+          paramObject = new StringBuilder(j);
+          i = 0;
+          while (i < j)
+          {
+            char c = paramString.charAt(i);
+            if ((c >= ' ') && (c <= '~') && (c != '"') && (c != '\'')) {
+              paramObject.append(c);
+            } else {
+              paramObject.append(String.format("\\u%04x", new Object[] { Integer.valueOf(c) }));
+            }
+            i += 1;
+          }
+          paramString = paramObject.toString();
+          paramStringBuffer2.append("\"");
+          paramStringBuffer2.append(paramString);
+          paramStringBuffer2.append("\"");
+        }
+        else if ((paramObject instanceof byte[]))
+        {
+          paramString = (byte[])paramObject;
+          if (paramString == null)
+          {
+            paramStringBuffer2.append("\"\"");
+          }
+          else
+          {
+            paramStringBuffer2.append('"');
+            i = 0;
+            while (i < paramString.length)
+            {
+              j = paramString[i] & 0xFF;
+              if ((j != 92) && (j != 34))
+              {
+                if ((j >= 32) && (j < 127)) {
+                  paramStringBuffer2.append((char)j);
+                } else {
+                  paramStringBuffer2.append(String.format("\\%03o", new Object[] { Integer.valueOf(j) }));
+                }
+              }
+              else
+              {
+                paramStringBuffer2.append('\\');
+                paramStringBuffer2.append((char)j);
+              }
+              i += 1;
+            }
+            paramStringBuffer2.append('"');
+          }
+        }
+        else
+        {
+          paramStringBuffer2.append(paramObject);
+        }
+        paramStringBuffer2.append("\n");
+        return;
+      }
+    }
+  }
+  
+  private static String zzgc(String paramString)
+  {
+    StringBuffer localStringBuffer = new StringBuffer();
+    int i = 0;
+    while (i < paramString.length())
+    {
+      char c = paramString.charAt(i);
+      if (i == 0)
+      {
+        localStringBuffer.append(Character.toLowerCase(c));
+      }
+      else if (Character.isUpperCase(c))
+      {
+        localStringBuffer.append('_');
+        localStringBuffer.append(Character.toLowerCase(c));
+      }
+      else
+      {
+        localStringBuffer.append(c);
+      }
+      i += 1;
+    }
+    return localStringBuffer.toString();
+  }
+}

@@ -1,0 +1,10 @@
+package com.google.android.gms.common.config;
+
+final class zzd
+  extends GservicesValue<Float>
+{
+  zzd(String paramString, Float paramFloat)
+  {
+    super(paramString, paramFloat);
+  }
+}

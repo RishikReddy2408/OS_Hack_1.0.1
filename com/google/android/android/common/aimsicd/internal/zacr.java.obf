@@ -1,0 +1,51 @@
+package com.google.android.gms.common.api.internal;
+
+import android.os.IBinder;
+import android.os.IBinder.DeathRecipient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.zac;
+import java.lang.ref.WeakReference;
+import java.util.NoSuchElementException;
+
+final class zacr
+  implements IBinder.DeathRecipient, zacs
+{
+  private final WeakReference<BasePendingResult<?>> zalb;
+  private final WeakReference<zac> zalc;
+  private final WeakReference<IBinder> zald;
+  
+  private zacr(BasePendingResult<?> paramBasePendingResult, zac paramZac, IBinder paramIBinder)
+  {
+    zalc = new WeakReference(paramZac);
+    zalb = new WeakReference(paramBasePendingResult);
+    zald = new WeakReference(paramIBinder);
+  }
+  
+  private final void zaby()
+  {
+    Object localObject = (BasePendingResult)zalb.get();
+    zac localZac = (zac)zalc.get();
+    if ((localZac != null) && (localObject != null)) {
+      localZac.remove(((PendingResult)localObject).zam().intValue());
+    }
+    localObject = (IBinder)zald.get();
+    if (localObject != null) {}
+    try
+    {
+      ((IBinder)localObject).unlinkToDeath(this, 0);
+      return;
+    }
+    catch (NoSuchElementException localNoSuchElementException) {}
+    return;
+  }
+  
+  public final void binderDied()
+  {
+    zaby();
+  }
+  
+  public final void zac(BasePendingResult<?> paramBasePendingResult)
+  {
+    zaby();
+  }
+}

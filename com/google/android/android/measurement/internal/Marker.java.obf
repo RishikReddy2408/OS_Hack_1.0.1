@@ -1,0 +1,220 @@
+package com.google.android.gms.measurement.internal;
+
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.support.annotation.WorkerThread;
+import android.text.TextUtils;
+import java.io.File;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+public final class zzu
+{
+  static void zza(zzap paramZzap, SQLiteDatabase paramSQLiteDatabase)
+  {
+    if (paramZzap != null)
+    {
+      paramSQLiteDatabase = new File(paramSQLiteDatabase.getPath());
+      if (!paramSQLiteDatabase.setReadable(false, false)) {
+        paramZzap.zzjg().zzbx("Failed to turn off database read permission");
+      }
+      if (!paramSQLiteDatabase.setWritable(false, false)) {
+        paramZzap.zzjg().zzbx("Failed to turn off database write permission");
+      }
+      if (!paramSQLiteDatabase.setReadable(true, true)) {
+        paramZzap.zzjg().zzbx("Failed to turn on database read permission for owner");
+      }
+      if (!paramSQLiteDatabase.setWritable(true, true)) {
+        paramZzap.zzjg().zzbx("Failed to turn on database write permission for owner");
+      }
+      return;
+    }
+    throw new IllegalArgumentException("Monitor must not be null");
+  }
+  
+  @WorkerThread
+  static void zza(zzap paramZzap, SQLiteDatabase paramSQLiteDatabase, String paramString1, String paramString2, String paramString3, String[] paramArrayOfString)
+    throws SQLiteException
+  {
+    if (paramZzap != null)
+    {
+      if (!zza(paramZzap, paramSQLiteDatabase, paramString1)) {
+        paramSQLiteDatabase.execSQL(paramString2);
+      }
+      if (paramZzap == null) {}
+    }
+    for (;;)
+    {
+      int j;
+      int i;
+      try
+      {
+        paramString2 = zzb(paramSQLiteDatabase, paramString1);
+        String[] arrayOfString = paramString3.split(",");
+        int k = arrayOfString.length;
+        j = 0;
+        i = 0;
+        if (i >= k) {
+          break label243;
+        }
+        paramString3 = arrayOfString[i];
+        if (paramString2.remove(paramString3))
+        {
+          i += 1;
+          continue;
+        }
+        paramSQLiteDatabase = new StringBuilder(String.valueOf(paramString1).length() + 35 + String.valueOf(paramString3).length());
+        paramSQLiteDatabase.append("Table ");
+        paramSQLiteDatabase.append(paramString1);
+        paramSQLiteDatabase.append(" is missing required column: ");
+        paramSQLiteDatabase.append(paramString3);
+        throw new SQLiteException(paramSQLiteDatabase.toString());
+      }
+      catch (SQLiteException paramSQLiteDatabase)
+      {
+        paramZzap.zzjd().zzg("Failed to verify columns on table that was just created", paramString1);
+        throw paramSQLiteDatabase;
+      }
+      if (i < paramArrayOfString.length)
+      {
+        if (!paramString2.remove(paramArrayOfString[i])) {
+          paramSQLiteDatabase.execSQL(paramArrayOfString[(i + 1)]);
+        }
+      }
+      else
+      {
+        if (paramString2.isEmpty()) {
+          break;
+        }
+        paramZzap.zzjg().zze("Table has extra columns. table, columns", paramString1, TextUtils.join(", ", paramString2));
+        return;
+        throw new IllegalArgumentException("Monitor must not be null");
+        throw new IllegalArgumentException("Monitor must not be null");
+        label243:
+        if (paramArrayOfString == null) {
+          continue;
+        }
+        i = j;
+        continue;
+      }
+      i += 2;
+    }
+  }
+  
+  /* Error */
+  @WorkerThread
+  private static boolean zza(zzap paramZzap, SQLiteDatabase paramSQLiteDatabase, String paramString)
+  {
+    // Byte code:
+    //   0: aload_0
+    //   1: ifnull +119 -> 120
+    //   4: aconst_null
+    //   5: astore 6
+    //   7: aconst_null
+    //   8: astore 4
+    //   10: aload_1
+    //   11: ldc -122
+    //   13: iconst_1
+    //   14: anewarray 68	java/lang/String
+    //   17: dup
+    //   18: iconst_0
+    //   19: ldc -120
+    //   21: aastore
+    //   22: ldc -118
+    //   24: iconst_1
+    //   25: anewarray 68	java/lang/String
+    //   28: dup
+    //   29: iconst_0
+    //   30: aload_2
+    //   31: aastore
+    //   32: aconst_null
+    //   33: aconst_null
+    //   34: aconst_null
+    //   35: invokevirtual 142	android/database/sqlite/SQLiteDatabase:query	(Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Landroid/database/Cursor;
+    //   38: astore_1
+    //   39: aload_1
+    //   40: invokeinterface 147 1 0
+    //   45: istore_3
+    //   46: aload_1
+    //   47: ifnull +9 -> 56
+    //   50: aload_1
+    //   51: invokeinterface 151 1 0
+    //   56: iload_3
+    //   57: ireturn
+    //   58: astore_0
+    //   59: aload_1
+    //   60: astore 4
+    //   62: goto +44 -> 106
+    //   65: astore 5
+    //   67: goto +12 -> 79
+    //   70: astore_0
+    //   71: goto +35 -> 106
+    //   74: astore 5
+    //   76: aload 6
+    //   78: astore_1
+    //   79: aload_1
+    //   80: astore 4
+    //   82: aload_0
+    //   83: invokevirtual 28	com/google/android/gms/measurement/internal/zzap:zzjg	()Lcom/google/android/gms/measurement/internal/zzar;
+    //   86: ldc -103
+    //   88: aload_2
+    //   89: aload 5
+    //   91: invokevirtual 121	com/google/android/gms/measurement/internal/zzar:zze	(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+    //   94: aload_1
+    //   95: ifnull +9 -> 104
+    //   98: aload_1
+    //   99: invokeinterface 151 1 0
+    //   104: iconst_0
+    //   105: ireturn
+    //   106: aload 4
+    //   108: ifnull +10 -> 118
+    //   111: aload 4
+    //   113: invokeinterface 151 1 0
+    //   118: aload_0
+    //   119: athrow
+    //   120: new 46	java/lang/IllegalArgumentException
+    //   123: dup
+    //   124: ldc 48
+    //   126: invokespecial 49	java/lang/IllegalArgumentException:<init>	(Ljava/lang/String;)V
+    //   129: athrow
+    // Local variable table:
+    //   start	length	slot	name	signature
+    //   0	130	0	paramZzap	zzap
+    //   0	130	1	paramSQLiteDatabase	SQLiteDatabase
+    //   0	130	2	paramString	String
+    //   45	12	3	bool	boolean
+    //   8	104	4	localSQLiteDatabase	SQLiteDatabase
+    //   65	1	5	localSQLiteException1	SQLiteException
+    //   74	16	5	localSQLiteException2	SQLiteException
+    //   5	72	6	localObject	Object
+    // Exception table:
+    //   from	to	target	type
+    //   39	46	58	finally
+    //   39	46	65	android/database/sqlite/SQLiteException
+    //   10	39	70	finally
+    //   82	94	70	finally
+    //   10	39	74	android/database/sqlite/SQLiteException
+  }
+  
+  @WorkerThread
+  private static Set<String> zzb(SQLiteDatabase paramSQLiteDatabase, String paramString)
+  {
+    HashSet localHashSet = new HashSet();
+    StringBuilder localStringBuilder = new StringBuilder(String.valueOf(paramString).length() + 22);
+    localStringBuilder.append("SELECT * FROM ");
+    localStringBuilder.append(paramString);
+    localStringBuilder.append(" LIMIT 0");
+    paramSQLiteDatabase = paramSQLiteDatabase.rawQuery(localStringBuilder.toString(), null);
+    try
+    {
+      Collections.addAll(localHashSet, paramSQLiteDatabase.getColumnNames());
+      return localHashSet;
+    }
+    finally
+    {
+      paramSQLiteDatabase.close();
+    }
+  }
+}

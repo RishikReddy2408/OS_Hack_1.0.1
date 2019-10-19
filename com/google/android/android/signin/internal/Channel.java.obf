@@ -1,0 +1,18 @@
+package com.google.android.gms.signin.internal;
+
+import android.os.IInterface;
+import android.os.RemoteException;
+import com.google.android.gms.common.internal.IAccountAccessor;
+
+public abstract interface zaf
+  extends IInterface
+{
+  public abstract void zaa(IAccountAccessor paramIAccountAccessor, int paramInt, boolean paramBoolean)
+    throws RemoteException;
+  
+  public abstract void zaa(zah paramZah, zad paramZad)
+    throws RemoteException;
+  
+  public abstract void zam(int paramInt)
+    throws RemoteException;
+}

@@ -1,0 +1,41 @@
+package com.google.android.gms.measurement.internal;
+
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.support.annotation.WorkerThread;
+import com.google.android.gms.common.internal.Preconditions;
+
+public final class zzbd
+{
+  private long value;
+  private boolean zzanx;
+  private final long zzanz;
+  private final String zzoj;
+  
+  public zzbd(zzba paramZzba, String paramString, long paramLong)
+  {
+    Preconditions.checkNotEmpty(paramString);
+    zzoj = paramString;
+    zzanz = paramLong;
+  }
+  
+  @WorkerThread
+  public final long get()
+  {
+    if (!zzanx)
+    {
+      zzanx = true;
+      value = zzba.zza(zzany).getLong(zzoj, zzanz);
+    }
+    return value;
+  }
+  
+  @WorkerThread
+  public final void set(long paramLong)
+  {
+    SharedPreferences.Editor localEditor = zzba.zza(zzany).edit();
+    localEditor.putLong(zzoj, paramLong);
+    localEditor.apply();
+    value = paramLong;
+  }
+}

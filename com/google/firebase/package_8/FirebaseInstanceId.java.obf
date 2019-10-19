@@ -1,0 +1,536 @@
+package com.google.firebase.iid;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
+import android.os.Build.VERSION;
+import android.os.Bundle;
+import android.os.Looper;
+import android.support.annotation.Keep;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
+import android.util.Log;
+import com.google.android.gms.common.util.VisibleForTesting;
+import com.google.android.gms.common.util.concurrent.NamedThreadFactory;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.DataCollectionDefaultChange;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.events.EventHandler;
+import com.google.firebase.events.Subscriber;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import javax.annotation.concurrent.GuardedBy;
+
+public class FirebaseInstanceId
+{
+  private static final long zzai = TimeUnit.HOURS.toSeconds(8L);
+  private static zzaw zzaj;
+  @VisibleForTesting
+  @GuardedBy("FirebaseInstanceId.class")
+  private static ScheduledThreadPoolExecutor zzak;
+  private final Executor zzal;
+  private final FirebaseApp zzam;
+  private final zzan zzan;
+  private MessagingChannel zzao;
+  private final zzaq zzap;
+  private final zzba zzaq;
+  @GuardedBy("this")
+  private boolean zzar = false;
+  private final zza zzas;
+  
+  FirebaseInstanceId(FirebaseApp paramFirebaseApp, Subscriber paramSubscriber)
+  {
+    this(paramFirebaseApp, new zzan(paramFirebaseApp.getApplicationContext()), zzi.zzf(), zzi.zzf(), paramSubscriber);
+  }
+  
+  private FirebaseInstanceId(FirebaseApp paramFirebaseApp, zzan paramZzan, Executor paramExecutor1, Executor paramExecutor2, Subscriber paramSubscriber)
+  {
+    if (zzan.zza(paramFirebaseApp) != null) {
+      try
+      {
+        if (zzaj == null) {
+          zzaj = new zzaw(paramFirebaseApp.getApplicationContext());
+        }
+        zzam = paramFirebaseApp;
+        zzan = paramZzan;
+        if (zzao == null)
+        {
+          MessagingChannel localMessagingChannel = (MessagingChannel)paramFirebaseApp.get(MessagingChannel.class);
+          if ((localMessagingChannel != null) && (localMessagingChannel.isAvailable())) {
+            zzao = localMessagingChannel;
+          } else {
+            zzao = new zzr(paramFirebaseApp, paramZzan, paramExecutor1);
+          }
+        }
+        zzao = zzao;
+        zzal = paramExecutor2;
+        zzaq = new zzba(zzaj);
+        zzas = new zza(paramSubscriber);
+        zzap = new zzaq(paramExecutor1);
+        if (zzas.isEnabled()) {
+          zzg();
+        }
+        return;
+      }
+      finally {}
+    }
+    throw new IllegalStateException("FirebaseInstanceId failed to initialize, FirebaseApp is missing project ID");
+  }
+  
+  public static FirebaseInstanceId getInstance()
+  {
+    return getInstance(FirebaseApp.getInstance());
+  }
+  
+  @Keep
+  public static FirebaseInstanceId getInstance(@NonNull FirebaseApp paramFirebaseApp)
+  {
+    return (FirebaseInstanceId)paramFirebaseApp.get(FirebaseInstanceId.class);
+  }
+  
+  private final void startSync()
+  {
+    try
+    {
+      if (!zzar) {
+        zza(0L);
+      }
+      return;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  private final Task<InstanceIdResult> zza(String paramString1, String paramString2)
+  {
+    String str = zzd(paramString2);
+    TaskCompletionSource localTaskCompletionSource = new TaskCompletionSource();
+    zzal.execute(new zzn(this, paramString1, paramString2, localTaskCompletionSource, str));
+    return localTaskCompletionSource.getTask();
+  }
+  
+  private final <T> T zza(Task<T> paramTask)
+    throws IOException
+  {
+    try
+    {
+      paramTask = Tasks.await(paramTask, 30000L, TimeUnit.MILLISECONDS);
+      return paramTask;
+    }
+    catch (ExecutionException paramTask)
+    {
+      Throwable localThrowable = paramTask.getCause();
+      if (!(localThrowable instanceof IOException)) {
+        break label57;
+      }
+      if (!"INSTANCE_ID_RESET".equals(localThrowable.getMessage())) {
+        break label52;
+      }
+      zzm();
+      throw ((IOException)localThrowable);
+      if (!(localThrowable instanceof RuntimeException)) {
+        break label69;
+      }
+      throw ((RuntimeException)localThrowable);
+      throw new IOException(paramTask);
+    }
+    catch (InterruptedException|TimeoutException paramTask)
+    {
+      label52:
+      label57:
+      label69:
+      for (;;) {}
+    }
+    throw new IOException("SERVICE_NOT_AVAILABLE");
+  }
+  
+  static void zza(Runnable paramRunnable, long paramLong)
+  {
+    try
+    {
+      if (zzak == null) {
+        zzak = new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("FirebaseInstanceId"));
+      }
+      zzak.schedule(paramRunnable, paramLong, TimeUnit.SECONDS);
+      return;
+    }
+    finally {}
+  }
+  
+  @Nullable
+  @VisibleForTesting
+  private static zzax zzb(String paramString1, String paramString2)
+  {
+    return zzaj.zzb("", paramString1, paramString2);
+  }
+  
+  private static String zzd(String paramString)
+  {
+    if ((!paramString.isEmpty()) && (!paramString.equalsIgnoreCase("fcm")) && (!paramString.equalsIgnoreCase("gcm"))) {
+      return paramString;
+    }
+    return "*";
+  }
+  
+  private final void zzg()
+  {
+    zzax localZzax = zzj();
+    if ((!zzo()) || (localZzax == null) || (localZzax.zzj(zzan.zzad())) || (zzaq.zzaq())) {
+      startSync();
+    }
+  }
+  
+  private static String zzi()
+  {
+    return zzan.zza(zzaj.zzg("").getKeyPair());
+  }
+  
+  static boolean zzl()
+  {
+    return (Log.isLoggable("FirebaseInstanceId", 3)) || ((Build.VERSION.SDK_INT == 23) && (Log.isLoggable("FirebaseInstanceId", 3)));
+  }
+  
+  @WorkerThread
+  public void deleteInstanceId()
+    throws IOException
+  {
+    if (Looper.getMainLooper() != Looper.myLooper())
+    {
+      String str = zzi();
+      zza(zzao.deleteInstanceId(str));
+      zzm();
+      return;
+    }
+    throw new IOException("MAIN_THREAD");
+  }
+  
+  @WorkerThread
+  public void deleteToken(String paramString1, String paramString2)
+    throws IOException
+  {
+    if (Looper.getMainLooper() != Looper.myLooper())
+    {
+      paramString2 = zzd(paramString2);
+      String str1 = zzi();
+      String str2 = zzax.zza(zzb(paramString1, paramString2));
+      zza(zzao.deleteToken(str1, str2, paramString1, paramString2));
+      zzaj.zzc("", paramString1, paramString2);
+      return;
+    }
+    throw new IOException("MAIN_THREAD");
+  }
+  
+  public long getCreationTime()
+  {
+    return zzaj.zzg("").getCreationTime();
+  }
+  
+  @WorkerThread
+  public String getId()
+  {
+    zzg();
+    return zzi();
+  }
+  
+  @NonNull
+  public Task<InstanceIdResult> getInstanceId()
+  {
+    return zza(zzan.zza(zzam), "*");
+  }
+  
+  @Deprecated
+  @Nullable
+  public String getToken()
+  {
+    zzax localZzax = zzj();
+    if ((localZzax == null) || (localZzax.zzj(zzan.zzad()))) {
+      startSync();
+    }
+    if (localZzax != null) {
+      return zzbq;
+    }
+    return null;
+  }
+  
+  @WorkerThread
+  public String getToken(String paramString1, String paramString2)
+    throws IOException
+  {
+    if (Looper.getMainLooper() != Looper.myLooper()) {
+      return ((InstanceIdResult)zza(zza(paramString1, paramString2))).getToken();
+    }
+    throw new IOException("MAIN_THREAD");
+  }
+  
+  public final Task<Void> zza(String paramString)
+  {
+    try
+    {
+      paramString = zzaq.zza(paramString);
+      startSync();
+      return paramString;
+    }
+    finally
+    {
+      paramString = finally;
+      throw paramString;
+    }
+  }
+  
+  final void zza(long paramLong)
+  {
+    try
+    {
+      long l = Math.min(Math.max(30L, paramLong << 1), zzai);
+      zza(new zzay(this, zzan, zzaq, l), paramLong);
+      zzar = true;
+      return;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  final void zza(boolean paramBoolean)
+  {
+    try
+    {
+      zzar = paramBoolean;
+      return;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  final void zzb(String paramString)
+    throws IOException
+  {
+    Object localObject = zzj();
+    if ((localObject != null) && (!((zzax)localObject).zzj(zzan.zzad())))
+    {
+      String str = zzi();
+      localObject = zzbq;
+      zza(zzao.subscribeToTopic(str, (String)localObject, paramString));
+      return;
+    }
+    throw new IOException("token not available");
+  }
+  
+  @VisibleForTesting
+  public final void zzb(boolean paramBoolean)
+  {
+    zzas.setEnabled(paramBoolean);
+  }
+  
+  final void zzc(String paramString)
+    throws IOException
+  {
+    zzax localZzax = zzj();
+    if ((localZzax != null) && (!localZzax.zzj(zzan.zzad())))
+    {
+      String str = zzi();
+      zza(zzao.unsubscribeFromTopic(str, zzbq, paramString));
+      return;
+    }
+    throw new IOException("token not available");
+  }
+  
+  final FirebaseApp zzh()
+  {
+    return zzam;
+  }
+  
+  @Nullable
+  final zzax zzj()
+  {
+    return zzb(zzan.zza(zzam), "*");
+  }
+  
+  final String zzk()
+    throws IOException
+  {
+    return getToken(zzan.zza(zzam), "*");
+  }
+  
+  final void zzm()
+  {
+    try
+    {
+      zzaj.zzal();
+      if (zzas.isEnabled()) {
+        startSync();
+      }
+      return;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  final boolean zzn()
+  {
+    return zzao.isAvailable();
+  }
+  
+  final boolean zzo()
+  {
+    return zzao.isChannelBuilt();
+  }
+  
+  final void zzp()
+    throws IOException
+  {
+    String str1 = zzi();
+    String str2 = zzax.zza(zzj());
+    zza(zzao.buildChannel(str1, str2));
+  }
+  
+  final void zzq()
+  {
+    zzaj.zzh("");
+    startSync();
+  }
+  
+  @VisibleForTesting
+  public final boolean zzr()
+  {
+    return zzas.isEnabled();
+  }
+  
+  private final class zza
+  {
+    private final boolean zzaz;
+    private final Subscriber zzba;
+    @Nullable
+    @GuardedBy("this")
+    private EventHandler<DataCollectionDefaultChange> zzbb;
+    @Nullable
+    @GuardedBy("this")
+    private Boolean zzbc;
+    
+    zza(Subscriber paramSubscriber)
+    {
+      zzba = paramSubscriber;
+      zzaz = zzu();
+      zzbc = zzt();
+      if ((zzbc == null) && (zzaz))
+      {
+        zzbb = new zzq(this);
+        paramSubscriber.subscribe(DataCollectionDefaultChange.class, zzbb);
+      }
+    }
+    
+    @Nullable
+    private final Boolean zzt()
+    {
+      Object localObject1 = FirebaseInstanceId.zza(FirebaseInstanceId.this).getApplicationContext();
+      Object localObject2 = ((Context)localObject1).getSharedPreferences("com.google.firebase.messaging", 0);
+      if (((SharedPreferences)localObject2).contains("auto_init")) {
+        return Boolean.valueOf(((SharedPreferences)localObject2).getBoolean("auto_init", false));
+      }
+      try
+      {
+        localObject2 = ((Context)localObject1).getPackageManager();
+        if (localObject2 != null)
+        {
+          localObject1 = ((PackageManager)localObject2).getApplicationInfo(((Context)localObject1).getPackageName(), 128);
+          if ((localObject1 != null) && (metaData != null) && (metaData.containsKey("firebase_messaging_auto_init_enabled")))
+          {
+            boolean bool = metaData.getBoolean("firebase_messaging_auto_init_enabled");
+            return Boolean.valueOf(bool);
+          }
+        }
+      }
+      catch (PackageManager.NameNotFoundException localNameNotFoundException)
+      {
+        for (;;) {}
+      }
+      return null;
+    }
+    
+    private final boolean zzu()
+    {
+      try
+      {
+        Class.forName("com.google.firebase.messaging.FirebaseMessaging");
+        return true;
+      }
+      catch (ClassNotFoundException localClassNotFoundException)
+      {
+        Object localObject;
+        Intent localIntent;
+        for (;;) {}
+      }
+      localObject = FirebaseInstanceId.zza(FirebaseInstanceId.this).getApplicationContext();
+      localIntent = new Intent("com.google.firebase.MESSAGING_EVENT");
+      localIntent.setPackage(((Context)localObject).getPackageName());
+      localObject = ((Context)localObject).getPackageManager().resolveService(localIntent, 0);
+      return (localObject != null) && (serviceInfo != null);
+    }
+    
+    final boolean isEnabled()
+    {
+      try
+      {
+        boolean bool;
+        if (zzbc != null)
+        {
+          bool = zzbc.booleanValue();
+          return bool;
+        }
+        if (zzaz)
+        {
+          bool = FirebaseInstanceId.zza(FirebaseInstanceId.this).isDataCollectionDefaultEnabled();
+          if (bool) {
+            return true;
+          }
+        }
+        return false;
+      }
+      finally {}
+    }
+    
+    final void setEnabled(boolean paramBoolean)
+    {
+      try
+      {
+        if (zzbb != null)
+        {
+          zzba.unsubscribe(DataCollectionDefaultChange.class, zzbb);
+          zzbb = null;
+        }
+        SharedPreferences.Editor localEditor = FirebaseInstanceId.zza(FirebaseInstanceId.this).getApplicationContext().getSharedPreferences("com.google.firebase.messaging", 0).edit();
+        localEditor.putBoolean("auto_init", paramBoolean);
+        localEditor.apply();
+        if (paramBoolean) {
+          FirebaseInstanceId.zzb(FirebaseInstanceId.this);
+        }
+        zzbc = Boolean.valueOf(paramBoolean);
+        return;
+      }
+      finally {}
+    }
+  }
+}

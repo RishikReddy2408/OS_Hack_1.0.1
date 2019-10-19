@@ -1,0 +1,66 @@
+package com.google.android.gms.common.internal;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.SparseIntArray;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GoogleApiAvailabilityLight;
+import com.google.android.gms.common.api.Api.Client;
+
+public class GoogleApiAvailabilityCache
+{
+  private final SparseIntArray zaor = new SparseIntArray();
+  private GoogleApiAvailabilityLight zaos;
+  
+  public GoogleApiAvailabilityCache()
+  {
+    this(GoogleApiAvailability.getInstance());
+  }
+  
+  public GoogleApiAvailabilityCache(@NonNull GoogleApiAvailabilityLight paramGoogleApiAvailabilityLight)
+  {
+    Preconditions.checkNotNull(paramGoogleApiAvailabilityLight);
+    zaos = paramGoogleApiAvailabilityLight;
+  }
+  
+  public void flush()
+  {
+    zaor.clear();
+  }
+  
+  public int getClientAvailability(@NonNull Context paramContext, @NonNull Api.Client paramClient)
+  {
+    Preconditions.checkNotNull(paramContext);
+    Preconditions.checkNotNull(paramClient);
+    if (!paramClient.requiresGooglePlayServices()) {
+      return 0;
+    }
+    int m = paramClient.getMinApkVersion();
+    int k = zaor.get(m, -1);
+    if (k != -1) {
+      return k;
+    }
+    int j = 0;
+    int i;
+    for (;;)
+    {
+      i = k;
+      if (j >= zaor.size()) {
+        break;
+      }
+      i = zaor.keyAt(j);
+      if ((i > m) && (zaor.get(i) == 0))
+      {
+        i = 0;
+        break;
+      }
+      j += 1;
+    }
+    j = i;
+    if (i == -1) {
+      j = zaos.isGooglePlayServicesAvailable(paramContext, m);
+    }
+    zaor.put(m, j);
+    return j;
+  }
+}

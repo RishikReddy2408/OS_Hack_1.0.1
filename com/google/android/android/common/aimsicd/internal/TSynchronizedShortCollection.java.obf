@@ -1,0 +1,42 @@
+package com.google.android.gms.common.api.internal;
+
+import android.os.RemoteException;
+import android.support.annotation.Nullable;
+import com.google.android.gms.common.Feature;
+import com.google.android.gms.common.api.Api.AnyClient;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import java.util.Map;
+
+public final class zaf
+  extends zad<Void>
+{
+  private final RegisterListenerMethod<Api.AnyClient, ?> zaco;
+  private final UnregisterListenerMethod<Api.AnyClient, ?> zacp;
+  
+  public zaf(zabw paramZabw, TaskCompletionSource<Void> paramTaskCompletionSource)
+  {
+    super(3, paramTaskCompletionSource);
+    zaco = zajw;
+    zacp = zajx;
+  }
+  
+  @Nullable
+  public final Feature[] zab(GoogleApiManager.zaa<?> paramZaa)
+  {
+    return zaco.getRequiredFeatures();
+  }
+  
+  public final boolean zac(GoogleApiManager.zaa<?> paramZaa)
+  {
+    return zaco.shouldAutoResolveMissingFeatures();
+  }
+  
+  public final void zad(GoogleApiManager.zaa<?> paramZaa)
+    throws RemoteException
+  {
+    zaco.registerListener(paramZaa.zaab(), zacm);
+    if (zaco.getListenerKey() != null) {
+      paramZaa.zabk().put(zaco.getListenerKey(), new zabw(zaco, zacp));
+    }
+  }
+}

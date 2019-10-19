@@ -1,0 +1,173 @@
+package com.google.android.gms.measurement.internal;
+
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.WorkerThread;
+import com.google.android.gms.common.util.Clock;
+import com.google.android.gms.common.util.VisibleForTesting;
+import com.google.android.gms.internal.measurement.zzdx;
+
+public final class zzeq
+  extends zzf
+{
+  private Handler handler;
+  @VisibleForTesting
+  private long zzasw = zzbx().elapsedRealtime();
+  private final zzv zzasx = new zzer(this, zzadj);
+  private final zzv zzasy = new zzes(this, zzadj);
+  
+  zzeq(zzbt paramZzbt)
+  {
+    super(paramZzbt);
+  }
+  
+  @WorkerThread
+  private final void zzal(long paramLong)
+  {
+    zzaf();
+    zzli();
+    zzgo().zzjl().zzg("Activity resumed, time", Long.valueOf(paramLong));
+    zzasw = paramLong;
+    if (zzgq().zzbj(zzgf().zzal()))
+    {
+      zzam(zzbx().currentTimeMillis());
+      return;
+    }
+    zzasx.cancel();
+    zzasy.cancel();
+    if (zzbx().currentTimeMillis() - zzgpzzanq.get() > zzgpzzant.get())
+    {
+      zzgpzzanr.set(true);
+      zzgpzzanu.set(0L);
+    }
+    if (zzgpzzanr.get())
+    {
+      zzasx.zzh(Math.max(0L, zzgpzzanp.get() - zzgpzzanu.get()));
+      return;
+    }
+    zzasy.zzh(Math.max(0L, 3600000L - zzgpzzanu.get()));
+  }
+  
+  @WorkerThread
+  private final void zzan(long paramLong)
+  {
+    zzaf();
+    zzli();
+    zzasx.cancel();
+    zzasy.cancel();
+    zzgo().zzjl().zzg("Activity paused, time", Long.valueOf(paramLong));
+    if (zzasw != 0L) {
+      zzgpzzanu.set(zzgpzzanu.get() + (paramLong - zzasw));
+    }
+  }
+  
+  @WorkerThread
+  private final void zzao(long paramLong)
+  {
+    zzaf();
+    long l = zzbx().elapsedRealtime();
+    zzgo().zzjl().zzg("Session started, time", Long.valueOf(l));
+    if (zzgq().zzbi(zzgf().zzal()))
+    {
+      l = paramLong / 1000L;
+      zzge().zza("auto", "_sid", Long.valueOf(l), paramLong);
+    }
+    else
+    {
+      zzge().zza("auto", "_sid", null, paramLong);
+    }
+    zzgpzzanr.set(false);
+    Bundle localBundle = new Bundle();
+    if (zzgq().zzbi(zzgf().zzal())) {
+      localBundle.putLong("_sid", paramLong / 1000L);
+    }
+    zzge().zza("auto", "_s", paramLong, localBundle);
+    zzgpzzant.set(paramLong);
+  }
+  
+  private final void zzli()
+  {
+    try
+    {
+      if (handler == null) {
+        handler = new zzdx(Looper.getMainLooper());
+      }
+      return;
+    }
+    finally {}
+  }
+  
+  @WorkerThread
+  private final void zzll()
+  {
+    zzaf();
+    zzn(false);
+    zzgd().zzq(zzbx().elapsedRealtime());
+  }
+  
+  @WorkerThread
+  final void zzam(long paramLong)
+  {
+    zzaf();
+    zzli();
+    zzasx.cancel();
+    zzasy.cancel();
+    if (paramLong - zzgpzzanq.get() > zzgpzzant.get())
+    {
+      zzgpzzanr.set(true);
+      zzgpzzanu.set(0L);
+    }
+    if (zzgpzzanr.get())
+    {
+      zzao(paramLong);
+      return;
+    }
+    zzasy.zzh(Math.max(0L, 3600000L - zzgpzzanu.get()));
+  }
+  
+  protected final boolean zzgt()
+  {
+    return false;
+  }
+  
+  final void zzlj()
+  {
+    zzasx.cancel();
+    zzasy.cancel();
+    zzasw = 0L;
+  }
+  
+  @WorkerThread
+  @VisibleForTesting
+  protected final void zzlk()
+  {
+    zzaf();
+    zzao(zzbx().currentTimeMillis());
+  }
+  
+  @WorkerThread
+  public final boolean zzn(boolean paramBoolean)
+  {
+    zzaf();
+    zzcl();
+    long l1 = zzbx().elapsedRealtime();
+    zzgpzzant.set(zzbx().currentTimeMillis());
+    long l2 = l1 - zzasw;
+    if ((!paramBoolean) && (l2 < 1000L))
+    {
+      zzgo().zzjl().zzg("Screen exposed for less than 1000 ms. Event not sent. time", Long.valueOf(l2));
+      return false;
+    }
+    zzgpzzanu.set(l2);
+    zzgo().zzjl().zzg("Recording user engagement, ms", Long.valueOf(l2));
+    Bundle localBundle = new Bundle();
+    localBundle.putLong("_et", l2);
+    zzdo.zza(zzgh().zzla(), localBundle, true);
+    zzge().logEvent("auto", "_e", localBundle);
+    zzasw = l1;
+    zzasy.cancel();
+    zzasy.zzh(Math.max(0L, 3600000L - zzgpzzanu.get()));
+    return true;
+  }
+}

@@ -1,0 +1,95 @@
+package com.google.android.gms.common.api.internal;
+
+import android.app.Activity;
+import android.support.annotation.MainThread;
+import android.support.annotation.VisibleForTesting;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public final class zaa
+  extends ActivityLifecycleObserver
+{
+  private final WeakReference<zaa> zack;
+  
+  public zaa(Activity paramActivity)
+  {
+    this(zaa.zab(paramActivity));
+  }
+  
+  @VisibleForTesting(otherwise=2)
+  private zaa(zaa paramZaa)
+  {
+    zack = new WeakReference(paramZaa);
+  }
+  
+  public final ActivityLifecycleObserver onStopCallOnce(Runnable paramRunnable)
+  {
+    zaa localZaa = (zaa)zack.get();
+    if (localZaa != null)
+    {
+      zaa.zaa(localZaa, paramRunnable);
+      return this;
+    }
+    throw new IllegalStateException("The target activity has already been GC'd");
+  }
+  
+  @VisibleForTesting(otherwise=2)
+  static class zaa
+    extends LifecycleCallback
+  {
+    private List<Runnable> zacl = new ArrayList();
+    
+    private zaa(LifecycleFragment paramLifecycleFragment)
+    {
+      super();
+      mLifecycleFragment.addCallback("LifecycleObserverOnStop", this);
+    }
+    
+    private static zaa zaa(Activity paramActivity)
+    {
+      try
+      {
+        LifecycleFragment localLifecycleFragment = getFragment(paramActivity);
+        zaa localZaa2 = (zaa)localLifecycleFragment.getCallbackOrNull("LifecycleObserverOnStop", zaa.class);
+        zaa localZaa1 = localZaa2;
+        if (localZaa2 == null) {
+          localZaa1 = new zaa(localLifecycleFragment);
+        }
+        return localZaa1;
+      }
+      finally {}
+    }
+    
+    private final void zaa(Runnable paramRunnable)
+    {
+      try
+      {
+        zacl.add(paramRunnable);
+        return;
+      }
+      finally
+      {
+        paramRunnable = finally;
+        throw paramRunnable;
+      }
+    }
+    
+    @MainThread
+    public void onStop()
+    {
+      try
+      {
+        Object localObject1 = zacl;
+        zacl = new ArrayList();
+        localObject1 = ((List)localObject1).iterator();
+        while (((Iterator)localObject1).hasNext()) {
+          ((Runnable)((Iterator)localObject1).next()).run();
+        }
+        return;
+      }
+      finally {}
+    }
+  }
+}

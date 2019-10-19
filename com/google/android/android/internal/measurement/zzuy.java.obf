@@ -1,0 +1,68 @@
+package com.google.android.gms.internal.measurement;
+
+import java.lang.reflect.Method;
+
+final class zzuy
+{
+  private static final Class<?> zzbvi = ;
+  
+  private static final zzuz zzfz(String paramString)
+    throws Exception
+  {
+    return (zzuz)zzbvi.getDeclaredMethod(paramString, new Class[0]).invoke(null, new Object[0]);
+  }
+  
+  private static Class<?> zzvk()
+  {
+    try
+    {
+      Class localClass = Class.forName("com.google.protobuf.ExtensionRegistry");
+      return localClass;
+    }
+    catch (ClassNotFoundException localClassNotFoundException)
+    {
+      for (;;) {}
+    }
+    return null;
+  }
+  
+  public static zzuz zzvl()
+  {
+    if (zzbvi != null) {}
+    try
+    {
+      zzuz localZzuz = zzfz("getEmptyRegistry");
+      return localZzuz;
+    }
+    catch (Exception localException)
+    {
+      for (;;) {}
+    }
+    return zzuz.zzbvm;
+  }
+  
+  static zzuz zzvm()
+  {
+    if (zzbvi != null) {}
+    try
+    {
+      localObject2 = zzfz("loadGeneratedRegistry");
+    }
+    catch (Exception localException)
+    {
+      Object localObject2;
+      Object localObject1;
+      for (;;) {}
+    }
+    localObject2 = null;
+    localObject1 = localObject2;
+    if (localObject2 == null) {
+      localObject1 = zzuz.zzvm();
+    }
+    localObject2 = localObject1;
+    if (localObject1 == null) {
+      localObject2 = zzvl();
+    }
+    return localObject2;
+  }
+}

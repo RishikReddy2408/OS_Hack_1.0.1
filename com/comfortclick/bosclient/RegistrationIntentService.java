@@ -1,0 +1,65 @@
+package com.comfortclick.bosclient;
+
+import android.app.IntentService;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+import com.google.firebase.messaging.FirebaseMessaging;
+import java.io.IOException;
+
+public class RegistrationIntentService
+  extends IntentService
+{
+  private static final String PAGE_KEY = "RegIntentService";
+  private static final String[] TOPICS = { "global" };
+  public static String Token;
+  
+  public RegistrationIntentService()
+  {
+    super("RegIntentService");
+  }
+  
+  private void sendRegistrationToServer(String paramString)
+  {
+    StringBuilder localStringBuilder = new StringBuilder();
+    localStringBuilder.append("New token received: ");
+    localStringBuilder.append(paramString);
+    Log.w("bos client", localStringBuilder.toString());
+  }
+  
+  private void subscribeTopics(String paramString)
+    throws IOException
+  {
+    paramString = TOPICS;
+    int j = paramString.length;
+    int i = 0;
+    while (i < j)
+    {
+      Object localObject = paramString[i];
+      FirebaseMessaging.getInstance().subscribeToTopic("mytopic");
+      i += 1;
+    }
+  }
+  
+  protected void onHandleIntent(Intent paramIntent)
+  {
+    try
+    {
+      sendRegistrationToServer(Token);
+      subscribeTopics(Token);
+    }
+    catch (Throwable paramIntent)
+    {
+      try
+      {
+        throw paramIntent;
+      }
+      catch (Exception paramIntent)
+      {
+        Log.d("RegIntentService", "Failed to complete token refresh", paramIntent);
+      }
+    }
+    paramIntent = new Intent("COMPLETE");
+    LocalBroadcastManager.getInstance(this).sendBroadcast(paramIntent);
+  }
+}

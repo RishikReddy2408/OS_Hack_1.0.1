@@ -1,0 +1,194 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.IOException;
+
+public final class zzfy
+  extends zzza<zzfy>
+{
+  private static volatile zzfy[] zzavt;
+  public Boolean zzavb = null;
+  public Boolean zzavc = null;
+  public Integer zzave = null;
+  public String zzavu = null;
+  public zzfw zzavv = null;
+  
+  public zzfy()
+  {
+    zzcfc = null;
+    zzcfm = -1;
+  }
+  
+  public static zzfy[] zzml()
+  {
+    if (zzavt == null) {
+      synchronized (zzze.zzcfl)
+      {
+        if (zzavt == null) {
+          zzavt = new zzfy[0];
+        }
+      }
+    }
+    return zzavt;
+  }
+  
+  public final boolean equals(Object paramObject)
+  {
+    if (paramObject == this) {
+      return true;
+    }
+    if (!(paramObject instanceof zzfy)) {
+      return false;
+    }
+    paramObject = (zzfy)paramObject;
+    if (zzave == null)
+    {
+      if (zzave != null) {
+        return false;
+      }
+    }
+    else if (!zzave.equals(zzave)) {
+      return false;
+    }
+    if (zzavu == null)
+    {
+      if (zzavu != null) {
+        return false;
+      }
+    }
+    else if (!zzavu.equals(zzavu)) {
+      return false;
+    }
+    if (zzavv == null)
+    {
+      if (zzavv != null) {
+        return false;
+      }
+    }
+    else if (!zzavv.equals(zzavv)) {
+      return false;
+    }
+    if (zzavb == null)
+    {
+      if (zzavb != null) {
+        return false;
+      }
+    }
+    else if (!zzavb.equals(zzavb)) {
+      return false;
+    }
+    if (zzavc == null)
+    {
+      if (zzavc != null) {
+        return false;
+      }
+    }
+    else if (!zzavc.equals(zzavc)) {
+      return false;
+    }
+    if ((zzcfc != null) && (!zzcfc.isEmpty())) {
+      return zzcfc.equals(zzcfc);
+    }
+    if (zzcfc != null) {
+      return zzcfc.isEmpty();
+    }
+    return true;
+  }
+  
+  public final int hashCode()
+  {
+    int i3 = getClass().getName().hashCode();
+    Object localObject = zzave;
+    int i2 = 0;
+    int i;
+    if (localObject == null) {
+      i = 0;
+    } else {
+      i = zzave.hashCode();
+    }
+    int j;
+    if (zzavu == null) {
+      j = 0;
+    } else {
+      j = zzavu.hashCode();
+    }
+    localObject = zzavv;
+    int k;
+    if (localObject == null) {
+      k = 0;
+    } else {
+      k = ((zzfw)localObject).hashCode();
+    }
+    int m;
+    if (zzavb == null) {
+      m = 0;
+    } else {
+      m = zzavb.hashCode();
+    }
+    int n;
+    if (zzavc == null) {
+      n = 0;
+    } else {
+      n = zzavc.hashCode();
+    }
+    int i1 = i2;
+    if (zzcfc != null) {
+      if (zzcfc.isEmpty()) {
+        i1 = i2;
+      } else {
+        i1 = zzcfc.hashCode();
+      }
+    }
+    return ((((((i3 + 527) * 31 + i) * 31 + j) * 31 + k) * 31 + m) * 31 + n) * 31 + i1;
+  }
+  
+  public final void zza(zzyy paramZzyy)
+    throws IOException
+  {
+    if (zzave != null) {
+      paramZzyy.zzd(1, zzave.intValue());
+    }
+    if (zzavu != null) {
+      paramZzyy.zzb(2, zzavu);
+    }
+    if (zzavv != null) {
+      paramZzyy.zza(3, zzavv);
+    }
+    if (zzavb != null) {
+      paramZzyy.zzb(4, zzavb.booleanValue());
+    }
+    if (zzavc != null) {
+      paramZzyy.zzb(5, zzavc.booleanValue());
+    }
+    super.zza(paramZzyy);
+  }
+  
+  protected final int zzf()
+  {
+    int j = super.zzf();
+    int i = j;
+    if (zzave != null) {
+      i = j + zzyy.zzh(1, zzave.intValue());
+    }
+    j = i;
+    if (zzavu != null) {
+      j = i + zzyy.zzc(2, zzavu);
+    }
+    i = j;
+    if (zzavv != null) {
+      i = j + zzyy.zzb(3, zzavv);
+    }
+    j = i;
+    if (zzavb != null)
+    {
+      zzavb.booleanValue();
+      j = i + (zzyy.zzbb(4) + 1);
+    }
+    i = j;
+    if (zzavc != null)
+    {
+      zzavc.booleanValue();
+      i = j + (zzyy.zzbb(5) + 1);
+    }
+    return i;
+  }
+}

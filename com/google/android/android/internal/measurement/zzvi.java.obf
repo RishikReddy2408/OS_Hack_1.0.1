@@ -1,0 +1,11 @@
+package com.google.android.gms.internal.measurement;
+
+ enum zzvi
+{
+  private final boolean zzbyg;
+  
+  private zzvi(boolean paramBoolean)
+  {
+    zzbyg = paramBoolean;
+  }
+}

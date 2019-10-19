@@ -1,0 +1,102 @@
+package com.comfortclick.bosclient.helpers;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import com.comfortclick.bosclient.profiles.Profile;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class ProfileSettings
+{
+  public ProfileSettings() {}
+  
+  public static ArrayList<Profile> loadProfiles(Context paramContext)
+  {
+    ArrayList localArrayList = new ArrayList();
+    try
+    {
+      paramContext = paramContext.getSharedPreferences("CMClientProfileList", 0).getString("json", "");
+      paramContext = (ArrayList)new Gson().fromJson(paramContext, new TypeToken() {}.getType());
+      if (paramContext != null) {
+        return paramContext;
+      }
+      paramContext = new ArrayList();
+      try
+      {
+        paramContext.add(new Profile(Boolean.valueOf(true), "Demo", "https://demo.comfortclick.com", "User", "Pass"));
+        return paramContext;
+      }
+      catch (Exception localException1) {}
+      localException2.printStackTrace();
+    }
+    catch (Exception localException2)
+    {
+      paramContext = localArrayList;
+    }
+    return paramContext;
+  }
+  
+  public static void saveProfiles(Context paramContext, ArrayList<Profile> paramArrayList)
+  {
+    try
+    {
+      ArrayList localArrayList = new ArrayList(paramArrayList.size());
+      paramArrayList = paramArrayList.iterator();
+      while (paramArrayList.hasNext()) {
+        localArrayList.add(new Profile((Profile)paramArrayList.next()));
+      }
+      paramArrayList = localArrayList.iterator();
+      while (paramArrayList.hasNext())
+      {
+        Profile localProfile = (Profile)paramArrayList.next();
+        if (!rememberMe) {
+          password = "";
+        }
+      }
+      paramContext = paramContext.getSharedPreferences("CMClientProfileList", 0).edit();
+      paramContext.putString("json", new Gson().toJson(localArrayList));
+      paramContext.commit();
+      return;
+    }
+    catch (Exception paramContext)
+    {
+      paramContext.printStackTrace();
+    }
+  }
+  
+  public static void updateProfile(Context paramContext, Profile paramProfile)
+  {
+    try
+    {
+      ArrayList localArrayList = loadProfiles(paramContext);
+      Iterator localIterator = localArrayList.iterator();
+      while (localIterator.hasNext())
+      {
+        Profile localProfile = (Profile)localIterator.next();
+        if ((manual) && (serverAddress.compareTo(serverAddress) == 0))
+        {
+          serverAddress = serverAddress;
+          localAddress = localAddress;
+          publicKey = publicKey;
+          gatewayAddress = gatewayAddress;
+        }
+        else if ((!manual) && (accessID.equals(accessID)))
+        {
+          serverAddress = serverAddress;
+          localAddress = localAddress;
+          publicKey = publicKey;
+          gatewayAddress = gatewayAddress;
+        }
+      }
+      saveProfiles(paramContext, localArrayList);
+      return;
+    }
+    catch (Exception paramContext)
+    {
+      paramContext.printStackTrace();
+    }
+  }
+}

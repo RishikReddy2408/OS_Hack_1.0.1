@@ -1,0 +1,517 @@
+package android.support.constraint.solver.widgets;
+
+import android.support.constraint.solver.ArrayRow;
+import android.support.constraint.solver.LinearSystem;
+import android.support.constraint.solver.SolverVariable;
+import java.util.ArrayList;
+
+class Chain
+{
+  private static final boolean DEBUG = false;
+  
+  Chain() {}
+  
+  static void applyChainConstraints(ConstraintWidgetContainer paramConstraintWidgetContainer, LinearSystem paramLinearSystem, int paramInt)
+  {
+    int k = 0;
+    int j;
+    ChainHead[] arrayOfChainHead;
+    int i;
+    if (paramInt == 0)
+    {
+      j = mHorizontalChainsSize;
+      arrayOfChainHead = mHorizontalChainsArray;
+      i = 0;
+    }
+    else
+    {
+      i = 2;
+      j = mVerticalChainsSize;
+      arrayOfChainHead = mVerticalChainsArray;
+    }
+    while (k < j)
+    {
+      ChainHead localChainHead = arrayOfChainHead[k];
+      localChainHead.define();
+      if (paramConstraintWidgetContainer.optimizeFor(4))
+      {
+        if (!Optimizer.applyChainOptimized(paramConstraintWidgetContainer, paramLinearSystem, paramInt, i, localChainHead)) {
+          applyChainConstraints(paramConstraintWidgetContainer, paramLinearSystem, paramInt, i, localChainHead);
+        }
+      }
+      else {
+        applyChainConstraints(paramConstraintWidgetContainer, paramLinearSystem, paramInt, i, localChainHead);
+      }
+      k += 1;
+    }
+  }
+  
+  static void applyChainConstraints(ConstraintWidgetContainer paramConstraintWidgetContainer, LinearSystem paramLinearSystem, int paramInt1, int paramInt2, ChainHead paramChainHead)
+  {
+    Object localObject3 = mFirst;
+    ConstraintWidget localConstraintWidget1 = mLast;
+    Object localObject2 = mFirstVisibleWidget;
+    ConstraintWidget localConstraintWidget2 = mLastVisibleWidget;
+    Object localObject4 = mHead;
+    float f1 = mTotalWeight;
+    Object localObject1 = mFirstMatchConstraintWidget;
+    localObject1 = mLastMatchConstraintWidget;
+    int i1;
+    if (mListDimensionBehaviors[paramInt1] == ConstraintWidget.DimensionBehaviour.WRAP_CONTENT) {
+      i1 = 1;
+    } else {
+      i1 = 0;
+    }
+    int i;
+    int j;
+    int k;
+    int m;
+    if (paramInt1 == 0)
+    {
+      if (mHorizontalChainStyle == 0) {
+        i = 1;
+      } else {
+        i = 0;
+      }
+      if (mHorizontalChainStyle == 1) {
+        j = 1;
+      } else {
+        j = 0;
+      }
+      k = j;
+      m = i;
+      if (mHorizontalChainStyle != 2) {}
+    }
+    int n;
+    Object localObject5;
+    for (;;)
+    {
+      k = 1;
+      m = j;
+      n = i;
+      do
+      {
+        i = 0;
+        n = m;
+        m = k;
+        k = i;
+        localObject5 = localObject3;
+        i = 0;
+        break;
+        if (mVerticalChainStyle == 0) {
+          i = 1;
+        } else {
+          i = 0;
+        }
+        if (mVerticalChainStyle == 1) {
+          j = 1;
+        } else {
+          j = 0;
+        }
+        k = j;
+        m = i;
+      } while (mVerticalChainStyle != 2);
+    }
+    Object localObject6;
+    int i2;
+    Object localObject7;
+    for (;;)
+    {
+      localObject6 = null;
+      if (i != 0) {
+        break;
+      }
+      localObject1 = mListAnchors[paramInt2];
+      if ((i1 == 0) && (k == 0)) {
+        j = 4;
+      } else {
+        j = 1;
+      }
+      int i3 = ((ConstraintAnchor)localObject1).getMargin();
+      i2 = i3;
+      if (mTarget != null)
+      {
+        i2 = i3;
+        if (localObject5 != localObject3) {
+          i2 = i3 + mTarget.getMargin();
+        }
+      }
+      if ((k != 0) && (localObject5 != localObject3) && (localObject5 != localObject2)) {
+        j = 6;
+      } else if ((n != 0) && (i1 != 0)) {
+        j = 4;
+      }
+      if (mTarget != null)
+      {
+        if (localObject5 == localObject2) {
+          paramLinearSystem.addGreaterThan(mSolverVariable, mTarget.mSolverVariable, i2, 5);
+        } else {
+          paramLinearSystem.addGreaterThan(mSolverVariable, mTarget.mSolverVariable, i2, 6);
+        }
+        paramLinearSystem.addEquality(mSolverVariable, mTarget.mSolverVariable, i2, j);
+      }
+      if (i1 != 0)
+      {
+        if ((((ConstraintWidget)localObject5).getVisibility() != 8) && (mListDimensionBehaviors[paramInt1] == ConstraintWidget.DimensionBehaviour.MATCH_CONSTRAINT)) {
+          paramLinearSystem.addGreaterThan(mListAnchors[(paramInt2 + 1)].mSolverVariable, mListAnchors[paramInt2].mSolverVariable, 0, 5);
+        }
+        paramLinearSystem.addGreaterThan(mListAnchors[paramInt2].mSolverVariable, mListAnchors[paramInt2].mSolverVariable, 0, 6);
+      }
+      localObject7 = mListAnchors[(paramInt2 + 1)].mTarget;
+      localObject1 = localObject6;
+      if (localObject7 != null)
+      {
+        localObject7 = mOwner;
+        localObject1 = localObject6;
+        if (mListAnchors[paramInt2].mTarget != null) {
+          if (mListAnchors[paramInt2].mTarget.mOwner != localObject5) {
+            localObject1 = localObject6;
+          } else {
+            localObject1 = localObject7;
+          }
+        }
+      }
+      if (localObject1 != null) {
+        localObject5 = localObject1;
+      } else {
+        i = 1;
+      }
+    }
+    if (localConstraintWidget2 != null)
+    {
+      localObject1 = mListAnchors;
+      i = paramInt2 + 1;
+      if (mTarget != null)
+      {
+        localObject1 = mListAnchors[i];
+        paramLinearSystem.addLowerThan(mSolverVariable, mListAnchors[i].mTarget.mSolverVariable, -((ConstraintAnchor)localObject1).getMargin(), 5);
+      }
+    }
+    if (i1 != 0)
+    {
+      paramConstraintWidgetContainer = mListAnchors;
+      i = paramInt2 + 1;
+      paramLinearSystem.addGreaterThan(mSolverVariable, mListAnchors[i].mSolverVariable, mListAnchors[i].getMargin(), 6);
+    }
+    paramConstraintWidgetContainer = mWeightedMatchConstraintsWidgets;
+    label914:
+    Object localObject8;
+    Object localObject9;
+    if (paramConstraintWidgetContainer != null)
+    {
+      i = paramConstraintWidgetContainer.size();
+      if (i > 1)
+      {
+        float f2;
+        if ((mHasUndefinedWeights) && (!mHasComplexMatchWeights)) {
+          f2 = mWidgetsMatchCount;
+        } else {
+          f2 = f1;
+        }
+        localObject1 = null;
+        j = 0;
+        for (float f3 = 0.0F; j < i; f3 = f1)
+        {
+          localObject5 = (ConstraintWidget)paramConstraintWidgetContainer.get(j);
+          f1 = mWeight[paramInt1];
+          if (f1 < 0.0F)
+          {
+            if (mHasComplexMatchWeights)
+            {
+              paramLinearSystem.addEquality(mListAnchors[(paramInt2 + 1)].mSolverVariable, mListAnchors[paramInt2].mSolverVariable, 0, 4);
+              break label914;
+            }
+            f1 = 1.0F;
+          }
+          if (f1 == 0.0F)
+          {
+            paramLinearSystem.addEquality(mListAnchors[(paramInt2 + 1)].mSolverVariable, mListAnchors[paramInt2].mSolverVariable, 0, 6);
+            f1 = f3;
+          }
+          else
+          {
+            if (localObject1 != null)
+            {
+              localObject6 = mListAnchors[paramInt2].mSolverVariable;
+              localObject1 = mListAnchors;
+              i1 = paramInt2 + 1;
+              localObject1 = mSolverVariable;
+              localObject7 = mListAnchors[paramInt2].mSolverVariable;
+              localObject8 = mListAnchors[i1].mSolverVariable;
+              localObject9 = paramLinearSystem.createRow();
+              ((ArrayRow)localObject9).createRowEqualMatchDimensions(f3, f2, f1, (SolverVariable)localObject6, (SolverVariable)localObject1, (SolverVariable)localObject7, (SolverVariable)localObject8);
+              paramLinearSystem.addConstraint((ArrayRow)localObject9);
+            }
+            localObject1 = localObject5;
+          }
+          j += 1;
+        }
+      }
+    }
+    if ((localObject2 != null) && ((localObject2 == localConstraintWidget2) || (k != 0)))
+    {
+      localObject1 = mListAnchors[paramInt2];
+      paramConstraintWidgetContainer = mListAnchors;
+      i = paramInt2 + 1;
+      localObject5 = paramConstraintWidgetContainer[i];
+      if (mListAnchors[paramInt2].mTarget != null) {
+        paramConstraintWidgetContainer = mListAnchors[paramInt2].mTarget.mSolverVariable;
+      } else {
+        paramConstraintWidgetContainer = null;
+      }
+      if (mListAnchors[i].mTarget != null) {
+        paramChainHead = mListAnchors[i].mTarget.mSolverVariable;
+      } else {
+        paramChainHead = null;
+      }
+      localObject3 = localObject5;
+      if (localObject2 == localConstraintWidget2)
+      {
+        localObject1 = mListAnchors[paramInt2];
+        localObject3 = mListAnchors[i];
+      }
+      if ((paramConstraintWidgetContainer != null) && (paramChainHead != null))
+      {
+        if (paramInt1 == 0) {}
+        for (f1 = mHorizontalBiasPercent;; f1 = mVerticalBiasPercent) {
+          break;
+        }
+        paramInt1 = ((ConstraintAnchor)localObject1).getMargin();
+        i = ((ConstraintAnchor)localObject3).getMargin();
+        paramLinearSystem.addCentering(mSolverVariable, paramConstraintWidgetContainer, paramInt1, f1, paramChainHead, mSolverVariable, i, 5);
+      }
+    }
+    else
+    {
+      if ((n != 0) && (localObject2 != null))
+      {
+        if ((mWidgetsMatchCount > 0) && (mWidgetsCount == mWidgetsMatchCount)) {
+          k = 1;
+        } else {
+          k = 0;
+        }
+        paramConstraintWidgetContainer = (ConstraintWidgetContainer)localObject2;
+        paramChainHead = paramConstraintWidgetContainer;
+        localObject4 = paramConstraintWidgetContainer;
+      }
+      while (paramChainHead != null)
+      {
+        localObject5 = mListNextVisibleWidget[paramInt1];
+        if ((localObject5 == null) && (paramChainHead != localConstraintWidget2)) {}
+        for (paramConstraintWidgetContainer = (ConstraintWidgetContainer)localObject5;; paramConstraintWidgetContainer = (ConstraintWidgetContainer)localObject1)
+        {
+          break;
+          localObject6 = mListAnchors[paramInt2];
+          localObject9 = mSolverVariable;
+          if (mTarget != null) {
+            localObject1 = mTarget.mSolverVariable;
+          } else {
+            localObject1 = null;
+          }
+          if (localObject4 != paramChainHead)
+          {
+            paramConstraintWidgetContainer = mListAnchors[(paramInt2 + 1)].mSolverVariable;
+          }
+          else
+          {
+            paramConstraintWidgetContainer = (ConstraintWidgetContainer)localObject1;
+            if (paramChainHead == localObject2)
+            {
+              paramConstraintWidgetContainer = (ConstraintWidgetContainer)localObject1;
+              if (localObject4 == paramChainHead) {
+                if (mListAnchors[paramInt2].mTarget != null) {
+                  paramConstraintWidgetContainer = mListAnchors[paramInt2].mTarget.mSolverVariable;
+                } else {
+                  paramConstraintWidgetContainer = null;
+                }
+              }
+            }
+          }
+          i1 = ((ConstraintAnchor)localObject6).getMargin();
+          localObject1 = mListAnchors;
+          i2 = paramInt2 + 1;
+          j = localObject1[i2].getMargin();
+          if (localObject5 != null)
+          {
+            localObject8 = mListAnchors[paramInt2];
+            localObject7 = mSolverVariable;
+            localObject6 = mListAnchors[i2].mSolverVariable;
+          }
+          else
+          {
+            localObject8 = mListAnchors[i2].mTarget;
+            if (localObject8 != null) {
+              localObject1 = mSolverVariable;
+            } else {
+              localObject1 = null;
+            }
+            localObject6 = mListAnchors[i2].mSolverVariable;
+            localObject7 = localObject1;
+          }
+          localObject1 = localObject5;
+          i = j;
+          if (localObject8 != null) {
+            i = j + ((ConstraintAnchor)localObject8).getMargin();
+          }
+          j = i1;
+          if (localObject4 != null) {
+            j = i1 + mListAnchors[i2].getMargin();
+          }
+          if ((localObject9 != null) && (paramConstraintWidgetContainer != null) && (localObject7 != null) && (localObject6 != null))
+          {
+            if (paramChainHead == localObject2) {
+              j = mListAnchors[paramInt2].getMargin();
+            }
+            if (paramChainHead == localConstraintWidget2) {
+              i = mListAnchors[i2].getMargin();
+            }
+            if (k != 0) {
+              i1 = 6;
+            } else {
+              i1 = 4;
+            }
+            paramLinearSystem.addCentering((SolverVariable)localObject9, paramConstraintWidgetContainer, j, 0.5F, (SolverVariable)localObject7, (SolverVariable)localObject6, i, i1);
+            paramConstraintWidgetContainer = (ConstraintWidgetContainer)localObject1;
+            break;
+          }
+        }
+        localObject4 = paramChainHead;
+        paramChainHead = paramConstraintWidgetContainer;
+        continue;
+        if ((m != 0) && (localObject2 != null))
+        {
+          if ((mWidgetsMatchCount > 0) && (mWidgetsCount == mWidgetsMatchCount)) {
+            i = 1;
+          } else {
+            i = 0;
+          }
+          paramConstraintWidgetContainer = (ConstraintWidgetContainer)localObject2;
+          paramChainHead = paramConstraintWidgetContainer;
+          localObject4 = paramConstraintWidgetContainer;
+          for (;;)
+          {
+            localObject1 = paramChainHead;
+            if (localObject1 == null) {
+              break;
+            }
+            paramConstraintWidgetContainer = mListNextVisibleWidget[paramInt1];
+            if ((localObject1 != localObject2) && (localObject1 != localConstraintWidget2) && (paramConstraintWidgetContainer != null))
+            {
+              if (paramConstraintWidgetContainer == localConstraintWidget2) {
+                paramConstraintWidgetContainer = null;
+              }
+              paramChainHead = mListAnchors[paramInt2];
+              localObject8 = mSolverVariable;
+              if (mTarget != null) {
+                localObject5 = mTarget.mSolverVariable;
+              }
+              localObject5 = mListAnchors;
+              i2 = paramInt2 + 1;
+              localObject9 = mSolverVariable;
+              i1 = paramChainHead.getMargin();
+              k = mListAnchors[i2].getMargin();
+              if (paramConstraintWidgetContainer != null)
+              {
+                localObject5 = mListAnchors[paramInt2];
+                localObject6 = mSolverVariable;
+                if (mTarget != null) {
+                  paramChainHead = mTarget.mSolverVariable;
+                } else {
+                  paramChainHead = null;
+                }
+              }
+              else
+              {
+                localObject5 = mListAnchors[i2].mTarget;
+                if (localObject5 != null) {
+                  paramChainHead = mSolverVariable;
+                } else {
+                  paramChainHead = null;
+                }
+                localObject7 = mListAnchors[i2].mSolverVariable;
+                localObject6 = paramChainHead;
+                paramChainHead = (ChainHead)localObject7;
+              }
+              j = k;
+              if (localObject5 != null) {
+                j = k + ((ConstraintAnchor)localObject5).getMargin();
+              }
+              k = i1;
+              if (localObject4 != null) {
+                k = i1 + mListAnchors[i2].getMargin();
+              }
+              if (i != 0) {
+                i1 = 6;
+              } else {
+                i1 = 4;
+              }
+              if ((localObject8 != null) && (localObject9 != null) && (localObject6 != null) && (paramChainHead != null)) {
+                paramLinearSystem.addCentering((SolverVariable)localObject8, (SolverVariable)localObject9, k, 0.5F, (SolverVariable)localObject6, paramChainHead, j, i1);
+              }
+            }
+            localObject4 = localObject1;
+            paramChainHead = paramConstraintWidgetContainer;
+          }
+          paramChainHead = mListAnchors[paramInt2];
+          localObject1 = mListAnchors[paramInt2].mTarget;
+          paramConstraintWidgetContainer = mListAnchors;
+          paramInt1 = paramInt2 + 1;
+          localObject3 = paramConstraintWidgetContainer[paramInt1];
+          paramConstraintWidgetContainer = mListAnchors[paramInt1].mTarget;
+          if (localObject1 != null) {
+            if (localObject2 != localConstraintWidget2) {
+              paramLinearSystem.addEquality(mSolverVariable, mSolverVariable, paramChainHead.getMargin(), 5);
+            } else if (paramConstraintWidgetContainer != null) {
+              paramLinearSystem.addCentering(mSolverVariable, mSolverVariable, paramChainHead.getMargin(), 0.5F, mSolverVariable, mSolverVariable, ((ConstraintAnchor)localObject3).getMargin(), 5);
+            }
+          }
+          if ((paramConstraintWidgetContainer != null) && (localObject2 != localConstraintWidget2)) {
+            paramLinearSystem.addEquality(mSolverVariable, mSolverVariable, -((ConstraintAnchor)localObject3).getMargin(), 5);
+          }
+        }
+      }
+    }
+    if (((n != 0) || (m != 0)) && (localObject2 != null))
+    {
+      localObject1 = mListAnchors[paramInt2];
+      paramConstraintWidgetContainer = mListAnchors;
+      paramInt1 = paramInt2 + 1;
+      localObject3 = paramConstraintWidgetContainer[paramInt1];
+      if (mTarget != null) {
+        paramChainHead = mTarget.mSolverVariable;
+      } else {
+        paramChainHead = null;
+      }
+      if (mTarget != null) {
+        paramConstraintWidgetContainer = mTarget.mSolverVariable;
+      } else {
+        paramConstraintWidgetContainer = null;
+      }
+      if (localConstraintWidget1 != localConstraintWidget2)
+      {
+        paramConstraintWidgetContainer = mListAnchors[paramInt1];
+        if (mTarget != null) {
+          paramConstraintWidgetContainer = mTarget.mSolverVariable;
+        } else {
+          paramConstraintWidgetContainer = null;
+        }
+      }
+      if (localObject2 == localConstraintWidget2)
+      {
+        localObject1 = mListAnchors[paramInt2];
+        localObject3 = mListAnchors[paramInt1];
+      }
+      if ((paramChainHead != null) && (paramConstraintWidgetContainer != null))
+      {
+        paramInt2 = ((ConstraintAnchor)localObject1).getMargin();
+        if (localConstraintWidget2 == null) {
+          localObject2 = localConstraintWidget1;
+        } else {
+          localObject2 = localConstraintWidget2;
+        }
+        paramInt1 = mListAnchors[paramInt1].getMargin();
+        paramLinearSystem.addCentering(mSolverVariable, paramChainHead, paramInt2, 0.5F, paramConstraintWidgetContainer, mSolverVariable, paramInt1, 5);
+      }
+    }
+  }
+}

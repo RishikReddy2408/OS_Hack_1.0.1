@@ -1,0 +1,160 @@
+package com.google.android.gms.common.internal;
+
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.ServiceConnection;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
+import android.util.Log;
+import com.google.android.gms.common.stats.ConnectionTracker;
+import java.util.HashMap;
+import javax.annotation.concurrent.GuardedBy;
+
+final class zze
+  extends GmsClientSupervisor
+  implements Handler.Callback
+{
+  private final Handler mHandler;
+  @GuardedBy("mConnectionStatus")
+  private final HashMap<GmsClientSupervisor.zza, zzf> zzdu = new HashMap();
+  private final Context zzdv;
+  private final ConnectionTracker zzdw;
+  private final long zzdx;
+  private final long zzdy;
+  
+  zze(Context paramContext)
+  {
+    zzdv = paramContext.getApplicationContext();
+    mHandler = new com.google.android.gms.internal.common.zze(paramContext.getMainLooper(), this);
+    zzdw = ConnectionTracker.getInstance();
+    zzdx = 5000L;
+    zzdy = 300000L;
+  }
+  
+  public final boolean handleMessage(Message paramMessage)
+  {
+    switch (what)
+    {
+    default: 
+      return false;
+    case 1: 
+      synchronized (zzdu)
+      {
+        GmsClientSupervisor.zza localZza = (GmsClientSupervisor.zza)obj;
+        zzf localZzf = (zzf)zzdu.get(localZza);
+        if ((localZzf != null) && (localZzf.getState() == 3))
+        {
+          paramMessage = String.valueOf(localZza);
+          ??? = new StringBuilder(String.valueOf(paramMessage).length() + 47);
+          ((StringBuilder)???).append("Timeout waiting for ServiceConnection callback ");
+          ((StringBuilder)???).append(paramMessage);
+          Log.wtf("GmsClientSupervisor", ((StringBuilder)???).toString(), new Exception());
+          ??? = localZzf.getComponentName();
+          paramMessage = (Message)???;
+          if (??? == null) {
+            paramMessage = localZza.getComponentName();
+          }
+          ??? = paramMessage;
+          if (paramMessage == null) {
+            ??? = new ComponentName(localZza.getPackage(), "unknown");
+          }
+          localZzf.onServiceDisconnected((ComponentName)???);
+        }
+        return true;
+      }
+    }
+    synchronized (zzdu)
+    {
+      paramMessage = (GmsClientSupervisor.zza)obj;
+      ??? = (zzf)zzdu.get(paramMessage);
+      if ((??? != null) && (((zzf)???).zzr()))
+      {
+        if (((zzf)???).isBound()) {
+          ((zzf)???).zzf("GmsClientSupervisor");
+        }
+        zzdu.remove(paramMessage);
+      }
+      return true;
+    }
+  }
+  
+  protected final boolean zza(GmsClientSupervisor.zza paramZza, ServiceConnection paramServiceConnection, String paramString)
+  {
+    Preconditions.checkNotNull(paramServiceConnection, "ServiceConnection must not be null");
+    for (;;)
+    {
+      zzf localZzf;
+      synchronized (zzdu)
+      {
+        localZzf = (zzf)zzdu.get(paramZza);
+        if (localZzf == null)
+        {
+          localZzf = new zzf(this, paramZza);
+          localZzf.zza(paramServiceConnection, paramString);
+          localZzf.zze(paramString);
+          zzdu.put(paramZza, localZzf);
+          paramZza = localZzf;
+        }
+        else
+        {
+          mHandler.removeMessages(0, paramZza);
+          if (localZzf.zza(paramServiceConnection)) {
+            continue;
+          }
+          localZzf.zza(paramServiceConnection, paramString);
+        }
+        switch (localZzf.getState())
+        {
+        case 2: 
+          localZzf.zze(paramString);
+          paramZza = localZzf;
+          break;
+        case 1: 
+          paramServiceConnection.onServiceConnected(localZzf.getComponentName(), localZzf.getBinder());
+          paramZza = localZzf;
+          boolean bool = paramZza.isBound();
+          return bool;
+          paramZza = String.valueOf(paramZza);
+          paramServiceConnection = new StringBuilder(String.valueOf(paramZza).length() + 81);
+          paramServiceConnection.append("Trying to bind a GmsServiceConnection that was already connected before.  config=");
+          paramServiceConnection.append(paramZza);
+          throw new IllegalStateException(paramServiceConnection.toString());
+        }
+      }
+      paramZza = localZzf;
+    }
+  }
+  
+  protected final void zzb(GmsClientSupervisor.zza paramZza, ServiceConnection paramServiceConnection, String paramString)
+  {
+    Preconditions.checkNotNull(paramServiceConnection, "ServiceConnection must not be null");
+    synchronized (zzdu)
+    {
+      zzf localZzf = (zzf)zzdu.get(paramZza);
+      if (localZzf != null)
+      {
+        if (localZzf.zza(paramServiceConnection))
+        {
+          localZzf.zzb(paramServiceConnection, paramString);
+          if (localZzf.zzr())
+          {
+            paramZza = mHandler.obtainMessage(0, paramZza);
+            mHandler.sendMessageDelayed(paramZza, zzdx);
+          }
+          return;
+        }
+        paramZza = String.valueOf(paramZza);
+        paramServiceConnection = new StringBuilder(String.valueOf(paramZza).length() + 76);
+        paramServiceConnection.append("Trying to unbind a GmsServiceConnection  that was not bound before.  config=");
+        paramServiceConnection.append(paramZza);
+        throw new IllegalStateException(paramServiceConnection.toString());
+      }
+      paramZza = String.valueOf(paramZza);
+      paramServiceConnection = new StringBuilder(String.valueOf(paramZza).length() + 50);
+      paramServiceConnection.append("Nonexistent connection status for service config: ");
+      paramServiceConnection.append(paramZza);
+      throw new IllegalStateException(paramServiceConnection.toString());
+    }
+  }
+}

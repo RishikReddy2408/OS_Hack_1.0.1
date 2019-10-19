@@ -1,0 +1,28 @@
+package com.google.android.gms.measurement.internal;
+
+import android.os.RemoteException;
+
+final class zzdt
+  implements Runnable
+{
+  zzdt(zzdr paramZzdr, zzh paramZzh) {}
+  
+  public final void run()
+  {
+    zzag localZzag = zzdr.zzd(zzasg);
+    if (localZzag == null)
+    {
+      zzasg.zzgo().zzjd().zzbx("Failed to reset data on the service; null service");
+      return;
+    }
+    try
+    {
+      localZzag.zzd(zzaqn);
+    }
+    catch (RemoteException localRemoteException)
+    {
+      zzasg.zzgo().zzjd().zzg("Failed to reset data on the service", localRemoteException);
+    }
+    zzdr.zze(zzasg);
+  }
+}

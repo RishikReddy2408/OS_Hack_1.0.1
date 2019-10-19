@@ -1,0 +1,135 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+abstract interface zzxi
+{
+  public abstract int getTag();
+  
+  public abstract double readDouble()
+    throws IOException;
+  
+  public abstract float readFloat()
+    throws IOException;
+  
+  public abstract String readString()
+    throws IOException;
+  
+  public abstract void readStringList(List<String> paramList)
+    throws IOException;
+  
+  public abstract <T> T zza(zzxj<T> paramZzxj, zzuz paramZzuz)
+    throws IOException;
+  
+  public abstract <T> void zza(List<T> paramList, zzxj<T> paramZzxj, zzuz paramZzuz)
+    throws IOException;
+  
+  public abstract <K, V> void zza(Map<K, V> paramMap, zzwm<K, V> paramZzwm, zzuz paramZzuz)
+    throws IOException;
+  
+  @Deprecated
+  public abstract <T> T zzb(zzxj<T> paramZzxj, zzuz paramZzuz)
+    throws IOException;
+  
+  @Deprecated
+  public abstract <T> void zzb(List<T> paramList, zzxj<T> paramZzxj, zzuz paramZzuz)
+    throws IOException;
+  
+  public abstract void zzh(List<Double> paramList)
+    throws IOException;
+  
+  public abstract void zzi(List<Float> paramList)
+    throws IOException;
+  
+  public abstract void zzj(List<Long> paramList)
+    throws IOException;
+  
+  public abstract void zzk(List<Long> paramList)
+    throws IOException;
+  
+  public abstract void zzl(List<Integer> paramList)
+    throws IOException;
+  
+  public abstract void zzm(List<Long> paramList)
+    throws IOException;
+  
+  public abstract void zzn(List<Integer> paramList)
+    throws IOException;
+  
+  public abstract void zzo(List<Boolean> paramList)
+    throws IOException;
+  
+  public abstract void zzp(List<String> paramList)
+    throws IOException;
+  
+  public abstract void zzq(List<zzud> paramList)
+    throws IOException;
+  
+  public abstract void zzr(List<Integer> paramList)
+    throws IOException;
+  
+  public abstract void zzs(List<Integer> paramList)
+    throws IOException;
+  
+  public abstract void zzt(List<Integer> paramList)
+    throws IOException;
+  
+  public abstract void zzu(List<Long> paramList)
+    throws IOException;
+  
+  public abstract long zzuh()
+    throws IOException;
+  
+  public abstract long zzui()
+    throws IOException;
+  
+  public abstract int zzuj()
+    throws IOException;
+  
+  public abstract long zzuk()
+    throws IOException;
+  
+  public abstract int zzul()
+    throws IOException;
+  
+  public abstract boolean zzum()
+    throws IOException;
+  
+  public abstract String zzun()
+    throws IOException;
+  
+  public abstract zzud zzuo()
+    throws IOException;
+  
+  public abstract int zzup()
+    throws IOException;
+  
+  public abstract int zzuq()
+    throws IOException;
+  
+  public abstract int zzur()
+    throws IOException;
+  
+  public abstract long zzus()
+    throws IOException;
+  
+  public abstract int zzut()
+    throws IOException;
+  
+  public abstract long zzuu()
+    throws IOException;
+  
+  public abstract void zzv(List<Integer> paramList)
+    throws IOException;
+  
+  public abstract int zzve()
+    throws IOException;
+  
+  public abstract boolean zzvf()
+    throws IOException;
+  
+  public abstract void zzw(List<Long> paramList)
+    throws IOException;
+}

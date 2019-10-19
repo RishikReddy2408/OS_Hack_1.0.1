@@ -1,0 +1,430 @@
+package com.google.android.gms.measurement.internal;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import javax.net.ssl.HandshakeCompletedListener;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+
+final class zzfm
+  extends SSLSocket
+{
+  private final SSLSocket zzaun;
+  
+  zzfm(zzfl paramZzfl, SSLSocket paramSSLSocket)
+  {
+    zzaun = paramSSLSocket;
+  }
+  
+  public final void addHandshakeCompletedListener(HandshakeCompletedListener paramHandshakeCompletedListener)
+  {
+    zzaun.addHandshakeCompletedListener(paramHandshakeCompletedListener);
+  }
+  
+  public final void bind(SocketAddress paramSocketAddress)
+    throws IOException
+  {
+    zzaun.bind(paramSocketAddress);
+  }
+  
+  public final void close()
+    throws IOException
+  {
+    try
+    {
+      zzaun.close();
+      return;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  public final void connect(SocketAddress paramSocketAddress)
+    throws IOException
+  {
+    zzaun.connect(paramSocketAddress);
+  }
+  
+  public final void connect(SocketAddress paramSocketAddress, int paramInt)
+    throws IOException
+  {
+    zzaun.connect(paramSocketAddress, paramInt);
+  }
+  
+  public final boolean equals(Object paramObject)
+  {
+    return zzaun.equals(paramObject);
+  }
+  
+  public final SocketChannel getChannel()
+  {
+    return zzaun.getChannel();
+  }
+  
+  public final boolean getEnableSessionCreation()
+  {
+    return zzaun.getEnableSessionCreation();
+  }
+  
+  public final String[] getEnabledCipherSuites()
+  {
+    return zzaun.getEnabledCipherSuites();
+  }
+  
+  public final String[] getEnabledProtocols()
+  {
+    return zzaun.getEnabledProtocols();
+  }
+  
+  public final InetAddress getInetAddress()
+  {
+    return zzaun.getInetAddress();
+  }
+  
+  public final InputStream getInputStream()
+    throws IOException
+  {
+    return zzaun.getInputStream();
+  }
+  
+  public final boolean getKeepAlive()
+    throws SocketException
+  {
+    return zzaun.getKeepAlive();
+  }
+  
+  public final InetAddress getLocalAddress()
+  {
+    return zzaun.getLocalAddress();
+  }
+  
+  public final int getLocalPort()
+  {
+    return zzaun.getLocalPort();
+  }
+  
+  public final SocketAddress getLocalSocketAddress()
+  {
+    return zzaun.getLocalSocketAddress();
+  }
+  
+  public final boolean getNeedClientAuth()
+  {
+    return zzaun.getNeedClientAuth();
+  }
+  
+  public final boolean getOOBInline()
+    throws SocketException
+  {
+    return zzaun.getOOBInline();
+  }
+  
+  public final OutputStream getOutputStream()
+    throws IOException
+  {
+    return zzaun.getOutputStream();
+  }
+  
+  public final int getPort()
+  {
+    return zzaun.getPort();
+  }
+  
+  public final int getReceiveBufferSize()
+    throws SocketException
+  {
+    try
+    {
+      int i = zzaun.getReceiveBufferSize();
+      return i;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  public final SocketAddress getRemoteSocketAddress()
+  {
+    return zzaun.getRemoteSocketAddress();
+  }
+  
+  public final boolean getReuseAddress()
+    throws SocketException
+  {
+    return zzaun.getReuseAddress();
+  }
+  
+  public final int getSendBufferSize()
+    throws SocketException
+  {
+    try
+    {
+      int i = zzaun.getSendBufferSize();
+      return i;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  public final SSLSession getSession()
+  {
+    return zzaun.getSession();
+  }
+  
+  public final int getSoLinger()
+    throws SocketException
+  {
+    return zzaun.getSoLinger();
+  }
+  
+  public final int getSoTimeout()
+    throws SocketException
+  {
+    try
+    {
+      int i = zzaun.getSoTimeout();
+      return i;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  public final String[] getSupportedCipherSuites()
+  {
+    return zzaun.getSupportedCipherSuites();
+  }
+  
+  public final String[] getSupportedProtocols()
+  {
+    return zzaun.getSupportedProtocols();
+  }
+  
+  public final boolean getTcpNoDelay()
+    throws SocketException
+  {
+    return zzaun.getTcpNoDelay();
+  }
+  
+  public final int getTrafficClass()
+    throws SocketException
+  {
+    return zzaun.getTrafficClass();
+  }
+  
+  public final boolean getUseClientMode()
+  {
+    return zzaun.getUseClientMode();
+  }
+  
+  public final boolean getWantClientAuth()
+  {
+    return zzaun.getWantClientAuth();
+  }
+  
+  public final boolean isBound()
+  {
+    return zzaun.isBound();
+  }
+  
+  public final boolean isClosed()
+  {
+    return zzaun.isClosed();
+  }
+  
+  public final boolean isConnected()
+  {
+    return zzaun.isConnected();
+  }
+  
+  public final boolean isInputShutdown()
+  {
+    return zzaun.isInputShutdown();
+  }
+  
+  public final boolean isOutputShutdown()
+  {
+    return zzaun.isOutputShutdown();
+  }
+  
+  public final void removeHandshakeCompletedListener(HandshakeCompletedListener paramHandshakeCompletedListener)
+  {
+    zzaun.removeHandshakeCompletedListener(paramHandshakeCompletedListener);
+  }
+  
+  public final void sendUrgentData(int paramInt)
+    throws IOException
+  {
+    zzaun.sendUrgentData(paramInt);
+  }
+  
+  public final void setEnableSessionCreation(boolean paramBoolean)
+  {
+    zzaun.setEnableSessionCreation(paramBoolean);
+  }
+  
+  public final void setEnabledCipherSuites(String[] paramArrayOfString)
+  {
+    zzaun.setEnabledCipherSuites(paramArrayOfString);
+  }
+  
+  public final void setEnabledProtocols(String[] paramArrayOfString)
+  {
+    String[] arrayOfString = paramArrayOfString;
+    if (paramArrayOfString != null)
+    {
+      arrayOfString = paramArrayOfString;
+      if (Arrays.asList(paramArrayOfString).contains("SSLv3"))
+      {
+        paramArrayOfString = new ArrayList(Arrays.asList(zzaun.getEnabledProtocols()));
+        if (paramArrayOfString.size() > 1) {
+          paramArrayOfString.remove("SSLv3");
+        }
+        arrayOfString = (String[])paramArrayOfString.toArray(new String[paramArrayOfString.size()]);
+      }
+    }
+    zzaun.setEnabledProtocols(arrayOfString);
+  }
+  
+  public final void setKeepAlive(boolean paramBoolean)
+    throws SocketException
+  {
+    zzaun.setKeepAlive(paramBoolean);
+  }
+  
+  public final void setNeedClientAuth(boolean paramBoolean)
+  {
+    zzaun.setNeedClientAuth(paramBoolean);
+  }
+  
+  public final void setOOBInline(boolean paramBoolean)
+    throws SocketException
+  {
+    zzaun.setOOBInline(paramBoolean);
+  }
+  
+  public final void setPerformancePreferences(int paramInt1, int paramInt2, int paramInt3)
+  {
+    zzaun.setPerformancePreferences(paramInt1, paramInt2, paramInt3);
+  }
+  
+  public final void setReceiveBufferSize(int paramInt)
+    throws SocketException
+  {
+    try
+    {
+      zzaun.setReceiveBufferSize(paramInt);
+      return;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  public final void setReuseAddress(boolean paramBoolean)
+    throws SocketException
+  {
+    zzaun.setReuseAddress(paramBoolean);
+  }
+  
+  public final void setSendBufferSize(int paramInt)
+    throws SocketException
+  {
+    try
+    {
+      zzaun.setSendBufferSize(paramInt);
+      return;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  public final void setSoLinger(boolean paramBoolean, int paramInt)
+    throws SocketException
+  {
+    zzaun.setSoLinger(paramBoolean, paramInt);
+  }
+  
+  public final void setSoTimeout(int paramInt)
+    throws SocketException
+  {
+    try
+    {
+      zzaun.setSoTimeout(paramInt);
+      return;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  public final void setTcpNoDelay(boolean paramBoolean)
+    throws SocketException
+  {
+    zzaun.setTcpNoDelay(paramBoolean);
+  }
+  
+  public final void setTrafficClass(int paramInt)
+    throws SocketException
+  {
+    zzaun.setTrafficClass(paramInt);
+  }
+  
+  public final void setUseClientMode(boolean paramBoolean)
+  {
+    zzaun.setUseClientMode(paramBoolean);
+  }
+  
+  public final void setWantClientAuth(boolean paramBoolean)
+  {
+    zzaun.setWantClientAuth(paramBoolean);
+  }
+  
+  public final void shutdownInput()
+    throws IOException
+  {
+    zzaun.shutdownInput();
+  }
+  
+  public final void shutdownOutput()
+    throws IOException
+  {
+    zzaun.shutdownOutput();
+  }
+  
+  public final void startHandshake()
+    throws IOException
+  {
+    zzaun.startHandshake();
+  }
+  
+  public final String toString()
+  {
+    return zzaun.toString();
+  }
+}

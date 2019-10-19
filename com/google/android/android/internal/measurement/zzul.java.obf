@@ -1,0 +1,9 @@
+package com.google.android.gms.internal.measurement;
+
+abstract class zzul
+  extends zzud
+{
+  zzul() {}
+  
+  abstract boolean zza(zzud paramZzud, int paramInt1, int paramInt2);
+}

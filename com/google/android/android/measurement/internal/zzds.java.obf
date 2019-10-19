@@ -1,0 +1,15 @@
+package com.google.android.gms.measurement.internal;
+
+final class zzds
+  extends zzv
+{
+  zzds(zzdr paramZzdr, zzcq paramZzcq)
+  {
+    super(paramZzcq);
+  }
+  
+  public final void run()
+  {
+    zzdr.zzc(zzasg);
+  }
+}

@@ -1,0 +1,82 @@
+package android.support.constraint.solver.widgets;
+
+import android.support.constraint.solver.LinearSystem;
+import java.util.ArrayList;
+
+public class Flow
+  extends HelperWidget
+{
+  public static final int BOTTOM = 3;
+  public static final int LEFT = 0;
+  public static final int RIGHT = 1;
+  public static final int TOP = 2;
+  private int mBarrierType = 0;
+  
+  public Flow() {}
+  
+  private void createChain(ConstraintWidget[] paramArrayOfConstraintWidget, int paramInt1, int paramInt2) {}
+  
+  public void addToSolver(LinearSystem paramLinearSystem)
+  {
+    mListAnchors[0] = mLeft;
+    mListAnchors[2] = mTop;
+    mListAnchors[1] = mRight;
+    mListAnchors[3] = mBottom;
+    int i = mParent.getWidth();
+    ConstraintAnchor localConstraintAnchor1 = mParent.mLeft;
+    ConstraintAnchor localConstraintAnchor2 = mParent.mTop;
+    int m = (int)(i * 0.8F);
+    paramLinearSystem = null;
+    int j = 0;
+    i = 0;
+    while (j < mWidgetsCount)
+    {
+      ConstraintWidget localConstraintWidget = mWidgets[j];
+      int k = i;
+      LinearSystem localLinearSystem = paramLinearSystem;
+      if (localConstraintWidget.getWidth() + i > m)
+      {
+        localConstraintAnchor1 = mParent.mLeft;
+        if (paramLinearSystem != null) {
+          mRight.connect(mParent.mRight, 0);
+        }
+        localConstraintAnchor2 = mBottom;
+        localLinearSystem = null;
+        k = 0;
+      }
+      if (localLinearSystem != null)
+      {
+        mRight.connect(mLeft, 40);
+      }
+      else
+      {
+        localConstraintWidget.setHorizontalChainStyle(2);
+        localConstraintWidget.setHorizontalBiasPercent(0.0F);
+      }
+      mTop.connect(localConstraintAnchor2, 40);
+      mLeft.connect(localConstraintAnchor1, 0);
+      i = k + localConstraintWidget.getWidth();
+      localConstraintAnchor1 = mRight;
+      j += 1;
+      paramLinearSystem = localConstraintWidget;
+    }
+    if (paramLinearSystem != null) {
+      mRight.connect(mParent.mRight, 0);
+    }
+  }
+  
+  public void setBarrierType(int paramInt)
+  {
+    mBarrierType = paramInt;
+  }
+  
+  class Linear
+  {
+    ConstraintWidget mOwner;
+    ArrayList<ConstraintWidget> mWidgets = new ArrayList();
+    
+    Linear() {}
+    
+    public void apply() {}
+  }
+}

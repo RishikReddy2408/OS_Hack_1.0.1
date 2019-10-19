@@ -1,0 +1,495 @@
+package com.google.android.gms.measurement.internal;
+
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.RemoteException;
+import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
+import com.google.android.gms.common.GoogleApiAvailabilityLight;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.internal.safeparcel.AbstractSafeParcelable;
+import com.google.android.gms.common.stats.ConnectionTracker;
+import com.google.android.gms.common.util.VisibleForTesting;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+@VisibleForTesting
+public final class zzdr
+  extends zzf
+{
+  private final zzef zzarz;
+  private zzag zzasa;
+  private volatile Boolean zzasb;
+  private final zzv zzasc;
+  private final zzev zzasd;
+  private final List<Runnable> zzase = new ArrayList();
+  private final zzv zzasf;
+  
+  protected zzdr(zzbt paramZzbt)
+  {
+    super(paramZzbt);
+    zzasd = new zzev(paramZzbt.zzbx());
+    zzarz = new zzef(this);
+    zzasc = new zzds(this, paramZzbt);
+    zzasf = new zzdx(this, paramZzbt);
+  }
+  
+  @WorkerThread
+  private final void onServiceDisconnected(ComponentName paramComponentName)
+  {
+    zzaf();
+    if (zzasa != null)
+    {
+      zzasa = null;
+      zzgo().zzjl().zzg("Disconnected from device MeasurementService", paramComponentName);
+      zzaf();
+      zzdj();
+    }
+  }
+  
+  @WorkerThread
+  private final void zzcy()
+  {
+    zzaf();
+    zzasd.start();
+    zzasc.zzh(((Long)zzaf.zzakj.get()).longValue());
+  }
+  
+  @WorkerThread
+  private final void zzcz()
+  {
+    zzaf();
+    if (!isConnected()) {
+      return;
+    }
+    zzgo().zzjl().zzbx("Inactivity, disconnecting from the service");
+    disconnect();
+  }
+  
+  @WorkerThread
+  private final void zzf(Runnable paramRunnable)
+    throws IllegalStateException
+  {
+    zzaf();
+    if (isConnected())
+    {
+      paramRunnable.run();
+      return;
+    }
+    if (zzase.size() >= 1000L)
+    {
+      zzgo().zzjd().zzbx("Discarding data. Max runnable queue size reached");
+      return;
+    }
+    zzase.add(paramRunnable);
+    zzasf.zzh(60000L);
+    zzdj();
+  }
+  
+  private final boolean zzld()
+  {
+    zzgr();
+    return true;
+  }
+  
+  @WorkerThread
+  private final void zzlf()
+  {
+    zzaf();
+    zzgo().zzjl().zzg("Processing queued up service tasks", Integer.valueOf(zzase.size()));
+    Iterator localIterator = zzase.iterator();
+    while (localIterator.hasNext())
+    {
+      Runnable localRunnable = (Runnable)localIterator.next();
+      try
+      {
+        localRunnable.run();
+      }
+      catch (Exception localException)
+      {
+        zzgo().zzjd().zzg("Task exception while flushing queue", localException);
+      }
+    }
+    zzase.clear();
+    zzasf.cancel();
+  }
+  
+  @Nullable
+  @WorkerThread
+  private final zzh zzm(boolean paramBoolean)
+  {
+    zzgr();
+    zzaj localZzaj = zzgf();
+    String str;
+    if (paramBoolean) {
+      str = zzgo().zzjn();
+    } else {
+      str = null;
+    }
+    return localZzaj.zzbr(str);
+  }
+  
+  @WorkerThread
+  public final void disconnect()
+  {
+    zzaf();
+    zzcl();
+    if (zzn.zzia()) {
+      zzarz.zzlg();
+    }
+    try
+    {
+      ConnectionTracker.getInstance().unbindService(getContext(), zzarz);
+      zzasa = null;
+      return;
+    }
+    catch (IllegalStateException|IllegalArgumentException localIllegalStateException)
+    {
+      for (;;) {}
+    }
+  }
+  
+  @WorkerThread
+  public final boolean isConnected()
+  {
+    zzaf();
+    zzcl();
+    return zzasa != null;
+  }
+  
+  @WorkerThread
+  protected final void resetAnalyticsData()
+  {
+    zzaf();
+    zzgb();
+    zzcl();
+    zzh localZzh = zzm(false);
+    if (zzld()) {
+      zzgi().resetAnalyticsData();
+    }
+    zzf(new zzdt(this, localZzh));
+  }
+  
+  @WorkerThread
+  @VisibleForTesting
+  protected final void zza(zzag paramZzag)
+  {
+    zzaf();
+    Preconditions.checkNotNull(paramZzag);
+    zzasa = paramZzag;
+    zzcy();
+    zzlf();
+  }
+  
+  @WorkerThread
+  @VisibleForTesting
+  final void zza(zzag paramZzag, AbstractSafeParcelable paramAbstractSafeParcelable, zzh paramZzh)
+  {
+    zzaf();
+    zzgb();
+    zzcl();
+    boolean bool = zzld();
+    int j = 0;
+    int i = 100;
+    while ((j < 1001) && (i == 100))
+    {
+      ArrayList localArrayList = new ArrayList();
+      Object localObject;
+      if (bool)
+      {
+        localObject = zzgi().zzr(100);
+        if (localObject != null)
+        {
+          localArrayList.addAll((Collection)localObject);
+          i = ((List)localObject).size();
+          break label95;
+        }
+      }
+      i = 0;
+      label95:
+      if ((paramAbstractSafeParcelable != null) && (i < 100)) {
+        localArrayList.add(paramAbstractSafeParcelable);
+      }
+      localArrayList = (ArrayList)localArrayList;
+      int m = localArrayList.size();
+      int k = 0;
+      while (k < m)
+      {
+        localObject = localArrayList.get(k);
+        k += 1;
+        localObject = (AbstractSafeParcelable)localObject;
+        if ((localObject instanceof zzad)) {
+          try
+          {
+            paramZzag.zza((zzad)localObject, paramZzh);
+          }
+          catch (RemoteException localRemoteException1)
+          {
+            zzgo().zzjd().zzg("Failed to send event to the service", localRemoteException1);
+          }
+        } else if ((localRemoteException1 instanceof zzfh)) {
+          try
+          {
+            paramZzag.zza((zzfh)localRemoteException1, paramZzh);
+          }
+          catch (RemoteException localRemoteException2)
+          {
+            zzgo().zzjd().zzg("Failed to send attribute to the service", localRemoteException2);
+          }
+        } else if ((localRemoteException2 instanceof zzl)) {
+          try
+          {
+            paramZzag.zza((zzl)localRemoteException2, paramZzh);
+          }
+          catch (RemoteException localRemoteException3)
+          {
+            zzgo().zzjd().zzg("Failed to send conditional property to the service", localRemoteException3);
+          }
+        } else {
+          zzgo().zzjd().zzbx("Discarding data. Unrecognized parcel type.");
+        }
+      }
+      j += 1;
+    }
+  }
+  
+  @WorkerThread
+  public final void zza(AtomicReference<String> paramAtomicReference)
+  {
+    zzaf();
+    zzcl();
+    zzf(new zzdu(this, paramAtomicReference, zzm(false)));
+  }
+  
+  @WorkerThread
+  protected final void zza(AtomicReference<List<zzl>> paramAtomicReference, String paramString1, String paramString2, String paramString3)
+  {
+    zzaf();
+    zzcl();
+    zzf(new zzeb(this, paramAtomicReference, paramString1, paramString2, paramString3, zzm(false)));
+  }
+  
+  @WorkerThread
+  protected final void zza(AtomicReference<List<zzfh>> paramAtomicReference, String paramString1, String paramString2, String paramString3, boolean paramBoolean)
+  {
+    zzaf();
+    zzcl();
+    zzf(new zzec(this, paramAtomicReference, paramString1, paramString2, paramString3, paramBoolean, zzm(false)));
+  }
+  
+  @WorkerThread
+  protected final void zza(AtomicReference<List<zzfh>> paramAtomicReference, boolean paramBoolean)
+  {
+    zzaf();
+    zzcl();
+    zzf(new zzee(this, paramAtomicReference, zzm(false), paramBoolean));
+  }
+  
+  @WorkerThread
+  protected final void zzb(zzad paramZzad, String paramString)
+  {
+    Preconditions.checkNotNull(paramZzad);
+    zzaf();
+    zzcl();
+    boolean bool2 = zzld();
+    boolean bool1;
+    if ((bool2) && (zzgi().zza(paramZzad))) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzf(new zzdz(this, bool2, bool1, paramZzad, zzm(true), paramString));
+  }
+  
+  @WorkerThread
+  protected final void zzb(zzdn paramZzdn)
+  {
+    zzaf();
+    zzcl();
+    zzf(new zzdw(this, paramZzdn));
+  }
+  
+  @WorkerThread
+  protected final void zzb(zzfh paramZzfh)
+  {
+    zzaf();
+    zzcl();
+    boolean bool;
+    if ((zzld()) && (zzgi().zza(paramZzfh))) {
+      bool = true;
+    } else {
+      bool = false;
+    }
+    zzf(new zzed(this, bool, paramZzfh, zzm(true)));
+  }
+  
+  @WorkerThread
+  protected final void zzd(zzl paramZzl)
+  {
+    Preconditions.checkNotNull(paramZzl);
+    zzaf();
+    zzcl();
+    zzgr();
+    boolean bool;
+    if (zzgi().zzc(paramZzl)) {
+      bool = true;
+    } else {
+      bool = false;
+    }
+    zzf(new zzea(this, true, bool, new zzl(paramZzl), zzm(true), paramZzl));
+  }
+  
+  @WorkerThread
+  final void zzdj()
+  {
+    zzaf();
+    zzcl();
+    if (isConnected()) {
+      return;
+    }
+    Object localObject = zzasb;
+    int k = 0;
+    label84:
+    int i;
+    if (localObject == null)
+    {
+      zzaf();
+      zzcl();
+      localObject = zzgp().zzju();
+      boolean bool2;
+      if ((localObject != null) && (((Boolean)localObject).booleanValue()))
+      {
+        bool2 = true;
+      }
+      else
+      {
+        zzgr();
+        boolean bool1;
+        if (zzgf().zzjb() == 1)
+        {
+          bool1 = true;
+          i = 1;
+        }
+        else
+        {
+          zzgo().zzjl().zzbx("Checking service availability");
+          localObject = zzgm();
+          i = GoogleApiAvailabilityLight.getInstance().isGooglePlayServicesAvailable(((zzco)localObject).getContext(), 12451000);
+          if (i != 9) {
+            if (i != 18) {
+              switch (i)
+              {
+              default: 
+                zzgo().zzjg().zzg("Unexpected service status", Integer.valueOf(i));
+              }
+            }
+          }
+          for (;;)
+          {
+            for (bool1 = false;; bool1 = true)
+            {
+              i = 0;
+              break label333;
+              zzgo().zzjg().zzbx("Service disabled");
+              break;
+              zzgo().zzjk().zzbx("Service container out of date");
+              if (zzgm().zzme() < 13000) {
+                break label279;
+              }
+              localObject = zzgp().zzju();
+              if ((localObject != null) && (!((Boolean)localObject).booleanValue())) {
+                break;
+              }
+            }
+            zzgo().zzjl().zzbx("Service missing");
+            label279:
+            bool1 = false;
+            break label84;
+            zzgo().zzjl().zzbx("Service available");
+            break;
+            zzgo().zzjg().zzbx("Service updating");
+            break;
+            zzgo().zzjg().zzbx("Service invalid");
+          }
+        }
+        label333:
+        int j = i;
+        if (!bool1)
+        {
+          j = i;
+          if (zzgq().zzib())
+          {
+            zzgo().zzjd().zzbx("No way to upload. Consider using the full version of Analytics");
+            j = 0;
+          }
+        }
+        bool2 = bool1;
+        if (j != 0)
+        {
+          zzgp().zzg(bool1);
+          bool2 = bool1;
+        }
+      }
+      zzasb = Boolean.valueOf(bool2);
+    }
+    if (zzasb.booleanValue())
+    {
+      zzarz.zzlh();
+      return;
+    }
+    if (!zzgq().zzib())
+    {
+      zzgr();
+      localObject = getContext().getPackageManager().queryIntentServices(new Intent().setClassName(getContext(), "com.google.android.gms.measurement.AppMeasurementService"), 65536);
+      i = k;
+      if (localObject != null)
+      {
+        i = k;
+        if (((List)localObject).size() > 0) {
+          i = 1;
+        }
+      }
+      if (i != 0)
+      {
+        localObject = new Intent("com.google.android.gms.measurement.START");
+        Context localContext = getContext();
+        zzgr();
+        ((Intent)localObject).setComponent(new ComponentName(localContext, "com.google.android.gms.measurement.AppMeasurementService"));
+        zzarz.zzc((Intent)localObject);
+        return;
+      }
+      zzgo().zzjd().zzbx("Unable to use remote or local measurement implementation. Please register the AppMeasurementService service in the app manifest");
+    }
+  }
+  
+  protected final boolean zzgt()
+  {
+    return false;
+  }
+  
+  @WorkerThread
+  protected final void zzkz()
+  {
+    zzaf();
+    zzcl();
+    zzf(new zzdv(this, zzm(true)));
+  }
+  
+  @WorkerThread
+  protected final void zzlc()
+  {
+    zzaf();
+    zzcl();
+    zzf(new zzdy(this, zzm(true)));
+  }
+  
+  final Boolean zzle()
+  {
+    return zzasb;
+  }
+}

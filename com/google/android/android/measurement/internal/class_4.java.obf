@@ -1,0 +1,612 @@
+package com.google.android.gms.measurement.internal;
+
+import android.support.annotation.WorkerThread;
+import android.text.TextUtils;
+import com.google.android.gms.common.internal.Preconditions;
+
+final class zzg
+{
+  private final zzbt zzadj;
+  private long zzadt;
+  private String zzafw;
+  private String zzafx;
+  private String zzafy;
+  private String zzafz;
+  private long zzaga;
+  private long zzagb;
+  private long zzagc;
+  private long zzagd;
+  private String zzage;
+  private long zzagf;
+  private boolean zzagg;
+  private long zzagh;
+  private boolean zzagi;
+  private boolean zzagj;
+  private String zzagk;
+  private long zzagl;
+  private long zzagm;
+  private long zzagn;
+  private long zzago;
+  private long zzagp;
+  private long zzagq;
+  private String zzagr;
+  private boolean zzags;
+  private long zzagt;
+  private long zzagu;
+  private String zzts;
+  private final String zztt;
+  
+  @WorkerThread
+  zzg(zzbt paramZzbt, String paramString)
+  {
+    Preconditions.checkNotNull(paramZzbt);
+    Preconditions.checkNotEmpty(paramString);
+    zzadj = paramZzbt;
+    zztt = paramString;
+    zzadj.zzgn().zzaf();
+  }
+  
+  @WorkerThread
+  public final String getAppInstanceId()
+  {
+    zzadj.zzgn().zzaf();
+    return zzafw;
+  }
+  
+  @WorkerThread
+  public final String getFirebaseInstanceId()
+  {
+    zzadj.zzgn().zzaf();
+    return zzafz;
+  }
+  
+  @WorkerThread
+  public final String getGmpAppId()
+  {
+    zzadj.zzgn().zzaf();
+    return zzafx;
+  }
+  
+  @WorkerThread
+  public final boolean isMeasurementEnabled()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagg;
+  }
+  
+  @WorkerThread
+  public final void setAppVersion(String paramString)
+  {
+    zzadj.zzgn().zzaf();
+    zzags |= zzfk.zzu(zzts, paramString) ^ true;
+    zzts = paramString;
+  }
+  
+  @WorkerThread
+  public final void setMeasurementEnabled(boolean paramBoolean)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzagg != paramBoolean) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzagg = paramBoolean;
+  }
+  
+  @WorkerThread
+  public final void zzaa(long paramLong)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzagl != paramLong) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzagl = paramLong;
+  }
+  
+  @WorkerThread
+  public final void zzab(long paramLong)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzagm != paramLong) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzagm = paramLong;
+  }
+  
+  @WorkerThread
+  public final void zzac(long paramLong)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzagn != paramLong) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzagn = paramLong;
+  }
+  
+  @WorkerThread
+  public final void zzad(long paramLong)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzago != paramLong) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzago = paramLong;
+  }
+  
+  @WorkerThread
+  public final void zzae(long paramLong)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzagq != paramLong) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzagq = paramLong;
+  }
+  
+  @WorkerThread
+  public final void zzaf(long paramLong)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzagp != paramLong) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzagp = paramLong;
+  }
+  
+  @WorkerThread
+  public final void zzag(long paramLong)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzagh != paramLong) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzagh = paramLong;
+  }
+  
+  @WorkerThread
+  public final String zzak()
+  {
+    zzadj.zzgn().zzaf();
+    return zzts;
+  }
+  
+  @WorkerThread
+  public final String zzal()
+  {
+    zzadj.zzgn().zzaf();
+    return zztt;
+  }
+  
+  @WorkerThread
+  public final void zzam(String paramString)
+  {
+    zzadj.zzgn().zzaf();
+    zzags |= zzfk.zzu(zzafw, paramString) ^ true;
+    zzafw = paramString;
+  }
+  
+  @WorkerThread
+  public final void zzan(String paramString)
+  {
+    zzadj.zzgn().zzaf();
+    String str = paramString;
+    if (TextUtils.isEmpty(paramString)) {
+      str = null;
+    }
+    zzags |= zzfk.zzu(zzafx, str) ^ true;
+    zzafx = str;
+  }
+  
+  @WorkerThread
+  public final void zzao(String paramString)
+  {
+    zzadj.zzgn().zzaf();
+    String str = paramString;
+    if (TextUtils.isEmpty(paramString)) {
+      str = null;
+    }
+    zzags |= zzfk.zzu(zzagk, str) ^ true;
+    zzagk = str;
+  }
+  
+  @WorkerThread
+  public final void zzap(String paramString)
+  {
+    zzadj.zzgn().zzaf();
+    zzags |= zzfk.zzu(zzafy, paramString) ^ true;
+    zzafy = paramString;
+  }
+  
+  @WorkerThread
+  public final void zzaq(String paramString)
+  {
+    zzadj.zzgn().zzaf();
+    zzags |= zzfk.zzu(zzafz, paramString) ^ true;
+    zzafz = paramString;
+  }
+  
+  @WorkerThread
+  public final void zzar(String paramString)
+  {
+    zzadj.zzgn().zzaf();
+    zzags |= zzfk.zzu(zzage, paramString) ^ true;
+    zzage = paramString;
+  }
+  
+  @WorkerThread
+  public final void zzas(String paramString)
+  {
+    zzadj.zzgn().zzaf();
+    zzags |= zzfk.zzu(zzagr, paramString) ^ true;
+    zzagr = paramString;
+  }
+  
+  @WorkerThread
+  public final void zze(boolean paramBoolean)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool;
+    if (zzagi != paramBoolean) {
+      bool = true;
+    } else {
+      bool = false;
+    }
+    zzags = bool;
+    zzagi = paramBoolean;
+  }
+  
+  @WorkerThread
+  public final void zzf(boolean paramBoolean)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool;
+    if (zzagj != paramBoolean) {
+      bool = true;
+    } else {
+      bool = false;
+    }
+    zzags = bool;
+    zzagj = paramBoolean;
+  }
+  
+  @WorkerThread
+  public final void zzgv()
+  {
+    zzadj.zzgn().zzaf();
+    zzags = false;
+  }
+  
+  @WorkerThread
+  public final String zzgw()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagk;
+  }
+  
+  @WorkerThread
+  public final String zzgx()
+  {
+    zzadj.zzgn().zzaf();
+    return zzafy;
+  }
+  
+  @WorkerThread
+  public final long zzgy()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagb;
+  }
+  
+  @WorkerThread
+  public final long zzgz()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagc;
+  }
+  
+  @WorkerThread
+  public final long zzha()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagd;
+  }
+  
+  @WorkerThread
+  public final String zzhb()
+  {
+    zzadj.zzgn().zzaf();
+    return zzage;
+  }
+  
+  @WorkerThread
+  public final long zzhc()
+  {
+    zzadj.zzgn().zzaf();
+    return zzadt;
+  }
+  
+  @WorkerThread
+  public final long zzhd()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagf;
+  }
+  
+  @WorkerThread
+  public final long zzhe()
+  {
+    zzadj.zzgn().zzaf();
+    return zzaga;
+  }
+  
+  @WorkerThread
+  public final long zzhf()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagt;
+  }
+  
+  @WorkerThread
+  public final long zzhg()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagu;
+  }
+  
+  @WorkerThread
+  public final void zzhh()
+  {
+    zzadj.zzgn().zzaf();
+    long l2 = zzaga + 1L;
+    long l1 = l2;
+    if (l2 > 2147483647L)
+    {
+      zzadj.zzgo().zzjg().zzg("Bundle index overflow. appId", zzap.zzbv(zztt));
+      l1 = 0L;
+    }
+    zzags = true;
+    zzaga = l1;
+  }
+  
+  @WorkerThread
+  public final long zzhi()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagl;
+  }
+  
+  @WorkerThread
+  public final long zzhj()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagm;
+  }
+  
+  @WorkerThread
+  public final long zzhk()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagn;
+  }
+  
+  @WorkerThread
+  public final long zzhl()
+  {
+    zzadj.zzgn().zzaf();
+    return zzago;
+  }
+  
+  @WorkerThread
+  public final long zzhm()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagq;
+  }
+  
+  @WorkerThread
+  public final long zzhn()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagp;
+  }
+  
+  @WorkerThread
+  public final String zzho()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagr;
+  }
+  
+  @WorkerThread
+  public final String zzhp()
+  {
+    zzadj.zzgn().zzaf();
+    String str = zzagr;
+    zzas(null);
+    return str;
+  }
+  
+  @WorkerThread
+  public final long zzhq()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagh;
+  }
+  
+  @WorkerThread
+  public final boolean zzhr()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagi;
+  }
+  
+  @WorkerThread
+  public final boolean zzhs()
+  {
+    zzadj.zzgn().zzaf();
+    return zzagj;
+  }
+  
+  @WorkerThread
+  public final void zzs(long paramLong)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzagb != paramLong) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzagb = paramLong;
+  }
+  
+  @WorkerThread
+  public final void zzt(long paramLong)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzagc != paramLong) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzagc = paramLong;
+  }
+  
+  @WorkerThread
+  public final void zzu(long paramLong)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzagd != paramLong) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzagd = paramLong;
+  }
+  
+  @WorkerThread
+  public final void zzv(long paramLong)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzadt != paramLong) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzadt = paramLong;
+  }
+  
+  @WorkerThread
+  public final void zzw(long paramLong)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzagf != paramLong) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzagf = paramLong;
+  }
+  
+  @WorkerThread
+  public final void zzx(long paramLong)
+  {
+    boolean bool1 = false;
+    if (paramLong >= 0L) {
+      bool2 = true;
+    } else {
+      bool2 = false;
+    }
+    Preconditions.checkArgument(bool2);
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    if (zzaga != paramLong) {
+      bool1 = true;
+    }
+    zzags = (bool1 | bool2);
+    zzaga = paramLong;
+  }
+  
+  @WorkerThread
+  public final void zzy(long paramLong)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzagt != paramLong) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzagt = paramLong;
+  }
+  
+  @WorkerThread
+  public final void zzz(long paramLong)
+  {
+    zzadj.zzgn().zzaf();
+    boolean bool2 = zzags;
+    boolean bool1;
+    if (zzagu != paramLong) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    zzags = (bool2 | bool1);
+    zzagu = paramLong;
+  }
+}

@@ -1,0 +1,128 @@
+package com.google.android.gms.measurement.internal;
+
+import android.os.Process;
+import com.google.android.gms.common.internal.Preconditions;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Semaphore;
+
+final class zzbs
+  extends Thread
+{
+  private final Object zzapj;
+  private final BlockingQueue<zzbr<?>> zzapk;
+  
+  public zzbs(String paramString, BlockingQueue<zzbr<?>> paramBlockingQueue)
+  {
+    Preconditions.checkNotNull(paramBlockingQueue);
+    Object localObject;
+    Preconditions.checkNotNull(localObject);
+    zzapj = new Object();
+    zzapk = localObject;
+    setName(paramBlockingQueue);
+  }
+  
+  private final void zza(InterruptedException paramInterruptedException)
+  {
+    zzapg.zzgo().zzjg().zzg(String.valueOf(getName()).concat(" was interrupted"), paramInterruptedException);
+  }
+  
+  public final void run()
+  {
+    i = 0;
+    while (i == 0) {
+      try
+      {
+        zzbo.zza(zzapg).acquire();
+        i = 1;
+      }
+      catch (InterruptedException localInterruptedException1)
+      {
+        zza(localInterruptedException1);
+      }
+    }
+    for (;;)
+    {
+      try
+      {
+        int j = Process.getThreadPriority(Process.myTid());
+        ??? = (zzbr)zzapk.poll();
+        if (??? == null) {
+          continue;
+        }
+        if (!zzapi) {
+          continue;
+        }
+        i = j;
+      }
+      finally
+      {
+        synchronized (zzbo.zzc(zzapg))
+        {
+          boolean bool;
+          zzbo.zza(zzapg).release();
+          zzbo.zzc(zzapg).notifyAll();
+          if (this != zzbo.zzd(zzapg))
+          {
+            if (this == zzbo.zze(zzapg)) {
+              zzbo.zzb(zzapg, null);
+            } else {
+              zzapg.zzgo().zzjd().zzbx("Current scheduler thread is neither worker nor network");
+            }
+          }
+          else {
+            zzbo.zza(zzapg, null);
+          }
+          throw localObject5;
+        }
+        i = 10;
+        continue;
+      }
+      Process.setThreadPriority(i);
+      ((zzbr)???).run();
+    }
+    synchronized (zzapj)
+    {
+      if (zzapk.peek() == null)
+      {
+        bool = zzbo.zzb(zzapg);
+        if (!bool) {
+          try
+          {
+            zzapj.wait(30000L);
+          }
+          catch (InterruptedException localInterruptedException2)
+          {
+            zza(localInterruptedException2);
+          }
+        }
+      }
+      synchronized (zzbo.zzc(zzapg))
+      {
+        if (zzapk.peek() == null) {
+          synchronized (zzbo.zzc(zzapg))
+          {
+            zzbo.zza(zzapg).release();
+            zzbo.zzc(zzapg).notifyAll();
+            if (this == zzbo.zzd(zzapg)) {
+              zzbo.zza(zzapg, null);
+            } else if (this == zzbo.zze(zzapg)) {
+              zzbo.zzb(zzapg, null);
+            } else {
+              zzapg.zzgo().zzjd().zzbx("Current scheduler thread is neither worker nor network");
+            }
+            return;
+          }
+        }
+      }
+    }
+  }
+  
+  public final void zzke()
+  {
+    synchronized (zzapj)
+    {
+      zzapj.notifyAll();
+      return;
+    }
+  }
+}

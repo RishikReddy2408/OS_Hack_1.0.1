@@ -1,0 +1,32 @@
+package com.google.android.gms.measurement.internal;
+
+import java.util.concurrent.atomic.AtomicReference;
+
+final class zzcz
+  implements Runnable
+{
+  zzcz(zzcs paramZzcs, long paramLong) {}
+  
+  public final void run()
+  {
+    zzcs localZzcs = zzarc;
+    long l = zzari;
+    localZzcs.zzaf();
+    localZzcs.zzgb();
+    localZzcs.zzcl();
+    localZzcs.zzgo().zzjk().zzbx("Resetting analytics data (FE)");
+    localZzcs.zzgj().zzlj();
+    if (localZzcs.zzgq().zzbe(localZzcs.zzgf().zzal())) {
+      zzgpzzanj.set(l);
+    }
+    boolean bool = zzadj.isEnabled();
+    if (!localZzcs.zzgq().zzhu()) {
+      localZzcs.zzgp().zzi(bool ^ true);
+    }
+    localZzcs.zzgg().resetAnalyticsData();
+    zzara = (bool ^ true);
+    if (zzarc.zzgq().zza(zzaf.zzalk)) {
+      zzarc.zzgg().zza(new AtomicReference());
+    }
+  }
+}

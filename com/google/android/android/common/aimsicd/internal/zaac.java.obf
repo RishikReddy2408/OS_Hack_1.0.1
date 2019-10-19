@@ -1,0 +1,16 @@
+package com.google.android.gms.common.api.internal;
+
+import com.google.android.gms.common.api.PendingResult.StatusListener;
+import com.google.android.gms.common.api.Status;
+import java.util.Map;
+
+final class zaac
+  implements PendingResult.StatusListener
+{
+  zaac(zaab paramZaab, BasePendingResult paramBasePendingResult) {}
+  
+  public final void onComplete(Status paramStatus)
+  {
+    zaab.zaa(zafm).remove(zafl);
+  }
+}

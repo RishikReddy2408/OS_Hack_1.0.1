@@ -1,0 +1,563 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+
+final class zzvd<FieldDescriptorType extends zzvf<FieldDescriptorType>>
+{
+  private static final zzvd zzbvs = new zzvd(true);
+  private boolean zzbpo;
+  private final zzxm<FieldDescriptorType, Object> zzbvq;
+  private boolean zzbvr = false;
+  
+  private zzvd()
+  {
+    zzbvq = zzxm.zzbt(16);
+  }
+  
+  private zzvd(boolean paramBoolean)
+  {
+    zzbvq = zzxm.zzbt(0);
+    zzsm();
+  }
+  
+  static int zza(zzyq paramZzyq, int paramInt, Object paramObject)
+  {
+    int i = zzut.zzbb(paramInt);
+    paramInt = i;
+    if (paramZzyq == zzyq.zzcdz)
+    {
+      zzvo.zzf((zzwt)paramObject);
+      paramInt = i << 1;
+    }
+    return paramInt + zzb(paramZzyq, paramObject);
+  }
+  
+  private final Object zza(FieldDescriptorType paramFieldDescriptorType)
+  {
+    paramFieldDescriptorType = zzbvq.get(paramFieldDescriptorType);
+    if ((paramFieldDescriptorType instanceof zzvw)) {
+      return zzvw.zzwt();
+    }
+    return paramFieldDescriptorType;
+  }
+  
+  static void zza(zzut paramZzut, zzyq paramZzyq, int paramInt, Object paramObject)
+    throws IOException
+  {
+    if (paramZzyq == zzyq.zzcdz)
+    {
+      paramZzyq = (zzwt)paramObject;
+      zzvo.zzf(paramZzyq);
+      paramZzut.zzc(paramInt, 3);
+      paramZzyq.zzb(paramZzut);
+      paramZzut.zzc(paramInt, 4);
+      return;
+    }
+    paramZzut.zzc(paramInt, paramZzyq.zzyq());
+    switch (zzve.zzbuu[paramZzyq.ordinal()])
+    {
+    default: 
+      return;
+    case 18: 
+      if ((paramObject instanceof zzvp))
+      {
+        paramZzut.zzax(((zzvp)paramObject).zzc());
+        return;
+      }
+      paramZzut.zzax(((Integer)paramObject).intValue());
+      return;
+    case 17: 
+      paramZzut.zzaw(((Long)paramObject).longValue());
+      return;
+    case 16: 
+      paramZzut.zzaz(((Integer)paramObject).intValue());
+      return;
+    case 15: 
+      paramZzut.zzax(((Long)paramObject).longValue());
+      return;
+    case 14: 
+      paramZzut.zzba(((Integer)paramObject).intValue());
+      return;
+    case 13: 
+      paramZzut.zzay(((Integer)paramObject).intValue());
+      return;
+    case 12: 
+      if ((paramObject instanceof zzud))
+      {
+        paramZzut.zza((zzud)paramObject);
+        return;
+      }
+      paramZzyq = (byte[])paramObject;
+      paramZzut.zze(paramZzyq, 0, paramZzyq.length);
+      return;
+    case 11: 
+      if ((paramObject instanceof zzud))
+      {
+        paramZzut.zza((zzud)paramObject);
+        return;
+      }
+      paramZzut.zzfw((String)paramObject);
+      return;
+    case 10: 
+      paramZzut.zzb((zzwt)paramObject);
+      return;
+    case 9: 
+      ((zzwt)paramObject).zzb(paramZzut);
+      return;
+    case 8: 
+      paramZzut.zzu(((Boolean)paramObject).booleanValue());
+      return;
+    case 7: 
+      paramZzut.zzba(((Integer)paramObject).intValue());
+      return;
+    case 6: 
+      paramZzut.zzax(((Long)paramObject).longValue());
+      return;
+    case 5: 
+      paramZzut.zzax(((Integer)paramObject).intValue());
+      return;
+    case 4: 
+      paramZzut.zzav(((Long)paramObject).longValue());
+      return;
+    case 3: 
+      paramZzut.zzav(((Long)paramObject).longValue());
+      return;
+    case 2: 
+      paramZzut.zza(((Float)paramObject).floatValue());
+      return;
+    }
+    paramZzut.zzb(((Double)paramObject).doubleValue());
+  }
+  
+  private final void zza(FieldDescriptorType paramFieldDescriptorType, Object paramObject)
+  {
+    if (paramFieldDescriptorType.zzvy())
+    {
+      if ((paramObject instanceof List))
+      {
+        ArrayList localArrayList = new ArrayList();
+        localArrayList.addAll((List)paramObject);
+        paramObject = (ArrayList)localArrayList;
+        int j = paramObject.size();
+        int i = 0;
+        while (i < j)
+        {
+          Object localObject = paramObject.get(i);
+          i += 1;
+          zza(paramFieldDescriptorType.zzvw(), localObject);
+        }
+        paramObject = localArrayList;
+      }
+      else
+      {
+        throw new IllegalArgumentException("Wrong object type used with protocol message reflection.");
+      }
+    }
+    else {
+      zza(paramFieldDescriptorType.zzvw(), paramObject);
+    }
+    if ((paramObject instanceof zzvw)) {
+      zzbvr = true;
+    }
+    zzbvq.zza(paramFieldDescriptorType, paramObject);
+  }
+  
+  /* Error */
+  private static void zza(zzyq paramZzyq, Object paramObject)
+  {
+    // Byte code:
+    //   0: aload_1
+    //   1: invokestatic 225	com/google/android/gms/internal/measurement/zzvo:checkNotNull	(Ljava/lang/Object;)Ljava/lang/Object;
+    //   4: pop
+    //   5: getstatic 228	com/google/android/gms/internal/measurement/zzve:zzbvt	[I
+    //   8: aload_0
+    //   9: invokevirtual 232	com/google/android/gms/internal/measurement/zzyq:zzyp	()Lcom/google/android/gms/internal/measurement/zzyv;
+    //   12: invokevirtual 235	com/google/android/gms/internal/measurement/zzyv:ordinal	()I
+    //   15: iaload
+    //   16: istore_2
+    //   17: iconst_0
+    //   18: istore_3
+    //   19: iload_2
+    //   20: tableswitch	default:+52->72, 1:+148->168, 2:+140->160, 3:+132->152, 4:+124->144, 5:+116->136, 6:+108->128, 7:+91->111, 8:+72->92, 9:+55->75
+    //   72: goto +101 -> 173
+    //   75: aload_1
+    //   76: instanceof 53
+    //   79: ifne +27 -> 106
+    //   82: aload_1
+    //   83: instanceof 70
+    //   86: ifeq +87 -> 173
+    //   89: goto +17 -> 106
+    //   92: aload_1
+    //   93: instanceof 109
+    //   96: ifne +10 -> 106
+    //   99: aload_1
+    //   100: instanceof 101
+    //   103: ifeq +70 -> 173
+    //   106: iconst_1
+    //   107: istore_3
+    //   108: goto +65 -> 173
+    //   111: aload_1
+    //   112: instanceof 135
+    //   115: ifne -9 -> 106
+    //   118: aload_1
+    //   119: instanceof 140
+    //   122: ifeq +51 -> 173
+    //   125: goto -19 -> 106
+    //   128: aload_1
+    //   129: instanceof 146
+    //   132: istore_3
+    //   133: goto +40 -> 173
+    //   136: aload_1
+    //   137: instanceof 155
+    //   140: istore_3
+    //   141: goto +32 -> 173
+    //   144: aload_1
+    //   145: instanceof 176
+    //   148: istore_3
+    //   149: goto +24 -> 173
+    //   152: aload_1
+    //   153: instanceof 167
+    //   156: istore_3
+    //   157: goto +16 -> 173
+    //   160: aload_1
+    //   161: instanceof 114
+    //   164: istore_3
+    //   165: goto +8 -> 173
+    //   168: aload_1
+    //   169: instanceof 109
+    //   172: istore_3
+    //   173: iload_3
+    //   174: ifeq +4 -> 178
+    //   177: return
+    //   178: new 214	java/lang/IllegalArgumentException
+    //   181: dup
+    //   182: ldc -40
+    //   184: invokespecial 218	java/lang/IllegalArgumentException:<init>	(Ljava/lang/String;)V
+    //   187: athrow
+    // Local variable table:
+    //   start	length	slot	name	signature
+    //   0	188	0	paramZzyq	zzyq
+    //   0	188	1	paramObject	Object
+    //   16	4	2	i	int
+    //   18	156	3	bool	boolean
+  }
+  
+  private static int zzb(zzvf<?> paramZzvf, Object paramObject)
+  {
+    zzyq localZzyq = paramZzvf.zzvw();
+    int k = paramZzvf.zzc();
+    if (paramZzvf.zzvy())
+    {
+      boolean bool = paramZzvf.zzvz();
+      int j = 0;
+      int i = 0;
+      if (bool)
+      {
+        paramZzvf = ((List)paramObject).iterator();
+        while (paramZzvf.hasNext()) {
+          i += zzb(localZzyq, paramZzvf.next());
+        }
+        return zzut.zzbb(k) + i + zzut.zzbj(i);
+      }
+      paramZzvf = ((List)paramObject).iterator();
+      i = j;
+      while (paramZzvf.hasNext()) {
+        i += zza(localZzyq, k, paramZzvf.next());
+      }
+      return i;
+    }
+    return zza(localZzyq, k, paramObject);
+  }
+  
+  private static int zzb(zzyq paramZzyq, Object paramObject)
+  {
+    switch (zzve.zzbuu[paramZzyq.ordinal()])
+    {
+    default: 
+      throw new RuntimeException("There is no way to get here, but the compiler thinks otherwise.");
+    case 18: 
+      if ((paramObject instanceof zzvp)) {
+        return zzut.zzbh(((zzvp)paramObject).zzc());
+      }
+      return zzut.zzbh(((Integer)paramObject).intValue());
+    case 17: 
+      return zzut.zzba(((Long)paramObject).longValue());
+    case 16: 
+      return zzut.zzbe(((Integer)paramObject).intValue());
+    case 15: 
+      return zzut.zzbc(((Long)paramObject).longValue());
+    case 14: 
+      return zzut.zzbg(((Integer)paramObject).intValue());
+    case 13: 
+      return zzut.zzbd(((Integer)paramObject).intValue());
+    case 12: 
+      if ((paramObject instanceof zzud)) {
+        return zzut.zzb((zzud)paramObject);
+      }
+      return zzut.zzk((byte[])paramObject);
+    case 11: 
+      if ((paramObject instanceof zzud)) {
+        return zzut.zzb((zzud)paramObject);
+      }
+      return zzut.zzfx((String)paramObject);
+    case 10: 
+      if ((paramObject instanceof zzvw)) {
+        return zzut.zza((zzvw)paramObject);
+      }
+      return zzut.zzc((zzwt)paramObject);
+    case 9: 
+      return zzut.zzd((zzwt)paramObject);
+    case 8: 
+      return zzut.zzv(((Boolean)paramObject).booleanValue());
+    case 7: 
+      return zzut.zzbf(((Integer)paramObject).intValue());
+    case 6: 
+      return zzut.zzbb(((Long)paramObject).longValue());
+    case 5: 
+      return zzut.zzbc(((Integer)paramObject).intValue());
+    case 4: 
+      return zzut.zzaz(((Long)paramObject).longValue());
+    case 3: 
+      return zzut.zzay(((Long)paramObject).longValue());
+    case 2: 
+      return zzut.zzb(((Float)paramObject).floatValue());
+    }
+    return zzut.zzc(((Double)paramObject).doubleValue());
+  }
+  
+  private static boolean zzc(Map.Entry<FieldDescriptorType, Object> paramEntry)
+  {
+    zzvf localZzvf = (zzvf)paramEntry.getKey();
+    if (localZzvf.zzvx() == zzyv.zzcet)
+    {
+      if (localZzvf.zzvy())
+      {
+        paramEntry = ((List)paramEntry.getValue()).iterator();
+        do
+        {
+          if (!paramEntry.hasNext()) {
+            break;
+          }
+        } while (((zzwt)paramEntry.next()).isInitialized());
+        return false;
+      }
+      paramEntry = paramEntry.getValue();
+      if ((paramEntry instanceof zzwt))
+      {
+        if (!((zzwt)paramEntry).isInitialized()) {
+          return false;
+        }
+      }
+      else
+      {
+        if ((paramEntry instanceof zzvw)) {
+          return true;
+        }
+        throw new IllegalArgumentException("Wrong object type used with protocol message reflection.");
+      }
+    }
+    return true;
+  }
+  
+  private final void zzd(Map.Entry<FieldDescriptorType, Object> paramEntry)
+  {
+    zzvf localZzvf = (zzvf)paramEntry.getKey();
+    Object localObject1 = paramEntry.getValue();
+    paramEntry = (Map.Entry<FieldDescriptorType, Object>)localObject1;
+    if ((localObject1 instanceof zzvw)) {
+      paramEntry = zzvw.zzwt();
+    }
+    if (localZzvf.zzvy())
+    {
+      Object localObject2 = zza(localZzvf);
+      localObject1 = localObject2;
+      if (localObject2 == null) {
+        localObject1 = new ArrayList();
+      }
+      paramEntry = ((List)paramEntry).iterator();
+      while (paramEntry.hasNext())
+      {
+        localObject2 = paramEntry.next();
+        ((List)localObject1).add(zzv(localObject2));
+      }
+      zzbvq.zza(localZzvf, localObject1);
+      return;
+    }
+    if (localZzvf.zzvx() == zzyv.zzcet)
+    {
+      localObject1 = zza(localZzvf);
+      if (localObject1 == null)
+      {
+        zzbvq.zza(localZzvf, zzv(paramEntry));
+        return;
+      }
+      if ((localObject1 instanceof zzwz)) {
+        paramEntry = localZzvf.zza((zzwz)localObject1, (zzwz)paramEntry);
+      } else {
+        paramEntry = localZzvf.zza(((zzwt)localObject1).zzwd(), (zzwt)paramEntry).zzwj();
+      }
+      zzbvq.zza(localZzvf, paramEntry);
+      return;
+    }
+    zzbvq.zza(localZzvf, zzv(paramEntry));
+  }
+  
+  private static int zze(Map.Entry<FieldDescriptorType, Object> paramEntry)
+  {
+    zzvf localZzvf = (zzvf)paramEntry.getKey();
+    Object localObject = paramEntry.getValue();
+    if ((localZzvf.zzvx() == zzyv.zzcet) && (!localZzvf.zzvy()) && (!localZzvf.zzvz()))
+    {
+      if ((localObject instanceof zzvw)) {
+        return zzut.zzb(((zzvf)paramEntry.getKey()).zzc(), (zzvw)localObject);
+      }
+      return zzut.zzd(((zzvf)paramEntry.getKey()).zzc(), (zzwt)localObject);
+    }
+    return zzb(localZzvf, localObject);
+  }
+  
+  private static Object zzv(Object paramObject)
+  {
+    if ((paramObject instanceof zzwz)) {
+      return ((zzwz)paramObject).zzxj();
+    }
+    if ((paramObject instanceof byte[]))
+    {
+      paramObject = (byte[])paramObject;
+      byte[] arrayOfByte = new byte[paramObject.length];
+      System.arraycopy(paramObject, 0, arrayOfByte, 0, paramObject.length);
+      return arrayOfByte;
+    }
+    return paramObject;
+  }
+  
+  public static <T extends zzvf<T>> zzvd<T> zzvt()
+  {
+    return zzbvs;
+  }
+  
+  final Iterator<Map.Entry<FieldDescriptorType, Object>> descendingIterator()
+  {
+    if (zzbvr) {
+      return new zzvz(zzbvq.zzxy().iterator());
+    }
+    return zzbvq.zzxy().iterator();
+  }
+  
+  public final boolean equals(Object paramObject)
+  {
+    if (this == paramObject) {
+      return true;
+    }
+    if (!(paramObject instanceof zzvd)) {
+      return false;
+    }
+    paramObject = (zzvd)paramObject;
+    return zzbvq.equals(zzbvq);
+  }
+  
+  public final int hashCode()
+  {
+    return zzbvq.hashCode();
+  }
+  
+  final boolean isEmpty()
+  {
+    return zzbvq.isEmpty();
+  }
+  
+  public final boolean isImmutable()
+  {
+    return zzbpo;
+  }
+  
+  public final boolean isInitialized()
+  {
+    int i = 0;
+    while (i < zzbvq.zzxw())
+    {
+      if (!zzc(zzbvq.zzbu(i))) {
+        return false;
+      }
+      i += 1;
+    }
+    Iterator localIterator = zzbvq.zzxx().iterator();
+    while (localIterator.hasNext()) {
+      if (!zzc((Map.Entry)localIterator.next())) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  public final Iterator<Map.Entry<FieldDescriptorType, Object>> iterator()
+  {
+    if (zzbvr) {
+      return new zzvz(zzbvq.entrySet().iterator());
+    }
+    return zzbvq.entrySet().iterator();
+  }
+  
+  public final void zza(zzvd<FieldDescriptorType> paramZzvd)
+  {
+    int i = 0;
+    while (i < zzbvq.zzxw())
+    {
+      zzd(zzbvq.zzbu(i));
+      i += 1;
+    }
+    paramZzvd = zzbvq.zzxx().iterator();
+    while (paramZzvd.hasNext()) {
+      zzd((Map.Entry)paramZzvd.next());
+    }
+  }
+  
+  public final void zzsm()
+  {
+    if (zzbpo) {
+      return;
+    }
+    zzbvq.zzsm();
+    zzbpo = true;
+  }
+  
+  public final int zzvu()
+  {
+    int j = 0;
+    int i = 0;
+    while (j < zzbvq.zzxw())
+    {
+      localObject = zzbvq.zzbu(j);
+      i += zzb((zzvf)((Map.Entry)localObject).getKey(), ((Map.Entry)localObject).getValue());
+      j += 1;
+    }
+    Object localObject = zzbvq.zzxx().iterator();
+    while (((Iterator)localObject).hasNext())
+    {
+      Map.Entry localEntry = (Map.Entry)((Iterator)localObject).next();
+      i += zzb((zzvf)localEntry.getKey(), localEntry.getValue());
+    }
+    return i;
+  }
+  
+  public final int zzvv()
+  {
+    int j = 0;
+    int i = 0;
+    while (j < zzbvq.zzxw())
+    {
+      i += zze(zzbvq.zzbu(j));
+      j += 1;
+    }
+    Iterator localIterator = zzbvq.zzxx().iterator();
+    while (localIterator.hasNext()) {
+      i += zze((Map.Entry)localIterator.next());
+    }
+    return i;
+  }
+}

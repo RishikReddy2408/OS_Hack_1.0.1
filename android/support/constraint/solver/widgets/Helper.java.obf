@@ -1,0 +1,8 @@
+package android.support.constraint.solver.widgets;
+
+public abstract interface Helper
+{
+  public abstract void add(ConstraintWidget paramConstraintWidget);
+  
+  public abstract void removeAllIds();
+}

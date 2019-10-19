@@ -1,0 +1,55 @@
+package com.google.android.gms.common.api.internal;
+
+import android.os.DeadObjectException;
+import android.support.annotation.NonNull;
+import com.google.android.gms.common.api.Api.AnyClient;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.Status;
+
+public final class zae<A extends BaseImplementation.ApiMethodImpl<? extends Result, Api.AnyClient>>
+  extends zab
+{
+  private final A zacn;
+  
+  public zae(int paramInt, A paramA)
+  {
+    super(paramInt);
+    zacn = paramA;
+  }
+  
+  public final void zaa(@NonNull Status paramStatus)
+  {
+    zacn.setFailedResult(paramStatus);
+  }
+  
+  public final void zaa(GoogleApiManager.zaa<?> paramZaa)
+    throws DeadObjectException
+  {
+    try
+    {
+      zacn.run(paramZaa.zaab());
+      return;
+    }
+    catch (RuntimeException paramZaa)
+    {
+      zaa(paramZaa);
+    }
+  }
+  
+  public final void zaa(@NonNull zaab paramZaab, boolean paramBoolean)
+  {
+    paramZaab.zaa(zacn, paramBoolean);
+  }
+  
+  public final void zaa(@NonNull RuntimeException paramRuntimeException)
+  {
+    String str = paramRuntimeException.getClass().getSimpleName();
+    paramRuntimeException = paramRuntimeException.getLocalizedMessage();
+    StringBuilder localStringBuilder = new StringBuilder(String.valueOf(str).length() + 2 + String.valueOf(paramRuntimeException).length());
+    localStringBuilder.append(str);
+    localStringBuilder.append(": ");
+    localStringBuilder.append(paramRuntimeException);
+    paramRuntimeException = new Status(10, localStringBuilder.toString());
+    zacn.setFailedResult(paramRuntimeException);
+  }
+}

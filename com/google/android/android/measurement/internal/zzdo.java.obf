@@ -1,0 +1,243 @@
+package com.google.android.gms.measurement.internal;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.Size;
+import android.support.annotation.WorkerThread;
+import android.support.v4.util.ArrayMap;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.util.Clock;
+import com.google.android.gms.common.util.VisibleForTesting;
+import java.util.Map;
+
+public final class zzdo
+  extends zzf
+{
+  @VisibleForTesting
+  protected zzdn zzaro;
+  private volatile zzdn zzarp;
+  private zzdn zzarq;
+  private final Map<Activity, zzdn> zzarr = new ArrayMap();
+  private zzdn zzars;
+  private String zzart;
+  
+  public zzdo(zzbt paramZzbt)
+  {
+    super(paramZzbt);
+  }
+  
+  @MainThread
+  private final void zza(Activity paramActivity, zzdn paramZzdn, boolean paramBoolean)
+  {
+    zzdn localZzdn1;
+    if (zzarp == null) {
+      localZzdn1 = zzarq;
+    } else {
+      localZzdn1 = zzarp;
+    }
+    zzdn localZzdn2 = paramZzdn;
+    if (zzarl == null) {
+      localZzdn2 = new zzdn(zzuw, zzcn(paramActivity.getClass().getCanonicalName()), zzarm);
+    }
+    zzarq = zzarp;
+    zzarp = localZzdn2;
+    zzgn().zzc(new zzdp(this, paramBoolean, localZzdn1, localZzdn2));
+  }
+  
+  @WorkerThread
+  private final void zza(@NonNull zzdn paramZzdn)
+  {
+    zzgd().zzq(zzbx().elapsedRealtime());
+    if (zzgj().zzn(zzarn)) {
+      zzarn = false;
+    }
+  }
+  
+  public static void zza(zzdn paramZzdn, Bundle paramBundle, boolean paramBoolean)
+  {
+    if ((paramBundle != null) && (paramZzdn != null) && ((!paramBundle.containsKey("_sc")) || (paramBoolean)))
+    {
+      if (zzuw != null) {
+        paramBundle.putString("_sn", zzuw);
+      } else {
+        paramBundle.remove("_sn");
+      }
+      paramBundle.putString("_sc", zzarl);
+      paramBundle.putLong("_si", zzarm);
+      return;
+    }
+    if ((paramBundle != null) && (paramZzdn == null) && (paramBoolean))
+    {
+      paramBundle.remove("_sn");
+      paramBundle.remove("_sc");
+      paramBundle.remove("_si");
+    }
+  }
+  
+  @VisibleForTesting
+  private static String zzcn(String paramString)
+  {
+    paramString = paramString.split("\\.");
+    if (paramString.length > 0) {
+      paramString = paramString[(paramString.length - 1)];
+    } else {
+      paramString = "";
+    }
+    if (paramString.length() > 100) {
+      return paramString.substring(0, 100);
+    }
+    return paramString;
+  }
+  
+  @MainThread
+  private final zzdn zze(@NonNull Activity paramActivity)
+  {
+    Preconditions.checkNotNull(paramActivity);
+    zzdn localZzdn2 = (zzdn)zzarr.get(paramActivity);
+    zzdn localZzdn1 = localZzdn2;
+    if (localZzdn2 == null)
+    {
+      localZzdn1 = new zzdn(null, zzcn(paramActivity.getClass().getCanonicalName()), zzgm().zzmc());
+      zzarr.put(paramActivity, localZzdn1);
+    }
+    return localZzdn1;
+  }
+  
+  @MainThread
+  public final void onActivityCreated(Activity paramActivity, Bundle paramBundle)
+  {
+    if (paramBundle == null) {
+      return;
+    }
+    paramBundle = paramBundle.getBundle("com.google.app_measurement.screen_service");
+    if (paramBundle == null) {
+      return;
+    }
+    paramBundle = new zzdn(paramBundle.getString("name"), paramBundle.getString("referrer_name"), paramBundle.getLong("id"));
+    zzarr.put(paramActivity, paramBundle);
+  }
+  
+  @MainThread
+  public final void onActivityDestroyed(Activity paramActivity)
+  {
+    zzarr.remove(paramActivity);
+  }
+  
+  @MainThread
+  public final void onActivityPaused(Activity paramActivity)
+  {
+    paramActivity = zze(paramActivity);
+    zzarq = zzarp;
+    zzarp = null;
+    zzgn().zzc(new zzdq(this, paramActivity));
+  }
+  
+  @MainThread
+  public final void onActivityResumed(Activity paramActivity)
+  {
+    zza(paramActivity, zze(paramActivity), false);
+    paramActivity = zzgd();
+    long l = paramActivity.zzbx().elapsedRealtime();
+    paramActivity.zzgn().zzc(new zzd(paramActivity, l));
+  }
+  
+  @MainThread
+  public final void onActivitySaveInstanceState(Activity paramActivity, Bundle paramBundle)
+  {
+    if (paramBundle == null) {
+      return;
+    }
+    paramActivity = (zzdn)zzarr.get(paramActivity);
+    if (paramActivity == null) {
+      return;
+    }
+    Bundle localBundle = new Bundle();
+    localBundle.putLong("id", zzarm);
+    localBundle.putString("name", zzuw);
+    localBundle.putString("referrer_name", zzarl);
+    paramBundle.putBundle("com.google.app_measurement.screen_service", localBundle);
+  }
+  
+  public final void setCurrentScreen(@NonNull Activity paramActivity, @Nullable @Size(max=36L, min=1L) String paramString1, @Nullable @Size(max=36L, min=1L) String paramString2)
+  {
+    if (zzarp == null)
+    {
+      zzgo().zzjg().zzbx("setCurrentScreen cannot be called while no activity active");
+      return;
+    }
+    if (zzarr.get(paramActivity) == null)
+    {
+      zzgo().zzjg().zzbx("setCurrentScreen must be called with an activity in the activity lifecycle");
+      return;
+    }
+    String str = paramString2;
+    if (paramString2 == null) {
+      str = zzcn(paramActivity.getClass().getCanonicalName());
+    }
+    boolean bool1 = zzarp.zzarl.equals(str);
+    boolean bool2 = zzfk.zzu(zzarp.zzuw, paramString1);
+    if ((bool1) && (bool2))
+    {
+      zzgo().zzji().zzbx("setCurrentScreen cannot be called with the same class and name");
+      return;
+    }
+    if ((paramString1 != null) && ((paramString1.length() <= 0) || (paramString1.length() > 100)))
+    {
+      zzgo().zzjg().zzg("Invalid screen name length in setCurrentScreen. Length", Integer.valueOf(paramString1.length()));
+      return;
+    }
+    if ((str != null) && ((str.length() <= 0) || (str.length() > 100)))
+    {
+      zzgo().zzjg().zzg("Invalid class name length in setCurrentScreen. Length", Integer.valueOf(str.length()));
+      return;
+    }
+    zzar localZzar = zzgo().zzjl();
+    if (paramString1 == null) {
+      paramString2 = "null";
+    } else {
+      paramString2 = paramString1;
+    }
+    localZzar.zze("Setting current screen to name, class", paramString2, str);
+    paramString1 = new zzdn(paramString1, str, zzgm().zzmc());
+    zzarr.put(paramActivity, paramString1);
+    zza(paramActivity, paramString1, true);
+  }
+  
+  @WorkerThread
+  public final void zza(String paramString, zzdn paramZzdn)
+  {
+    zzaf();
+    try
+    {
+      if ((zzart == null) || (zzart.equals(paramString)) || (paramZzdn != null))
+      {
+        zzart = paramString;
+        zzars = paramZzdn;
+      }
+      return;
+    }
+    finally {}
+  }
+  
+  protected final boolean zzgt()
+  {
+    return false;
+  }
+  
+  @WorkerThread
+  public final zzdn zzla()
+  {
+    zzcl();
+    zzaf();
+    return zzaro;
+  }
+  
+  public final zzdn zzlb()
+  {
+    zzgb();
+    return zzarp;
+  }
+}

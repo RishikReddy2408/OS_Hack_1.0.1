@@ -1,0 +1,36 @@
+package com.google.firebase.iid;
+
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.tasks.Task;
+import javax.annotation.Nullable;
+
+@KeepForSdk
+public abstract interface MessagingChannel
+{
+  @KeepForSdk
+  public abstract Task<Void> ackMessage(String paramString);
+  
+  @KeepForSdk
+  public abstract Task<Void> buildChannel(String paramString1, @Nullable String paramString2);
+  
+  @KeepForSdk
+  public abstract Task<Void> deleteInstanceId(String paramString);
+  
+  @KeepForSdk
+  public abstract Task<Void> deleteToken(String paramString1, @Nullable String paramString2, String paramString3, String paramString4);
+  
+  @KeepForSdk
+  public abstract Task<String> getToken(String paramString1, @Nullable String paramString2, String paramString3, String paramString4);
+  
+  @KeepForSdk
+  public abstract boolean isAvailable();
+  
+  @KeepForSdk
+  public abstract boolean isChannelBuilt();
+  
+  @KeepForSdk
+  public abstract Task<Void> subscribeToTopic(String paramString1, String paramString2, String paramString3);
+  
+  @KeepForSdk
+  public abstract Task<Void> unsubscribeFromTopic(String paramString1, String paramString2, String paramString3);
+}

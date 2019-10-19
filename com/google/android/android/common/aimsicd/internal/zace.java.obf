@@ -1,0 +1,135 @@
+package com.google.android.gms.common.api.internal;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.BinderThread;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
+import android.util.Log;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.Api.AbstractClientBuilder;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.internal.ClientSettings;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.internal.ResolveAccountResponse;
+import com.google.android.gms.signin.SignInOptions;
+import com.google.android.gms.signin.internal.zac;
+import com.google.android.gms.signin.internal.zaj;
+import com.google.android.gms.signin.zaa;
+import com.google.android.gms.signin.zad;
+import java.util.Set;
+
+public final class zace
+  extends zac
+  implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
+{
+  private static Api.AbstractClientBuilder<? extends zad, SignInOptions> zakh = zaa.zapg;
+  private final Context mContext;
+  private final Handler mHandler;
+  private Set<Scope> mScopes;
+  private final Api.AbstractClientBuilder<? extends zad, SignInOptions> zaau;
+  private ClientSettings zaes;
+  private zad zaga;
+  private zach zaki;
+  
+  @WorkerThread
+  public zace(Context paramContext, Handler paramHandler, @NonNull ClientSettings paramClientSettings)
+  {
+    this(paramContext, paramHandler, paramClientSettings, zakh);
+  }
+  
+  @WorkerThread
+  public zace(Context paramContext, Handler paramHandler, @NonNull ClientSettings paramClientSettings, Api.AbstractClientBuilder<? extends zad, SignInOptions> paramAbstractClientBuilder)
+  {
+    mContext = paramContext;
+    mHandler = paramHandler;
+    zaes = ((ClientSettings)Preconditions.checkNotNull(paramClientSettings, "ClientSettings must not be null"));
+    mScopes = paramClientSettings.getRequiredScopes();
+    zaau = paramAbstractClientBuilder;
+  }
+  
+  @WorkerThread
+  private final void zac(zaj paramZaj)
+  {
+    Object localObject = paramZaj.getConnectionResult();
+    if (((ConnectionResult)localObject).isSuccess())
+    {
+      localObject = paramZaj.zacw();
+      paramZaj = ((ResolveAccountResponse)localObject).getConnectionResult();
+      if (!paramZaj.isSuccess())
+      {
+        localObject = String.valueOf(paramZaj);
+        StringBuilder localStringBuilder = new StringBuilder(String.valueOf(localObject).length() + 48);
+        localStringBuilder.append("Sign-in succeeded with resolve account failure: ");
+        localStringBuilder.append((String)localObject);
+        Log.wtf("SignInCoordinator", localStringBuilder.toString(), new Exception());
+        zaki.zag(paramZaj);
+        zaga.disconnect();
+        return;
+      }
+      zaki.zaa(((ResolveAccountResponse)localObject).getAccountAccessor(), mScopes);
+    }
+    else
+    {
+      zaki.zag((ConnectionResult)localObject);
+    }
+    zaga.disconnect();
+  }
+  
+  @WorkerThread
+  public final void onConnected(@Nullable Bundle paramBundle)
+  {
+    zaga.zaa(this);
+  }
+  
+  @WorkerThread
+  public final void onConnectionFailed(@NonNull ConnectionResult paramConnectionResult)
+  {
+    zaki.zag(paramConnectionResult);
+  }
+  
+  @WorkerThread
+  public final void onConnectionSuspended(int paramInt)
+  {
+    zaga.disconnect();
+  }
+  
+  @WorkerThread
+  public final void zaa(zach paramZach)
+  {
+    if (zaga != null) {
+      zaga.disconnect();
+    }
+    zaes.setClientSessionId(Integer.valueOf(System.identityHashCode(this)));
+    zaga = ((zad)zaau.buildClient(mContext, mHandler.getLooper(), zaes, zaes.getSignInOptions(), this, this));
+    zaki = paramZach;
+    if ((mScopes != null) && (!mScopes.isEmpty()))
+    {
+      zaga.connect();
+      return;
+    }
+    mHandler.post(new zacf(this));
+  }
+  
+  @BinderThread
+  public final void zab(zaj paramZaj)
+  {
+    mHandler.post(new zacg(this, paramZaj));
+  }
+  
+  public final zad zabq()
+  {
+    return zaga;
+  }
+  
+  public final void zabs()
+  {
+    if (zaga != null) {
+      zaga.disconnect();
+    }
+  }
+}

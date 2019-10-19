@@ -1,0 +1,14 @@
+package com.google.android.gms.common.api.internal;
+
+import com.google.android.gms.common.GoogleApiAvailabilityLight;
+
+final class zaal
+  implements Runnable
+{
+  zaal(zaak paramZaak) {}
+  
+  public final void run()
+  {
+    zaak.zab(zagi).cancelAvailabilityErrorNotifications(zaak.zaa(zagi));
+  }
+}

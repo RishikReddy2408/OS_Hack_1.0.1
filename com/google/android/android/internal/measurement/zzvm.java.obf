@@ -1,0 +1,315 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public abstract class zzvm<MessageType extends zzvm<MessageType, BuilderType>, BuilderType extends zza<MessageType, BuilderType>>
+  extends zztw<MessageType, BuilderType>
+{
+  private static Map<Object, zzvm<?, ?>> zzbyo = new ConcurrentHashMap();
+  protected zzyc zzbym = zzyc.zzyf();
+  private int zzbyn = -1;
+  
+  public zzvm() {}
+  
+  static <T extends zzvm<T, ?>> T zza(T paramT, zzuo paramZzuo, zzuz paramZzuz)
+    throws zzvt
+  {
+    paramT = (zzvm)paramT.zza(zze.zzbyw, null, null);
+    try
+    {
+      zzxf.zzxn().zzag(paramT).zza(paramT, zzur.zza(paramZzuo), paramZzuz);
+      zzxf.zzxn().zzag(paramT).zzu(paramT);
+      return paramT;
+    }
+    catch (RuntimeException paramT)
+    {
+      if ((paramT.getCause() instanceof zzvt)) {
+        throw ((zzvt)paramT.getCause());
+      }
+      throw paramT;
+    }
+    catch (IOException paramZzuo)
+    {
+      if ((paramZzuo.getCause() instanceof zzvt)) {
+        throw ((zzvt)paramZzuo.getCause());
+      }
+      throw new zzvt(paramZzuo.getMessage()).zzg(paramT);
+    }
+  }
+  
+  protected static Object zza(zzwt paramZzwt, String paramString, Object[] paramArrayOfObject)
+  {
+    return new zzxh(paramZzwt, paramString, paramArrayOfObject);
+  }
+  
+  static Object zza(Method paramMethod, Object paramObject, Object... paramVarArgs)
+  {
+    try
+    {
+      paramMethod = paramMethod.invoke(paramObject, paramVarArgs);
+      return paramMethod;
+    }
+    catch (InvocationTargetException paramMethod)
+    {
+      paramMethod = paramMethod.getCause();
+      if (!(paramMethod instanceof RuntimeException))
+      {
+        if ((paramMethod instanceof Error)) {
+          throw ((Error)paramMethod);
+        }
+        throw new RuntimeException("Unexpected exception thrown by generated accessor method.", paramMethod);
+      }
+      throw ((RuntimeException)paramMethod);
+    }
+    catch (IllegalAccessException paramMethod)
+    {
+      throw new RuntimeException("Couldn't use Java reflection to implement protocol message reflection.", paramMethod);
+    }
+  }
+  
+  protected static <T extends zzvm<?, ?>> void zza(Class<T> paramClass, T paramT)
+  {
+    zzbyo.put(paramClass, paramT);
+  }
+  
+  protected static final <T extends zzvm<T, ?>> boolean zza(T paramT, boolean paramBoolean)
+  {
+    int i = ((Byte)paramT.zza(zze.zzbyt, null, null)).byteValue();
+    if (i == 1) {
+      return true;
+    }
+    if (i == 0) {
+      return false;
+    }
+    return zzxf.zzxn().zzag(paramT).zzaf(paramT);
+  }
+  
+  static <T extends zzvm<?, ?>> T zzg(Class<T> paramClass)
+  {
+    zzvm localZzvm2 = (zzvm)zzbyo.get(paramClass);
+    zzvm localZzvm1 = localZzvm2;
+    if (localZzvm2 == null) {
+      try
+      {
+        Class.forName(paramClass.getName(), true, paramClass.getClassLoader());
+        localZzvm1 = (zzvm)zzbyo.get(paramClass);
+      }
+      catch (ClassNotFoundException paramClass)
+      {
+        throw new IllegalStateException("Class initialization cannot fail.", paramClass);
+      }
+    }
+    if (localZzvm1 == null)
+    {
+      paramClass = String.valueOf(paramClass.getName());
+      if (paramClass.length() != 0) {
+        paramClass = "Unable to get default instance for: ".concat(paramClass);
+      } else {
+        paramClass = new String("Unable to get default instance for: ");
+      }
+      throw new IllegalStateException(paramClass);
+    }
+    return localZzvm1;
+  }
+  
+  protected static <E> zzvs<E> zzwc()
+  {
+    return zzxg.zzxo();
+  }
+  
+  public boolean equals(Object paramObject)
+  {
+    if (this == paramObject) {
+      return true;
+    }
+    if (!((zzvm)zza(zze.zzbyy, null, null)).getClass().isInstance(paramObject)) {
+      return false;
+    }
+    return zzxf.zzxn().zzag(this).equals(this, (zzvm)paramObject);
+  }
+  
+  public int hashCode()
+  {
+    if (zzbtr != 0) {
+      return zzbtr;
+    }
+    zzbtr = zzxf.zzxn().zzag(this).hashCode(this);
+    return zzbtr;
+  }
+  
+  public final boolean isInitialized()
+  {
+    boolean bool1 = Boolean.TRUE.booleanValue();
+    int i = ((Byte)zza(zze.zzbyt, null, null)).byteValue();
+    if (i == 1) {
+      return true;
+    }
+    if (i == 0) {
+      return false;
+    }
+    boolean bool2 = zzxf.zzxn().zzag(this).zzaf(this);
+    if (bool1)
+    {
+      i = zze.zzbyu;
+      zzvm localZzvm;
+      if (bool2) {
+        localZzvm = this;
+      } else {
+        localZzvm = null;
+      }
+      zza(i, localZzvm, null);
+    }
+    return bool2;
+  }
+  
+  public String toString()
+  {
+    return zzww.zza(this, super.toString());
+  }
+  
+  protected abstract Object zza(int paramInt, Object paramObject1, Object paramObject2);
+  
+  final void zzah(int paramInt)
+  {
+    zzbyn = paramInt;
+  }
+  
+  public final void zzb(zzut paramZzut)
+    throws IOException
+  {
+    zzxf.zzxn().zzi(getClass()).zza(this, zzuv.zza(paramZzut));
+  }
+  
+  final int zztu()
+  {
+    return zzbyn;
+  }
+  
+  public final int zzvu()
+  {
+    if (zzbyn == -1) {
+      zzbyn = zzxf.zzxn().zzag(this).zzae(this);
+    }
+    return zzbyn;
+  }
+  
+  public static class zza<MessageType extends zzvm<MessageType, BuilderType>, BuilderType extends zza<MessageType, BuilderType>>
+    extends zztx<MessageType, BuilderType>
+  {
+    private final MessageType zzbyp;
+    private MessageType zzbyq;
+    private boolean zzbyr;
+    
+    protected zza(MessageType paramMessageType)
+    {
+      zzbyp = paramMessageType;
+      zzbyq = ((zzvm)paramMessageType.zza(zzvm.zze.zzbyw, null, null));
+      zzbyr = false;
+    }
+    
+    private static void zza(MessageType paramMessageType1, MessageType paramMessageType2)
+    {
+      zzxf.zzxn().zzag(paramMessageType1).zzd(paramMessageType1, paramMessageType2);
+    }
+    
+    public final boolean isInitialized()
+    {
+      return zzvm.zza(zzbyq, false);
+    }
+    
+    public final BuilderType zza(MessageType paramMessageType)
+    {
+      if (zzbyr)
+      {
+        zzvm localZzvm = (zzvm)zzbyq.zza(zzvm.zze.zzbyw, null, null);
+        zza(localZzvm, zzbyq);
+        zzbyq = localZzvm;
+        zzbyr = false;
+      }
+      zza(zzbyq, paramMessageType);
+      return this;
+    }
+    
+    public MessageType zzwg()
+    {
+      if (zzbyr) {
+        return zzbyq;
+      }
+      zzvm localZzvm = zzbyq;
+      zzxf.zzxn().zzag(localZzvm).zzu(localZzvm);
+      zzbyr = true;
+      return zzbyq;
+    }
+    
+    public final MessageType zzwh()
+    {
+      zzvm localZzvm2 = (zzvm)zzwi();
+      boolean bool2 = Boolean.TRUE.booleanValue();
+      int i = ((Byte)localZzvm2.zza(zzvm.zze.zzbyt, null, null)).byteValue();
+      int j = 1;
+      if (i != 1) {
+        if (i == 0)
+        {
+          j = 0;
+        }
+        else
+        {
+          boolean bool1 = zzxf.zzxn().zzag(localZzvm2).zzaf(localZzvm2);
+          j = bool1;
+          if (bool2)
+          {
+            i = zzvm.zze.zzbyu;
+            zzvm localZzvm1;
+            if (bool1) {
+              localZzvm1 = localZzvm2;
+            } else {
+              localZzvm1 = null;
+            }
+            localZzvm2.zza(i, localZzvm1, null);
+            j = bool1;
+          }
+        }
+      }
+      if (j != 0) {
+        return localZzvm2;
+      }
+      throw new zzya(localZzvm2);
+    }
+  }
+  
+  public static final class zzb<T extends zzvm<T, ?>>
+    extends zzty<T>
+  {
+    private final T zzbyp;
+    
+    public zzb(T paramT)
+    {
+      zzbyp = paramT;
+    }
+  }
+  
+  public static abstract class zzc<MessageType extends zzc<MessageType, BuilderType>, BuilderType>
+    extends zzvm<MessageType, BuilderType>
+    implements zzwv
+  {
+    protected zzvd<Object> zzbys = zzvd.zzvt();
+    
+    public zzc() {}
+  }
+  
+  public static final class zzd<ContainingType extends zzwt, Type>
+    extends zzux<ContainingType, Type>
+  {}
+  
+  public static enum zze
+  {
+    public static int[] values$50KLMJ33DTMIUPRFDTJMOP9FE1P6UT3FC9QMCBQ7CLN6ASJ1EHIM8JB5EDPM2PR59HKN8P949LIN8Q3FCHA6UIBEEPNMMP9R0()
+    {
+      return (int[])zzbza.clone();
+    }
+  }
+}

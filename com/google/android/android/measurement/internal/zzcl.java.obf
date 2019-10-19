@@ -1,0 +1,10 @@
+package com.google.android.gms.measurement.internal;
+
+import java.util.List;
+import java.util.concurrent.Callable;
+
+final class zzcl
+  implements Callable<List<zzfj>>
+{
+  zzcl(zzbv paramZzbv, zzh paramZzh) {}
+}

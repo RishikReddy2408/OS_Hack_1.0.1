@@ -1,0 +1,115 @@
+package com.google.android.gms.internal.measurement;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+final class zzwf
+  extends zzwd
+{
+  private static final Class<?> zzcal = Collections.unmodifiableList(Collections.emptyList()).getClass();
+  
+  private zzwf()
+  {
+    super(null);
+  }
+  
+  private static <L> List<L> zza(Object paramObject, long paramLong, int paramInt)
+  {
+    List localList = zzc(paramObject, paramLong);
+    if (localList.isEmpty())
+    {
+      if ((localList instanceof zzwc)) {
+        localObject = new zzwb(paramInt);
+      } else if (((localList instanceof zzxe)) && ((localList instanceof zzvs))) {
+        localObject = ((zzvs)localList).zzak(paramInt);
+      } else {
+        localObject = new ArrayList(paramInt);
+      }
+      zzyh.zza(paramObject, paramLong, localObject);
+      return localObject;
+    }
+    if (zzcal.isAssignableFrom(localList.getClass()))
+    {
+      localObject = new ArrayList(localList.size() + paramInt);
+      ((ArrayList)localObject).addAll(localList);
+      zzyh.zza(paramObject, paramLong, localObject);
+    }
+    for (paramObject = localObject;; paramObject = localObject)
+    {
+      return paramObject;
+      if (!(localList instanceof zzye)) {
+        break;
+      }
+      localObject = new zzwb(localList.size() + paramInt);
+      ((zztz)localObject).addAll((zzye)localList);
+      zzyh.zza(paramObject, paramLong, localObject);
+    }
+    Object localObject = localList;
+    if ((localList instanceof zzxe))
+    {
+      localObject = localList;
+      if ((localList instanceof zzvs))
+      {
+        zzvs localZzvs = (zzvs)localList;
+        localObject = localList;
+        if (!localZzvs.zztw())
+        {
+          localObject = localZzvs.zzak(localList.size() + paramInt);
+          zzyh.zza(paramObject, paramLong, localObject);
+        }
+      }
+    }
+    return localObject;
+  }
+  
+  private static <E> List<E> zzc(Object paramObject, long paramLong)
+  {
+    return (List)zzyh.zzp(paramObject, paramLong);
+  }
+  
+  final <L> List<L> zza(Object paramObject, long paramLong)
+  {
+    return zza(paramObject, paramLong, 10);
+  }
+  
+  final <E> void zza(Object paramObject1, Object paramObject2, long paramLong)
+  {
+    paramObject2 = zzc(paramObject2, paramLong);
+    List localList = zza(paramObject1, paramLong, paramObject2.size());
+    int i = localList.size();
+    int j = paramObject2.size();
+    if ((i > 0) && (j > 0)) {
+      localList.addAll(paramObject2);
+    }
+    if (i > 0) {
+      paramObject2 = localList;
+    }
+    zzyh.zza(paramObject1, paramLong, paramObject2);
+  }
+  
+  final void zzb(Object paramObject, long paramLong)
+  {
+    Object localObject = (List)zzyh.zzp(paramObject, paramLong);
+    if ((localObject instanceof zzwc))
+    {
+      localObject = ((zzwc)localObject).zzww();
+    }
+    else
+    {
+      if (zzcal.isAssignableFrom(localObject.getClass())) {
+        return;
+      }
+      if (((localObject instanceof zzxe)) && ((localObject instanceof zzvs)))
+      {
+        paramObject = (zzvs)localObject;
+        if (paramObject.zztw()) {
+          paramObject.zzsm();
+        }
+        return;
+      }
+      localObject = Collections.unmodifiableList((List)localObject);
+    }
+    zzyh.zza(paramObject, paramLong, localObject);
+  }
+}

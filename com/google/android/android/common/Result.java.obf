@@ -1,0 +1,28 @@
+package com.google.android.gms.common;
+
+import java.util.concurrent.Callable;
+
+final class zzo
+  extends zzm
+{
+  private final Callable<String> zzae;
+  
+  private zzo(Callable<String> paramCallable)
+  {
+    super(false, null, null);
+    zzae = paramCallable;
+  }
+  
+  final String getErrorMessage()
+  {
+    try
+    {
+      String str = (String)zzae.call();
+      return str;
+    }
+    catch (Exception localException)
+    {
+      throw new RuntimeException(localException);
+    }
+  }
+}

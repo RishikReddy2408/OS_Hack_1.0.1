@@ -1,0 +1,16 @@
+package com.google.android.gms.signin;
+
+import com.google.android.gms.common.api.Api.Client;
+import com.google.android.gms.common.internal.IAccountAccessor;
+
+public abstract interface zad
+  extends Api.Client
+{
+  public abstract void connect();
+  
+  public abstract void zaa(IAccountAccessor paramIAccountAccessor, boolean paramBoolean);
+  
+  public abstract void zaa(com.google.android.gms.signin.internal.zad paramZad);
+  
+  public abstract void zacv();
+}

@@ -1,0 +1,103 @@
+package com.google.android.gms.internal.measurement;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.RandomAccess;
+
+public final class zzwb
+  extends zztz<String>
+  implements zzwc, RandomAccess
+{
+  private static final zzwb zzcag;
+  private static final zzwc zzcah = zzcag;
+  private final List<Object> zzcai;
+  
+  static
+  {
+    zzwb localZzwb = new zzwb();
+    zzcag = localZzwb;
+    localZzwb.zzsm();
+  }
+  
+  public zzwb()
+  {
+    this(10);
+  }
+  
+  public zzwb(int paramInt)
+  {
+    this(new ArrayList(paramInt));
+  }
+  
+  private zzwb(ArrayList<Object> paramArrayList)
+  {
+    zzcai = paramArrayList;
+  }
+  
+  private static String zzw(Object paramObject)
+  {
+    if ((paramObject instanceof String)) {
+      return (String)paramObject;
+    }
+    if ((paramObject instanceof zzud)) {
+      return ((zzud)paramObject).zzua();
+    }
+    return zzvo.zzm((byte[])paramObject);
+  }
+  
+  public final boolean addAll(int paramInt, Collection<? extends String> paramCollection)
+  {
+    zztx();
+    Object localObject = paramCollection;
+    if ((paramCollection instanceof zzwc)) {
+      localObject = ((zzwc)paramCollection).zzwv();
+    }
+    boolean bool = zzcai.addAll(paramInt, (Collection)localObject);
+    modCount += 1;
+    return bool;
+  }
+  
+  public final boolean addAll(Collection<? extends String> paramCollection)
+  {
+    return addAll(size(), paramCollection);
+  }
+  
+  public final void clear()
+  {
+    zztx();
+    zzcai.clear();
+    modCount += 1;
+  }
+  
+  public final Object getRaw(int paramInt)
+  {
+    return zzcai.get(paramInt);
+  }
+  
+  public final int size()
+  {
+    return zzcai.size();
+  }
+  
+  public final void zzc(zzud paramZzud)
+  {
+    zztx();
+    zzcai.add(paramZzud);
+    modCount += 1;
+  }
+  
+  public final List<?> zzwv()
+  {
+    return Collections.unmodifiableList(zzcai);
+  }
+  
+  public final zzwc zzww()
+  {
+    if (zztw()) {
+      return new zzye(this);
+    }
+    return this;
+  }
+}

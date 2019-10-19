@@ -1,0 +1,142 @@
+package com.google.firebase.iid;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
+import android.util.Log;
+import com.google.android.gms.common.util.VisibleForTesting;
+import com.google.firebase.FirebaseApp;
+import java.io.IOException;
+
+final class zzay
+  implements Runnable
+{
+  private final zzan zzan;
+  private final zzba zzaq;
+  private final long zzdh;
+  private final PowerManager.WakeLock zzdi;
+  private final FirebaseInstanceId zzdj;
+  
+  @VisibleForTesting
+  zzay(FirebaseInstanceId paramFirebaseInstanceId, zzan paramZzan, zzba paramZzba, long paramLong)
+  {
+    zzdj = paramFirebaseInstanceId;
+    zzan = paramZzan;
+    zzaq = paramZzba;
+    zzdh = paramLong;
+    zzdi = ((PowerManager)getContext().getSystemService("power")).newWakeLock(1, "fiid-sync");
+    zzdi.setReferenceCounted(false);
+  }
+  
+  @VisibleForTesting
+  private final boolean zzam()
+  {
+    try
+    {
+      if (!zzdj.zzo()) {
+        zzdj.zzp();
+      }
+      return true;
+    }
+    catch (IOException localIOException)
+    {
+      String str = String.valueOf(localIOException.getMessage());
+      if (str.length() != 0) {
+        str = "Build channel failed: ".concat(str);
+      } else {
+        str = new String("Build channel failed: ");
+      }
+      Log.e("FirebaseInstanceId", str);
+    }
+    return false;
+  }
+  
+  @VisibleForTesting
+  private final boolean zzan()
+  {
+    Object localObject = zzdj.zzj();
+    if ((localObject != null) && (!((zzax)localObject).zzj(zzan.zzad()))) {
+      return true;
+    }
+    try
+    {
+      String str1 = zzdj.zzk();
+      if (str1 == null)
+      {
+        Log.e("FirebaseInstanceId", "Token retrieval failed: null");
+        return false;
+      }
+      if (Log.isLoggable("FirebaseInstanceId", 3)) {
+        Log.d("FirebaseInstanceId", "Token successfully retrieved");
+      }
+      if ((localObject == null) || ((localObject != null) && (!str1.equals(zzbq))))
+      {
+        localObject = getContext();
+        Intent localIntent = new Intent("com.google.firebase.messaging.NEW_TOKEN");
+        localIntent.putExtra("token", str1);
+        zzav.zzc((Context)localObject, localIntent);
+        zzav.zzb((Context)localObject, new Intent("com.google.firebase.iid.TOKEN_REFRESH"));
+      }
+      return true;
+    }
+    catch (IOException|SecurityException localIOException)
+    {
+      String str2 = String.valueOf(localIOException.getMessage());
+      if (str2.length() != 0) {
+        str2 = "Token retrieval failed: ".concat(str2);
+      } else {
+        str2 = new String("Token retrieval failed: ");
+      }
+      Log.e("FirebaseInstanceId", str2);
+    }
+    return false;
+  }
+  
+  final Context getContext()
+  {
+    return zzdj.zzh().getApplicationContext();
+  }
+  
+  public final void run()
+  {
+    zzdi.acquire();
+    try
+    {
+      zzdj.zza(true);
+      if (!zzdj.zzn())
+      {
+        zzdj.zza(false);
+        return;
+      }
+      if (!zzao())
+      {
+        new zzaz(this).zzap();
+        return;
+      }
+      if ((zzam()) && (zzan()) && (zzaq.zzc(zzdj))) {
+        zzdj.zza(false);
+      } else {
+        zzdj.zza(zzdh);
+      }
+      return;
+    }
+    finally
+    {
+      zzdi.release();
+    }
+  }
+  
+  final boolean zzao()
+  {
+    Object localObject = (ConnectivityManager)getContext().getSystemService("connectivity");
+    if (localObject != null) {
+      localObject = ((ConnectivityManager)localObject).getActiveNetworkInfo();
+    } else {
+      localObject = null;
+    }
+    return (localObject != null) && (((NetworkInfo)localObject).isConnected());
+  }
+}

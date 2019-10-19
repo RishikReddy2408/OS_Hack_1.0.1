@@ -1,0 +1,324 @@
+package android.support.constraint.motion;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.support.constraint.R.styleable;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.NestedScrollView.OnScrollChangeListener;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.util.Xml;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import org.xmlpull.v1.XmlPullParser;
+
+class TouchResponse
+{
+  private static final float[][] TOUCH_DIRECTION = { { 0.0F, 1.0F }, { 0.0F, -1.0F }, { -1.0F, 0.0F }, { 1.0F, 0.0F } };
+  private static final float[][] TOUCH_SIDES = { { 0.5F, 0.0F }, { 0.0F, 0.5F }, { 1.0F, 0.5F }, { 0.5F, 1.0F }, { 0.5F, 0.5F } };
+  private float[] mAnchorDpDt = new float[2];
+  private float mDragScale = 1.0F;
+  private boolean mDragStarted = false;
+  private float mLastTouchX;
+  private float mLastTouchY;
+  private float mMaxAcceleration = 1.2F;
+  private float mMaxVelocity = 4.0F;
+  private final MotionLayout mMotionLayout;
+  private boolean mMoveWhenScrollAtTop = true;
+  private int mTouchAnchorId = -1;
+  private int mTouchAnchorSide = 0;
+  private float mTouchAnchorX = 0.5F;
+  private float mTouchAnchorY = 0.5F;
+  private float mTouchDirectionX = 0.0F;
+  private float mTouchDirectionY = 1.0F;
+  private int mTouchSide = 0;
+  private VelocityTracker mVelocityTracker;
+  
+  TouchResponse(Context paramContext, MotionLayout paramMotionLayout, XmlPullParser paramXmlPullParser)
+  {
+    mMotionLayout = paramMotionLayout;
+    fillFromAttributeList(paramContext, Xml.asAttributeSet(paramXmlPullParser));
+  }
+  
+  private void fill(TypedArray paramTypedArray)
+  {
+    int j = paramTypedArray.getIndexCount();
+    int i = 0;
+    while (i < j)
+    {
+      int k = paramTypedArray.getIndex(i);
+      if (k == R.styleable.OnSwipe_touchAnchorId)
+      {
+        mTouchAnchorId = paramTypedArray.getResourceId(k, mTouchAnchorId);
+      }
+      else if (k == R.styleable.OnSwipe_touchAnchorSide)
+      {
+        mTouchAnchorSide = paramTypedArray.getInt(k, mTouchAnchorSide);
+        mTouchAnchorX = TOUCH_SIDES[mTouchAnchorSide][0];
+        mTouchAnchorY = TOUCH_SIDES[mTouchAnchorSide][1];
+      }
+      else if (k == R.styleable.OnSwipe_dragDirection)
+      {
+        mTouchSide = paramTypedArray.getInt(k, mTouchSide);
+        mTouchDirectionX = TOUCH_DIRECTION[mTouchSide][0];
+        mTouchDirectionY = TOUCH_DIRECTION[mTouchSide][1];
+      }
+      else if (k == R.styleable.OnSwipe_maxVelocity)
+      {
+        mMaxVelocity = paramTypedArray.getFloat(k, mMaxVelocity);
+      }
+      else if (k == R.styleable.OnSwipe_maxAcceleration)
+      {
+        mMaxAcceleration = paramTypedArray.getFloat(k, mMaxAcceleration);
+      }
+      else if (k == R.styleable.OnSwipe_moveWhenScrollAtTop)
+      {
+        mMoveWhenScrollAtTop = paramTypedArray.getBoolean(k, mMoveWhenScrollAtTop);
+      }
+      else if (k == R.styleable.OnSwipe_dragScale)
+      {
+        mDragScale = paramTypedArray.getFloat(k, mDragScale);
+      }
+      i += 1;
+    }
+  }
+  
+  private void fillFromAttributeList(Context paramContext, AttributeSet paramAttributeSet)
+  {
+    paramContext = paramContext.obtainStyledAttributes(paramAttributeSet, R.styleable.OnSwipe);
+    fill(paramContext);
+    paramContext.recycle();
+  }
+  
+  void cancel()
+  {
+    Log.v("MotionLayout", "shouldInterceptTouchEvent ");
+    if (mVelocityTracker != null)
+    {
+      mVelocityTracker.recycle();
+      mVelocityTracker = null;
+    }
+  }
+  
+  float getMaxAcceleration()
+  {
+    return mMaxAcceleration;
+  }
+  
+  float getMaxVelocity()
+  {
+    return mMaxVelocity;
+  }
+  
+  boolean getMoveWhenScrollAtTop()
+  {
+    return mMoveWhenScrollAtTop;
+  }
+  
+  void processTouchEvent(MotionEvent paramMotionEvent, MotionScene paramMotionScene)
+  {
+    if (mVelocityTracker == null) {
+      mVelocityTracker = VelocityTracker.obtain();
+    }
+    mVelocityTracker.addMovement(paramMotionEvent);
+    int i = paramMotionEvent.getAction();
+    float f3 = 1.0F;
+    float f1;
+    float f2;
+    float f4;
+    switch (i)
+    {
+    default: 
+      
+    case 3: 
+      mVelocityTracker.recycle();
+      mVelocityTracker = null;
+      return;
+    case 2: 
+      f1 = paramMotionEvent.getRawY() - mLastTouchY;
+      f3 = paramMotionEvent.getRawX() - mLastTouchX;
+      if ((Math.abs(mTouchDirectionX * f3 + mTouchDirectionY * f1) > 10.0F) || (mDragStarted))
+      {
+        f2 = mMotionLayout.getProgress();
+        if (!mDragStarted)
+        {
+          mDragStarted = true;
+          mMotionLayout.setProgress(f2);
+        }
+        if (mTouchAnchorId != -1)
+        {
+          mMotionLayout.getAnchorDpDt(mTouchAnchorId, f2, mTouchAnchorX, mTouchAnchorY, mAnchorDpDt);
+        }
+        else
+        {
+          f4 = Math.min(mMotionLayout.getWidth(), mMotionLayout.getHeight());
+          paramMotionScene = mAnchorDpDt;
+          mAnchorDpDt[0] = f4;
+          paramMotionScene[1] = f4;
+        }
+        if (Math.abs((mTouchDirectionX * mAnchorDpDt[0] + mTouchDirectionY * mAnchorDpDt[1]) * mDragScale) < 0.01D)
+        {
+          mAnchorDpDt[0] = 0.01F;
+          mAnchorDpDt[1] = 0.01F;
+        }
+        if (mTouchDirectionX != 0.0F) {
+          f1 = f3 * mTouchDirectionX / mAnchorDpDt[0];
+        } else {
+          f1 = f1 * mTouchDirectionY / mAnchorDpDt[1];
+        }
+        f1 = Math.max(Math.min(f2 + f1, 1.0F), 0.0F);
+        if (f1 != mMotionLayout.getProgress()) {
+          mMotionLayout.setProgress(f1);
+        }
+        mLastTouchX = paramMotionEvent.getRawX();
+        mLastTouchY = paramMotionEvent.getRawY();
+        return;
+      }
+      break;
+    case 1: 
+      mDragStarted = false;
+      mVelocityTracker.computeCurrentVelocity(1000);
+      f1 = mVelocityTracker.getXVelocity();
+      f2 = mVelocityTracker.getYVelocity();
+      f4 = mMotionLayout.getProgress();
+      if (mTouchAnchorId != -1)
+      {
+        mMotionLayout.getAnchorDpDt(mTouchAnchorId, f4, mTouchAnchorX, mTouchAnchorY, mAnchorDpDt);
+      }
+      else
+      {
+        f5 = Math.min(mMotionLayout.getWidth(), mMotionLayout.getHeight());
+        paramMotionEvent = mAnchorDpDt;
+        mAnchorDpDt[0] = f5;
+        paramMotionEvent[1] = f5;
+      }
+      float f5 = mTouchDirectionX;
+      f5 = mAnchorDpDt[0];
+      f5 = mTouchDirectionY;
+      f5 = mAnchorDpDt[1];
+      if (mTouchDirectionX != 0.0F) {
+        f1 = f1 * mTouchDirectionX / mAnchorDpDt[0];
+      } else {
+        f1 = f2 * mTouchDirectionY / mAnchorDpDt[1];
+      }
+      f2 = f4;
+      if (!Float.isNaN(f1)) {
+        f2 = f4 + f1 / 3.0F;
+      }
+      if ((f2 != 0.0F) && (f2 != 1.0F))
+      {
+        paramMotionEvent = mMotionLayout;
+        if (f2 < 0.5D) {
+          f3 = 0.0F;
+        }
+        paramMotionEvent.touchAnimateTo(f3, f1);
+      }
+      mVelocityTracker.recycle();
+      mVelocityTracker = null;
+      return;
+    case 0: 
+      mLastTouchX = paramMotionEvent.getRawX();
+      mLastTouchY = paramMotionEvent.getRawY();
+      mDragStarted = false;
+    }
+  }
+  
+  void scrollMove(float paramFloat1, float paramFloat2)
+  {
+    float f = mTouchDirectionX;
+    f = mTouchDirectionY;
+    f = mMotionLayout.getProgress();
+    if (!mDragStarted)
+    {
+      mDragStarted = true;
+      mMotionLayout.setProgress(f);
+    }
+    mMotionLayout.getAnchorDpDt(mTouchAnchorId, f, mTouchAnchorX, mTouchAnchorY, mAnchorDpDt);
+    if (Math.abs(mTouchDirectionX * mAnchorDpDt[0] + mTouchDirectionY * mAnchorDpDt[1]) < 0.01D)
+    {
+      mAnchorDpDt[0] = 0.01F;
+      mAnchorDpDt[1] = 0.01F;
+    }
+    if (mTouchDirectionX != 0.0F) {
+      paramFloat1 = paramFloat1 * mTouchDirectionX / mAnchorDpDt[0];
+    } else {
+      paramFloat1 = paramFloat2 * mTouchDirectionY / mAnchorDpDt[1];
+    }
+    paramFloat1 = Math.max(Math.min(f + paramFloat1, 1.0F), 0.0F);
+    if (paramFloat1 != mMotionLayout.getProgress()) {
+      mMotionLayout.setProgress(paramFloat1);
+    }
+  }
+  
+  void scrollUp(float paramFloat1, float paramFloat2)
+  {
+    mDragStarted = false;
+    float f1 = mMotionLayout.getProgress();
+    mMotionLayout.getAnchorDpDt(mTouchAnchorId, f1, mTouchAnchorX, mTouchAnchorY, mAnchorDpDt);
+    float f2 = mTouchDirectionX;
+    f2 = mAnchorDpDt[0];
+    f2 = mTouchDirectionY;
+    f2 = mAnchorDpDt[1];
+    if (mTouchDirectionX != 0.0F) {
+      paramFloat1 = paramFloat1 * mTouchDirectionX / mAnchorDpDt[0];
+    } else {
+      paramFloat1 = paramFloat2 * mTouchDirectionY / mAnchorDpDt[1];
+    }
+    paramFloat2 = f1;
+    if (!Float.isNaN(paramFloat1)) {
+      paramFloat2 = f1 + paramFloat1 / 3.0F;
+    }
+    if (paramFloat2 != 0.0F)
+    {
+      f1 = 1.0F;
+      if (paramFloat2 != 1.0F)
+      {
+        MotionLayout localMotionLayout = mMotionLayout;
+        if (paramFloat2 < 0.5D) {
+          f1 = 0.0F;
+        }
+        localMotionLayout.touchAnimateTo(f1, paramFloat1);
+      }
+    }
+  }
+  
+  void setupTouch()
+  {
+    Object localObject = mMotionLayout.findViewById(mTouchAnchorId);
+    if (localObject == null) {
+      Log.v("MotionLayout", " cannot find view to handle touch");
+    }
+    if ((localObject instanceof NestedScrollView))
+    {
+      localObject = (NestedScrollView)localObject;
+      ((NestedScrollView)localObject).setOnTouchListener(new View.OnTouchListener()
+      {
+        public boolean onTouch(View paramAnonymousView, MotionEvent paramAnonymousMotionEvent)
+        {
+          return false;
+        }
+      });
+      ((NestedScrollView)localObject).setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener()
+      {
+        public void onScrollChange(NestedScrollView paramAnonymousNestedScrollView, int paramAnonymousInt1, int paramAnonymousInt2, int paramAnonymousInt3, int paramAnonymousInt4) {}
+      });
+    }
+  }
+  
+  boolean shouldInterceptTouchEvent(MotionEvent paramMotionEvent)
+  {
+    Log.v("MotionLayout", "shouldInterceptTouchEvent ");
+    int i = paramMotionEvent.getActionMasked();
+    paramMotionEvent.getActionIndex();
+    if (i == 0) {
+      cancel();
+    }
+    if (mVelocityTracker == null) {
+      mVelocityTracker = VelocityTracker.obtain();
+    }
+    mVelocityTracker.addMovement(paramMotionEvent);
+    return false;
+  }
+}

@@ -1,0 +1,9 @@
+package com.google.android.gms.measurement.internal;
+
+import android.os.Parcelable.Creator;
+
+public final class zzfi
+  implements Parcelable.Creator<zzfh>
+{
+  public zzfi() {}
+}

@@ -1,0 +1,174 @@
+package com.google.android.gms.internal.measurement;
+
+public final class zzfq
+{
+  public static final class zza
+    extends zzvm<zza, zza>
+    implements zzwv
+  {
+    private static final zza zzauq = new zza();
+    private static volatile zzxd<zza> zznw;
+    private String zzauo = "";
+    private long zzaup;
+    private int zznr;
+    
+    static
+    {
+      zzvm.zza(zza.class, zzauq);
+    }
+    
+    private zza() {}
+    
+    protected final Object zza(int paramInt, Object paramObject1, Object paramObject2)
+    {
+      switch (zzfr.zznq[(paramInt - 1)])
+      {
+      default: 
+        throw new UnsupportedOperationException();
+      case 7: 
+        return null;
+      case 6: 
+        return Byte.valueOf((byte)1);
+      case 5: 
+        paramObject1 = zznw;
+        if (paramObject1 == null) {
+          try
+          {
+            paramObject2 = zznw;
+            paramObject1 = paramObject2;
+            if (paramObject2 == null)
+            {
+              paramObject1 = new zzvm.zzb(zzauq);
+              zznw = paramObject1;
+            }
+            return paramObject1;
+          }
+          finally {}
+        }
+        return paramObject1;
+      case 4: 
+        return zzauq;
+      case 3: 
+        return zza(zzauq, "\001\002\000\001\001\002\002\000\000\000\001\b\000\002\002\001", new Object[] { "zznr", "zzauo", "zzaup" });
+      case 2: 
+        return new zza(null);
+      }
+      return new zza();
+    }
+    
+    public static final class zza
+      extends zzvm.zza<zzfq.zza, zza>
+      implements zzwv
+    {
+      private zza()
+      {
+        super();
+      }
+    }
+  }
+  
+  public static final class zzb
+    extends zzvm<zzb, zza>
+    implements zzwv
+  {
+    private static final zzb zzaut = new zzb();
+    private static volatile zzxd<zzb> zznw;
+    private int zzaur = 1;
+    private zzvs<zzfq.zza> zzaus = zzwc();
+    private int zznr;
+    
+    static
+    {
+      zzvm.zza(zzb.class, zzaut);
+    }
+    
+    private zzb() {}
+    
+    public static zzxd<zzb> zza()
+    {
+      return (zzxd)zzaut.zza(zzvm.zze.zzbyz, null, null);
+    }
+    
+    protected final Object zza(int paramInt, Object paramObject1, Object paramObject2)
+    {
+      switch (zzfr.zznq[(paramInt - 1)])
+      {
+      default: 
+        throw new UnsupportedOperationException();
+      case 7: 
+        return null;
+      case 6: 
+        return Byte.valueOf((byte)1);
+      case 5: 
+        paramObject1 = zznw;
+        if (paramObject1 == null) {
+          try
+          {
+            paramObject2 = zznw;
+            paramObject1 = paramObject2;
+            if (paramObject2 == null)
+            {
+              paramObject1 = new zzvm.zzb(zzaut);
+              zznw = paramObject1;
+            }
+            return paramObject1;
+          }
+          finally {}
+        }
+        return paramObject1;
+      case 4: 
+        return zzaut;
+      case 3: 
+        paramObject1 = zzb.zzd();
+        return zza(zzaut, "\001\002\000\001\001\002\002\000\001\000\001\f\000\002\033", new Object[] { "zznr", "zzaur", paramObject1, "zzaus", zzfq.zza.class });
+      case 2: 
+        return new zza(null);
+      }
+      return new zzb();
+    }
+    
+    public static final class zza
+      extends zzvm.zza<zzfq.zzb, zza>
+      implements zzwv
+    {
+      private zza()
+      {
+        super();
+      }
+    }
+    
+    public static enum zzb
+      implements zzvp
+    {
+      private static final zzvq<zzb> zzoa = new zzfs();
+      private final int value;
+      
+      private zzb(int paramInt)
+      {
+        value = paramInt;
+      }
+      
+      public static zzvr zzd()
+      {
+        return zzft.zzoc;
+      }
+      
+      public static zzb zzs(int paramInt)
+      {
+        switch (paramInt)
+        {
+        default: 
+          return null;
+        case 2: 
+          return zzauv;
+        }
+        return zzauu;
+      }
+      
+      public final int zzc()
+      {
+        return value;
+      }
+    }
+  }
+}

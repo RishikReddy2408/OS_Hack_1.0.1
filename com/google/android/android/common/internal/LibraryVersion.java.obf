@@ -1,0 +1,94 @@
+package com.google.android.gms.common.internal;
+
+import android.support.annotation.NonNull;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.util.VisibleForTesting;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+
+@KeepForSdk
+public class LibraryVersion
+{
+  private static final GmsLogger zzel = new GmsLogger("LibraryVersion", "");
+  private static LibraryVersion zzem = new LibraryVersion();
+  private ConcurrentHashMap<String, String> zzen = new ConcurrentHashMap();
+  
+  @VisibleForTesting
+  protected LibraryVersion() {}
+  
+  @KeepForSdk
+  public static LibraryVersion getInstance()
+  {
+    return zzem;
+  }
+  
+  @KeepForSdk
+  public String getVersion(@NonNull String paramString)
+  {
+    Preconditions.checkNotEmpty(paramString, "Please provide a valid libraryName");
+    if (zzen.containsKey(paramString)) {
+      return (String)zzen.get(paramString);
+    }
+    Object localObject1 = new Properties();
+    StringBuilder localStringBuilder = null;
+    GmsLogger localGmsLogger = null;
+    try
+    {
+      localObject3 = LibraryVersion.class.getResourceAsStream(String.format("/%s.properties", new Object[] { paramString }));
+      if (localObject3 != null)
+      {
+        ((Properties)localObject1).load((InputStream)localObject3);
+        localObject1 = ((Properties)localObject1).getProperty("version", null);
+        try
+        {
+          localGmsLogger = zzel;
+          localStringBuilder = new StringBuilder(String.valueOf(paramString).length() + 12 + String.valueOf(localObject1).length());
+          localStringBuilder.append(paramString);
+          localStringBuilder.append(" version is ");
+          localStringBuilder.append((String)localObject1);
+          localGmsLogger.v("LibraryVersion", localStringBuilder.toString());
+        }
+        catch (IOException localIOException1)
+        {
+          break label211;
+        }
+      }
+      else
+      {
+        localObject3 = zzel;
+        localObject1 = String.valueOf(paramString);
+        if (((String)localObject1).length() != 0) {
+          localObject1 = "Failed to get app version for libraryName: ".concat((String)localObject1);
+        } else {
+          localObject1 = new String("Failed to get app version for libraryName: ");
+        }
+        ((GmsLogger)localObject3).e("LibraryVersion", (String)localObject1);
+        localObject1 = localStringBuilder;
+      }
+    }
+    catch (IOException localIOException2)
+    {
+      localObject1 = localIOException1;
+      localObject2 = localIOException2;
+      label211:
+      Object localObject3 = zzel;
+      String str = String.valueOf(paramString);
+      if (str.length() != 0) {
+        str = "Failed to get app version for libraryName: ".concat(str);
+      } else {
+        str = new String("Failed to get app version for libraryName: ");
+      }
+      ((GmsLogger)localObject3).e("LibraryVersion", str, (Throwable)localObject2);
+    }
+    Object localObject2 = localObject1;
+    if (localObject1 == null)
+    {
+      localObject2 = "UNKNOWN";
+      zzel.d("LibraryVersion", ".properties file is dropped during release process. Failure to read app version isexpected druing Google internal testing where locally-built libraries are used");
+    }
+    zzen.put(paramString, localObject2);
+    return localObject2;
+  }
+}

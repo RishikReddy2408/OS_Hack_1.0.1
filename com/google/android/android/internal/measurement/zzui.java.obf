@@ -1,0 +1,6 @@
+package com.google.android.gms.internal.measurement;
+
+abstract interface zzui
+{
+  public abstract byte[] zzc(byte[] paramArrayOfByte, int paramInt1, int paramInt2);
+}

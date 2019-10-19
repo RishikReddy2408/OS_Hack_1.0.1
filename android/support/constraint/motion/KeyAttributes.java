@@ -1,0 +1,570 @@
+package android.support.constraint.motion;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.support.constraint.ConstraintAttribute;
+import android.support.constraint.R.styleable;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.util.SparseIntArray;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+public class KeyAttributes
+  extends FieldInfo
+{
+  public static final int KEY_TYPE = 1;
+  static final String NAME = "KeyAttribute";
+  private static final String PAGE_KEY = "KeyAttribute";
+  private float mAlpha = NaN.0F;
+  private int mCurveFit = -1;
+  private float mElevation = NaN.0F;
+  private float mProgress = NaN.0F;
+  private float mRotation = NaN.0F;
+  private float mRotationX = NaN.0F;
+  private float mRotationY = NaN.0F;
+  private float mScaleX = NaN.0F;
+  private float mScaleY = NaN.0F;
+  private String mTransitionEasing;
+  private float mTransitionPathRotate = NaN.0F;
+  private float mTranslationX = NaN.0F;
+  private float mTranslationY = NaN.0F;
+  private float mTranslationZ = NaN.0F;
+  private boolean mVisibility = false;
+  
+  public KeyAttributes()
+  {
+    mType = 1;
+    mCustomConstraints = new HashMap();
+  }
+  
+  public void addValues(HashMap paramHashMap)
+  {
+    Iterator localIterator = paramHashMap.keySet().iterator();
+    while (localIterator.hasNext())
+    {
+      Object localObject2 = (String)localIterator.next();
+      Object localObject1 = (SplineSet)paramHashMap.get(localObject2);
+      boolean bool = ((String)localObject2).startsWith("CUSTOM");
+      int i = 1;
+      if (bool)
+      {
+        localObject2 = ((String)localObject2).substring("CUSTOM".length() + 1);
+        localObject2 = (ConstraintAttribute)mCustomConstraints.get(localObject2);
+        if (localObject2 != null) {
+          ((SplineSet.CustomSet)localObject1).setPoint(mFramePosition, (ConstraintAttribute)localObject2);
+        }
+      }
+      else
+      {
+        switch (((String)localObject2).hashCode())
+        {
+        default: 
+          break;
+        case 92909918: 
+          if (((String)localObject2).equals("alpha")) {
+            i = 0;
+          }
+          break;
+        case 37232917: 
+          if (((String)localObject2).equals("transitionPathRotate")) {
+            i = 5;
+          }
+          break;
+        case -4379043: 
+          if (!((String)localObject2).equals("elevation")) {
+            break;
+          }
+          break;
+        case -40300674: 
+          if (((String)localObject2).equals("rotation")) {
+            i = 2;
+          }
+          break;
+        case -908189617: 
+          if (((String)localObject2).equals("scaleY")) {
+            i = 7;
+          }
+          break;
+        case -908189618: 
+          if (((String)localObject2).equals("scaleX")) {
+            i = 6;
+          }
+          break;
+        case -1001078227: 
+          if (((String)localObject2).equals("progress")) {
+            i = 11;
+          }
+          break;
+        case -1225497655: 
+          if (((String)localObject2).equals("translationZ")) {
+            i = 10;
+          }
+          break;
+        case -1225497656: 
+          if (((String)localObject2).equals("translationY")) {
+            i = 9;
+          }
+          break;
+        case -1225497657: 
+          if (((String)localObject2).equals("translationX")) {
+            i = 8;
+          }
+          break;
+        case -1249320805: 
+          if (((String)localObject2).equals("rotationY")) {
+            i = 4;
+          }
+          break;
+        case -1249320806: 
+          if (((String)localObject2).equals("rotationX")) {
+            i = 3;
+          }
+          break;
+        }
+        i = -1;
+        switch (i)
+        {
+        default: 
+          localObject1 = new StringBuilder();
+          ((StringBuilder)localObject1).append("UNKNOWN addValues \"");
+          ((StringBuilder)localObject1).append((String)localObject2);
+          ((StringBuilder)localObject1).append("\"");
+          Log.v("KeyAttributes", ((StringBuilder)localObject1).toString());
+          break;
+        case 11: 
+          if (!Float.isNaN(mProgress)) {
+            ((SplineSet)localObject1).setPoint(mFramePosition, mProgress);
+          }
+          break;
+        case 10: 
+          if (!Float.isNaN(mTranslationZ)) {
+            ((SplineSet)localObject1).setPoint(mFramePosition, mTranslationZ);
+          }
+          break;
+        case 9: 
+          if (!Float.isNaN(mTranslationY)) {
+            ((SplineSet)localObject1).setPoint(mFramePosition, mTranslationY);
+          }
+          break;
+        case 8: 
+          if (!Float.isNaN(mTranslationX)) {
+            ((SplineSet)localObject1).setPoint(mFramePosition, mTranslationX);
+          }
+          break;
+        case 7: 
+          if (!Float.isNaN(mScaleY)) {
+            ((SplineSet)localObject1).setPoint(mFramePosition, mScaleY);
+          }
+          break;
+        case 6: 
+          if (!Float.isNaN(mScaleX)) {
+            ((SplineSet)localObject1).setPoint(mFramePosition, mScaleX);
+          }
+          break;
+        case 5: 
+          if (!Float.isNaN(mTransitionPathRotate)) {
+            ((SplineSet)localObject1).setPoint(mFramePosition, mTransitionPathRotate);
+          }
+          break;
+        case 4: 
+          if (!Float.isNaN(mRotationY)) {
+            ((SplineSet)localObject1).setPoint(mFramePosition, mRotationY);
+          }
+          break;
+        case 3: 
+          if (!Float.isNaN(mRotationX)) {
+            ((SplineSet)localObject1).setPoint(mFramePosition, mRotationX);
+          }
+          break;
+        case 2: 
+          if (!Float.isNaN(mRotation)) {
+            ((SplineSet)localObject1).setPoint(mFramePosition, mRotation);
+          }
+          break;
+        case 1: 
+          if (!Float.isNaN(mElevation)) {
+            ((SplineSet)localObject1).setPoint(mFramePosition, mElevation);
+          }
+          break;
+        case 0: 
+          if (!Float.isNaN(mAlpha)) {
+            ((SplineSet)localObject1).setPoint(mFramePosition, mAlpha);
+          }
+          break;
+        }
+      }
+    }
+  }
+  
+  public void getAttributeNames(HashSet paramHashSet)
+  {
+    if (!Float.isNaN(mAlpha)) {
+      paramHashSet.add("alpha");
+    }
+    if (!Float.isNaN(mElevation)) {
+      paramHashSet.add("elevation");
+    }
+    if (!Float.isNaN(mRotation)) {
+      paramHashSet.add("rotation");
+    }
+    if (!Float.isNaN(mRotationX)) {
+      paramHashSet.add("rotationX");
+    }
+    if (!Float.isNaN(mRotationY)) {
+      paramHashSet.add("rotationY");
+    }
+    if (!Float.isNaN(mTranslationX)) {
+      paramHashSet.add("translationX");
+    }
+    if (!Float.isNaN(mTranslationY)) {
+      paramHashSet.add("translationY");
+    }
+    if (!Float.isNaN(mTranslationZ)) {
+      paramHashSet.add("translationZ");
+    }
+    if (!Float.isNaN(mTransitionPathRotate)) {
+      paramHashSet.add("transitionPathRotate");
+    }
+    if (!Float.isNaN(mScaleX)) {
+      paramHashSet.add("scaleX");
+    }
+    if (!Float.isNaN(mScaleX)) {
+      paramHashSet.add("scaleY");
+    }
+    if (!Float.isNaN(mProgress)) {
+      paramHashSet.add("progress");
+    }
+    if (mCustomConstraints.size() > 0)
+    {
+      Iterator localIterator = mCustomConstraints.keySet().iterator();
+      while (localIterator.hasNext())
+      {
+        String str = (String)localIterator.next();
+        StringBuilder localStringBuilder = new StringBuilder();
+        localStringBuilder.append("CUSTOM,");
+        localStringBuilder.append(str);
+        paramHashSet.add(localStringBuilder.toString());
+      }
+    }
+  }
+  
+  int getCurveFit()
+  {
+    return mCurveFit;
+  }
+  
+  public void load(Context paramContext, AttributeSet paramAttributeSet)
+  {
+    Loader.read(this, paramContext.obtainStyledAttributes(paramAttributeSet, R.styleable.KeyAttribute));
+  }
+  
+  public void setInterpolation(HashMap paramHashMap)
+  {
+    if (mCurveFit == -1) {
+      return;
+    }
+    if (!Float.isNaN(mAlpha)) {
+      paramHashMap.put("alpha", Integer.valueOf(mCurveFit));
+    }
+    if (!Float.isNaN(mElevation)) {
+      paramHashMap.put("elevation", Integer.valueOf(mCurveFit));
+    }
+    if (!Float.isNaN(mRotation)) {
+      paramHashMap.put("rotation", Integer.valueOf(mCurveFit));
+    }
+    if (!Float.isNaN(mRotationX)) {
+      paramHashMap.put("rotationX", Integer.valueOf(mCurveFit));
+    }
+    if (!Float.isNaN(mRotationY)) {
+      paramHashMap.put("rotationY", Integer.valueOf(mCurveFit));
+    }
+    if (!Float.isNaN(mTranslationX)) {
+      paramHashMap.put("translationX", Integer.valueOf(mCurveFit));
+    }
+    if (!Float.isNaN(mTranslationY)) {
+      paramHashMap.put("translationY", Integer.valueOf(mCurveFit));
+    }
+    if (!Float.isNaN(mTranslationZ)) {
+      paramHashMap.put("translationZ", Integer.valueOf(mCurveFit));
+    }
+    if (!Float.isNaN(mTransitionPathRotate)) {
+      paramHashMap.put("transitionPathRotate", Integer.valueOf(mCurveFit));
+    }
+    if (!Float.isNaN(mScaleX)) {
+      paramHashMap.put("scaleX", Integer.valueOf(mCurveFit));
+    }
+    if (!Float.isNaN(mScaleY)) {
+      paramHashMap.put("scaleY", Integer.valueOf(mCurveFit));
+    }
+    if (!Float.isNaN(mProgress)) {
+      paramHashMap.put("progress", Integer.valueOf(mCurveFit));
+    }
+    if (mCustomConstraints.size() > 0)
+    {
+      Iterator localIterator = mCustomConstraints.keySet().iterator();
+      while (localIterator.hasNext())
+      {
+        String str = (String)localIterator.next();
+        StringBuilder localStringBuilder = new StringBuilder();
+        localStringBuilder.append("CUSTOM,");
+        localStringBuilder.append(str);
+        paramHashMap.put(localStringBuilder.toString(), Integer.valueOf(mCurveFit));
+      }
+    }
+  }
+  
+  public void setValue(String paramString, Object paramObject)
+  {
+    switch (paramString.hashCode())
+    {
+    default: 
+      break;
+    case 1941332754: 
+      if (paramString.equals("visibility")) {
+        i = 10;
+      }
+      break;
+    case 1317633238: 
+      if (paramString.equals("mTranslationZ")) {
+        i = 14;
+      }
+      break;
+    case 579057826: 
+      if (paramString.equals("curveFit")) {
+        i = 1;
+      }
+      break;
+    case 92909918: 
+      if (paramString.equals("alpha")) {
+        i = 0;
+      }
+      break;
+    case 37232917: 
+      if (paramString.equals("transitionPathRotate")) {
+        i = 11;
+      }
+      break;
+    case -4379043: 
+      if (paramString.equals("elevation")) {
+        i = 2;
+      }
+      break;
+    case -40300674: 
+      if (paramString.equals("rotation")) {
+        i = 4;
+      }
+      break;
+    case -908189617: 
+      if (paramString.equals("scaleY")) {
+        i = 8;
+      }
+      break;
+    case -908189618: 
+      if (paramString.equals("scaleX")) {
+        i = 7;
+      }
+      break;
+    case -1001078227: 
+      if (paramString.equals("progress")) {
+        i = 3;
+      }
+      break;
+    case -1225497656: 
+      if (paramString.equals("translationY")) {
+        i = 13;
+      }
+      break;
+    case -1225497657: 
+      if (paramString.equals("translationX")) {
+        i = 12;
+      }
+      break;
+    case -1249320805: 
+      if (paramString.equals("rotationY")) {
+        i = 6;
+      }
+      break;
+    case -1249320806: 
+      if (paramString.equals("rotationX")) {
+        i = 5;
+      }
+      break;
+    case -1812823328: 
+      if (paramString.equals("transitionEasing")) {
+        i = 9;
+      }
+      break;
+    }
+    int i = -1;
+    switch (i)
+    {
+    default: 
+      return;
+    case 14: 
+      mTranslationZ = toFloat(paramObject);
+      return;
+    case 13: 
+      mTranslationY = toFloat(paramObject);
+      return;
+    case 12: 
+      mTranslationX = toFloat(paramObject);
+      return;
+    case 11: 
+      mTransitionPathRotate = toFloat(paramObject);
+      return;
+    case 10: 
+      mVisibility = toBoolean(paramObject);
+      return;
+    case 9: 
+      mTransitionEasing = paramObject.toString();
+      return;
+    case 8: 
+      mScaleY = toFloat(paramObject);
+      return;
+    case 7: 
+      mScaleX = toFloat(paramObject);
+      return;
+    case 6: 
+      mRotationY = toFloat(paramObject);
+      return;
+    case 5: 
+      mRotationX = toFloat(paramObject);
+      return;
+    case 4: 
+      mRotation = toFloat(paramObject);
+      return;
+    case 3: 
+      mProgress = toFloat(paramObject);
+      return;
+    case 2: 
+      mElevation = toFloat(paramObject);
+      return;
+    case 1: 
+      mCurveFit = toInt(paramObject);
+      return;
+    }
+    mAlpha = toFloat(paramObject);
+  }
+  
+  private static class Loader
+  {
+    private static final int ANDROID_ALPHA = 1;
+    private static final int ANDROID_ELEVATION = 2;
+    private static final int ANDROID_ROTATION = 4;
+    private static final int ANDROID_ROTATION_X = 5;
+    private static final int ANDROID_ROTATION_Y = 6;
+    private static final int ANDROID_SCALE_X = 7;
+    private static final int ANDROID_SCALE_Y = 15;
+    private static final int ANDROID_TRANSLATION_X = 16;
+    private static final int ANDROID_TRANSLATION_Y = 17;
+    private static final int ANDROID_TRANSLATION_Z = 18;
+    private static final int ANDROID_VISIBILITY = 14;
+    private static final int CURVE_FIT = 13;
+    private static final int FRAME_POSITION = 12;
+    private static final int PROGRESS = 19;
+    private static final int TARGET_ID = 10;
+    private static final int TRANSITION_EASING = 9;
+    private static final int TRANSITION_PATH_ROTATE = 8;
+    private static SparseIntArray mAttrMap = new SparseIntArray();
+    
+    static
+    {
+      mAttrMap.append(R.styleable.KeyAttribute_android_alpha, 1);
+      mAttrMap.append(R.styleable.KeyAttribute_android_elevation, 2);
+      mAttrMap.append(R.styleable.KeyAttribute_android_rotation, 4);
+      mAttrMap.append(R.styleable.KeyAttribute_android_rotationX, 5);
+      mAttrMap.append(R.styleable.KeyAttribute_android_rotationY, 6);
+      mAttrMap.append(R.styleable.KeyAttribute_android_scaleX, 7);
+      mAttrMap.append(R.styleable.KeyAttribute_transitionPathRotate, 8);
+      mAttrMap.append(R.styleable.KeyAttribute_transitionEasing, 9);
+      mAttrMap.append(R.styleable.KeyAttribute_target, 10);
+      mAttrMap.append(R.styleable.KeyAttribute_framePosition, 12);
+      mAttrMap.append(R.styleable.KeyAttribute_curveFit, 13);
+      mAttrMap.append(R.styleable.KeyAttribute_android_visibility, 14);
+      mAttrMap.append(R.styleable.KeyAttribute_android_scaleY, 15);
+      mAttrMap.append(R.styleable.KeyAttribute_android_translationX, 16);
+      mAttrMap.append(R.styleable.KeyAttribute_android_translationY, 17);
+      mAttrMap.append(R.styleable.KeyAttribute_android_translationZ, 18);
+      mAttrMap.append(R.styleable.KeyAttribute_progress, 19);
+    }
+    
+    private Loader() {}
+    
+    public static void read(KeyAttributes paramKeyAttributes, TypedArray paramTypedArray)
+    {
+      int j = paramTypedArray.getIndexCount();
+      int i = 0;
+      while (i < j)
+      {
+        int k = paramTypedArray.getIndex(i);
+        switch (mAttrMap.get(k))
+        {
+        default: 
+          break;
+        case 3: 
+        case 11: 
+          StringBuilder localStringBuilder = new StringBuilder();
+          localStringBuilder.append("unused attribute 0x");
+          localStringBuilder.append(Integer.toHexString(k));
+          localStringBuilder.append("   ");
+          localStringBuilder.append(mAttrMap.get(k));
+          Log.e("KeyAttribute", localStringBuilder.toString());
+          break;
+        case 19: 
+          KeyAttributes.access$1402(paramKeyAttributes, paramTypedArray.getFloat(k, mProgress));
+          break;
+        case 18: 
+          KeyAttributes.access$1302(paramKeyAttributes, paramTypedArray.getDimension(k, mTranslationZ));
+          break;
+        case 17: 
+          KeyAttributes.access$1202(paramKeyAttributes, paramTypedArray.getDimension(k, mTranslationY));
+          break;
+        case 16: 
+          KeyAttributes.access$1102(paramKeyAttributes, paramTypedArray.getDimension(k, mTranslationX));
+          break;
+        case 15: 
+          KeyAttributes.access$902(paramKeyAttributes, paramTypedArray.getFloat(k, mScaleY));
+          break;
+        case 14: 
+          KeyAttributes.access$802(paramKeyAttributes, paramTypedArray.getBoolean(k, mVisibility));
+          break;
+        case 13: 
+          KeyAttributes.access$302(paramKeyAttributes, paramTypedArray.getInteger(k, mCurveFit));
+          break;
+        case 12: 
+          mFramePosition = paramTypedArray.getInt(k, mFramePosition);
+          break;
+        case 10: 
+          mTargetId = paramTypedArray.getResourceId(k, mTargetId);
+          break;
+        case 9: 
+          KeyAttributes.access$702(paramKeyAttributes, paramTypedArray.getString(k));
+          break;
+        case 8: 
+          KeyAttributes.access$1002(paramKeyAttributes, paramTypedArray.getFloat(k, mTransitionPathRotate));
+          break;
+        case 7: 
+          KeyAttributes.access$402(paramKeyAttributes, paramTypedArray.getFloat(k, mScaleX));
+          break;
+        case 6: 
+          KeyAttributes.access$602(paramKeyAttributes, paramTypedArray.getFloat(k, mRotationY));
+          break;
+        case 5: 
+          KeyAttributes.access$502(paramKeyAttributes, paramTypedArray.getFloat(k, mRotationX));
+          break;
+        case 4: 
+          KeyAttributes.access$202(paramKeyAttributes, paramTypedArray.getFloat(k, mRotation));
+          break;
+        case 2: 
+          KeyAttributes.access$102(paramKeyAttributes, paramTypedArray.getDimension(k, mElevation));
+          break;
+        }
+        KeyAttributes.access$002(paramKeyAttributes, paramTypedArray.getFloat(k, mAlpha));
+        i += 1;
+      }
+    }
+  }
+}

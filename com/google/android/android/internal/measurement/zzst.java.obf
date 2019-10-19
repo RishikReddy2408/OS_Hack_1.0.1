@@ -1,0 +1,10 @@
+package com.google.android.gms.internal.measurement;
+
+final class zzst
+  extends zzsl<String>
+{
+  zzst(zzsv paramZzsv, String paramString1, String paramString2)
+  {
+    super(paramZzsv, paramString1, paramString2, null);
+  }
+}

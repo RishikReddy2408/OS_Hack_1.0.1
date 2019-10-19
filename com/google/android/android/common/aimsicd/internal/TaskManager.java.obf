@@ -1,0 +1,530 @@
+package com.google.android.gms.common.api.internal;
+
+import android.content.Context;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.util.ArrayMap;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailabilityLight;
+import com.google.android.gms.common.api.Api;
+import com.google.android.gms.common.api.Api.AbstractClientBuilder;
+import com.google.android.gms.common.api.Api.AnyClient;
+import com.google.android.gms.common.api.Api.AnyClientKey;
+import com.google.android.gms.common.api.Api.BaseClientBuilder;
+import com.google.android.gms.common.api.Api.Client;
+import com.google.android.gms.common.api.GoogleApi;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.internal.ClientSettings;
+import com.google.android.gms.common.internal.ClientSettings.OptionalApiSettings;
+import com.google.android.gms.common.util.concurrent.HandlerExecutor;
+import com.google.android.gms.signin.SignInOptions;
+import com.google.android.gms.signin.zad;
+import com.google.android.gms.tasks.Task;
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import javax.annotation.concurrent.GuardedBy;
+
+public final class zax
+  implements zabs
+{
+  private final Looper zabj;
+  private final GoogleApiManager zabm;
+  private final Lock zaen;
+  private final ClientSettings zaes;
+  private final Map<Api.AnyClientKey<?>, zaw<?>> zaet = new HashMap();
+  private final Map<Api.AnyClientKey<?>, zaw<?>> zaeu = new HashMap();
+  private final Map<Api<?>, Boolean> zaev;
+  private final zaaw zaew;
+  private final GoogleApiAvailabilityLight zaex;
+  private final Condition zaey;
+  private final boolean zaez;
+  private final boolean zafa;
+  private final Queue<BaseImplementation.ApiMethodImpl<?, ?>> zafb = new LinkedList();
+  @GuardedBy("mLock")
+  private boolean zafc;
+  @GuardedBy("mLock")
+  private Map<zai<?>, ConnectionResult> zafd;
+  @GuardedBy("mLock")
+  private Map<zai<?>, ConnectionResult> zafe;
+  @GuardedBy("mLock")
+  private zaaa zaff;
+  @GuardedBy("mLock")
+  private ConnectionResult zafg;
+  
+  public zax(Context paramContext, Lock paramLock, Looper paramLooper, GoogleApiAvailabilityLight paramGoogleApiAvailabilityLight, Map<Api.AnyClientKey<?>, Api.Client> paramMap, ClientSettings paramClientSettings, Map<Api<?>, Boolean> paramMap1, Api.AbstractClientBuilder<? extends zad, SignInOptions> paramAbstractClientBuilder, ArrayList<zaq> paramArrayList, zaaw paramZaaw, boolean paramBoolean)
+  {
+    zaen = paramLock;
+    zabj = paramLooper;
+    zaey = paramLock.newCondition();
+    zaex = paramGoogleApiAvailabilityLight;
+    zaew = paramZaaw;
+    zaev = paramMap1;
+    zaes = paramClientSettings;
+    zaez = paramBoolean;
+    paramLock = new HashMap();
+    paramGoogleApiAvailabilityLight = paramMap1.keySet().iterator();
+    while (paramGoogleApiAvailabilityLight.hasNext())
+    {
+      paramMap1 = (Api)paramGoogleApiAvailabilityLight.next();
+      paramLock.put(paramMap1.getClientKey(), paramMap1);
+    }
+    paramGoogleApiAvailabilityLight = new HashMap();
+    paramMap1 = (ArrayList)paramArrayList;
+    int j = paramMap1.size();
+    int i = 0;
+    while (i < j)
+    {
+      paramArrayList = paramMap1.get(i);
+      i += 1;
+      paramArrayList = (zaq)paramArrayList;
+      paramGoogleApiAvailabilityLight.put(mApi, paramArrayList);
+    }
+    paramMap = paramMap.entrySet().iterator();
+    paramBoolean = true;
+    int k = 0;
+    j = 1;
+    int m;
+    for (i = 0; paramMap.hasNext(); i = m)
+    {
+      paramMap1 = (Map.Entry)paramMap.next();
+      paramZaaw = (Api)paramLock.get(paramMap1.getKey());
+      paramArrayList = (Api.Client)paramMap1.getValue();
+      if (paramArrayList.requiresGooglePlayServices())
+      {
+        if (!((Boolean)zaev.get(paramZaaw)).booleanValue()) {
+          k = 1;
+        } else {
+          k = i;
+        }
+        i = 1;
+      }
+      else
+      {
+        j = k;
+        k = i;
+        m = 0;
+        i = j;
+        j = m;
+      }
+      paramZaaw = new zaw(paramContext, paramZaaw, paramLooper, paramArrayList, (zaq)paramGoogleApiAvailabilityLight.get(paramZaaw), paramClientSettings, paramAbstractClientBuilder);
+      zaet.put((Api.AnyClientKey)paramMap1.getKey(), paramZaaw);
+      if (paramArrayList.requiresSignIn()) {
+        zaeu.put((Api.AnyClientKey)paramMap1.getKey(), paramZaaw);
+      }
+      m = k;
+      k = i;
+    }
+    if ((k == 0) || (j != 0) || (i != 0)) {
+      paramBoolean = false;
+    }
+    zafa = paramBoolean;
+    zabm = GoogleApiManager.zabc();
+  }
+  
+  @Nullable
+  private final ConnectionResult zaa(@NonNull Api.AnyClientKey<?> paramAnyClientKey)
+  {
+    zaen.lock();
+    try
+    {
+      paramAnyClientKey = (zaw)zaet.get(paramAnyClientKey);
+      if ((zafd != null) && (paramAnyClientKey != null))
+      {
+        paramAnyClientKey = (ConnectionResult)zafd.get(paramAnyClientKey.zak());
+        return paramAnyClientKey;
+      }
+      return null;
+    }
+    finally
+    {
+      zaen.unlock();
+    }
+  }
+  
+  private final boolean zaa(zaw<?> paramZaw, ConnectionResult paramConnectionResult)
+  {
+    return (!paramConnectionResult.isSuccess()) && (!paramConnectionResult.hasResolution()) && (((Boolean)zaev.get(paramZaw.getApi())).booleanValue()) && (paramZaw.zaab().requiresGooglePlayServices()) && (zaex.isUserResolvableError(paramConnectionResult.getErrorCode()));
+  }
+  
+  private final boolean zaac()
+  {
+    zaen.lock();
+    try
+    {
+      if ((zafc) && (zaez))
+      {
+        Iterator localIterator = zaeu.keySet().iterator();
+        while (localIterator.hasNext())
+        {
+          ConnectionResult localConnectionResult = zaa((Api.AnyClientKey)localIterator.next());
+          if (localConnectionResult != null)
+          {
+            boolean bool = localConnectionResult.isSuccess();
+            if (bool) {
+              break;
+            }
+          }
+          else
+          {
+            return false;
+          }
+        }
+        return true;
+      }
+      return false;
+    }
+    finally
+    {
+      zaen.unlock();
+    }
+  }
+  
+  @GuardedBy("mLock")
+  private final void zaad()
+  {
+    if (zaes == null)
+    {
+      zaew.zagz = Collections.emptySet();
+      return;
+    }
+    HashSet localHashSet = new HashSet(zaes.getRequiredScopes());
+    Map localMap = zaes.getOptionalApiSettings();
+    Iterator localIterator = localMap.keySet().iterator();
+    while (localIterator.hasNext())
+    {
+      Api localApi = (Api)localIterator.next();
+      ConnectionResult localConnectionResult = getConnectionResult(localApi);
+      if ((localConnectionResult != null) && (localConnectionResult.isSuccess())) {
+        localHashSet.addAll(getmScopes);
+      }
+    }
+    zaew.zagz = localHashSet;
+  }
+  
+  @GuardedBy("mLock")
+  private final void zaae()
+  {
+    while (!zafb.isEmpty()) {
+      execute((BaseImplementation.ApiMethodImpl)zafb.remove());
+    }
+    zaew.zab(null);
+  }
+  
+  @Nullable
+  @GuardedBy("mLock")
+  private final ConnectionResult zaaf()
+  {
+    Iterator localIterator = zaet.values().iterator();
+    Object localObject1 = null;
+    Object localObject2 = null;
+    int j = 0;
+    int i = 0;
+    while (localIterator.hasNext())
+    {
+      Object localObject3 = (zaw)localIterator.next();
+      Api localApi = ((GoogleApi)localObject3).getApi();
+      localObject3 = ((GoogleApi)localObject3).zak();
+      localObject3 = (ConnectionResult)zafd.get(localObject3);
+      if ((!((ConnectionResult)localObject3).isSuccess()) && ((!((Boolean)zaev.get(localApi)).booleanValue()) || (((ConnectionResult)localObject3).hasResolution()) || (zaex.isUserResolvableError(((ConnectionResult)localObject3).getErrorCode()))))
+      {
+        int k;
+        if ((((ConnectionResult)localObject3).getErrorCode() == 4) && (zaez))
+        {
+          k = localApi.zah().getPriority();
+          if ((localObject2 == null) || (i > k))
+          {
+            localObject2 = localObject3;
+            i = k;
+          }
+        }
+        else
+        {
+          k = localApi.zah().getPriority();
+          if ((localObject1 == null) || (j > k))
+          {
+            localObject1 = localObject3;
+            j = k;
+          }
+        }
+      }
+    }
+    if ((localObject1 != null) && (localObject2 != null) && (j > i)) {
+      return localObject2;
+    }
+    return localObject1;
+  }
+  
+  private final <T extends BaseImplementation.ApiMethodImpl<? extends Result, ? extends Api.AnyClient>> boolean zab(@NonNull T paramT)
+  {
+    Api.AnyClientKey localAnyClientKey = paramT.getClientKey();
+    ConnectionResult localConnectionResult = zaa(localAnyClientKey);
+    if ((localConnectionResult != null) && (localConnectionResult.getErrorCode() == 4))
+    {
+      paramT.setFailedResult(new Status(4, null, zabm.zaa(((zaw)zaet.get(localAnyClientKey)).zak(), System.identityHashCode(zaew))));
+      return true;
+    }
+    return false;
+  }
+  
+  @GuardedBy("mLock")
+  public final ConnectionResult blockingConnect()
+  {
+    connect();
+    for (;;)
+    {
+      if (!isConnecting()) {
+        break label40;
+      }
+      try
+      {
+        zaey.await();
+      }
+      catch (InterruptedException localInterruptedException)
+      {
+        for (;;) {}
+      }
+    }
+    Thread.currentThread().interrupt();
+    return new ConnectionResult(15, null);
+    label40:
+    if (isConnected()) {
+      return ConnectionResult.RESULT_SUCCESS;
+    }
+    if (zafg != null) {
+      return zafg;
+    }
+    return new ConnectionResult(13, null);
+  }
+  
+  @GuardedBy("mLock")
+  public final ConnectionResult blockingConnect(long paramLong, TimeUnit paramTimeUnit)
+  {
+    connect();
+    for (paramLong = paramTimeUnit.toNanos(paramLong);; paramLong = zaey.awaitNanos(paramLong))
+    {
+      if ((!isConnecting()) || (paramLong <= 0L)) {}
+      try
+      {
+        disconnect();
+        return new ConnectionResult(14, null);
+      }
+      catch (InterruptedException paramTimeUnit)
+      {
+        for (;;) {}
+      }
+    }
+    Thread.currentThread().interrupt();
+    return new ConnectionResult(15, null);
+    if (isConnected()) {
+      return ConnectionResult.RESULT_SUCCESS;
+    }
+    if (zafg != null) {
+      return zafg;
+    }
+    return new ConnectionResult(13, null);
+  }
+  
+  public final void connect()
+  {
+    zaen.lock();
+    try
+    {
+      boolean bool = zafc;
+      if (bool) {
+        return;
+      }
+      zafc = true;
+      zafd = null;
+      zafe = null;
+      zaff = null;
+      zafg = null;
+      zabm.zao();
+      zabm.zaa(zaet.values()).addOnCompleteListener(new HandlerExecutor(zabj), new zaz(this, null));
+      return;
+    }
+    finally
+    {
+      zaen.unlock();
+    }
+  }
+  
+  public final void disconnect()
+  {
+    zaen.lock();
+    try
+    {
+      zafc = false;
+      zafd = null;
+      zafe = null;
+      if (zaff != null)
+      {
+        zaff.cancel();
+        zaff = null;
+      }
+      zafg = null;
+      while (!zafb.isEmpty())
+      {
+        BaseImplementation.ApiMethodImpl localApiMethodImpl = (BaseImplementation.ApiMethodImpl)zafb.remove();
+        localApiMethodImpl.zaa(null);
+        localApiMethodImpl.cancel();
+      }
+      zaey.signalAll();
+      return;
+    }
+    finally
+    {
+      zaen.unlock();
+    }
+  }
+  
+  public final void dump(String paramString, FileDescriptor paramFileDescriptor, PrintWriter paramPrintWriter, String[] paramArrayOfString) {}
+  
+  public final <A extends Api.AnyClient, R extends Result, T extends BaseImplementation.ApiMethodImpl<R, A>> T enqueue(@NonNull T paramT)
+  {
+    if ((zaez) && (zab(paramT))) {
+      return paramT;
+    }
+    if (!isConnected())
+    {
+      zafb.add(paramT);
+      return paramT;
+    }
+    zaew.zahe.zab(paramT);
+    return ((zaw)zaet.get(paramT.getClientKey())).doRead(paramT);
+  }
+  
+  public final <A extends Api.AnyClient, T extends BaseImplementation.ApiMethodImpl<? extends Result, A>> T execute(@NonNull T paramT)
+  {
+    Api.AnyClientKey localAnyClientKey = paramT.getClientKey();
+    if ((zaez) && (zab(paramT))) {
+      return paramT;
+    }
+    zaew.zahe.zab(paramT);
+    return ((zaw)zaet.get(localAnyClientKey)).doWrite(paramT);
+  }
+  
+  @Nullable
+  public final ConnectionResult getConnectionResult(@NonNull Api<?> paramApi)
+  {
+    return zaa(paramApi.getClientKey());
+  }
+  
+  public final boolean isConnected()
+  {
+    zaen.lock();
+    try
+    {
+      if (zafd != null)
+      {
+        ConnectionResult localConnectionResult = zafg;
+        if (localConnectionResult == null)
+        {
+          bool = true;
+          break label32;
+        }
+      }
+      boolean bool = false;
+      label32:
+      return bool;
+    }
+    finally
+    {
+      zaen.unlock();
+    }
+  }
+  
+  public final boolean isConnecting()
+  {
+    zaen.lock();
+    try
+    {
+      if (zafd == null)
+      {
+        bool = zafc;
+        if (bool)
+        {
+          bool = true;
+          break label32;
+        }
+      }
+      boolean bool = false;
+      label32:
+      return bool;
+    }
+    finally
+    {
+      zaen.unlock();
+    }
+  }
+  
+  public final boolean maybeSignIn(SignInConnectionListener paramSignInConnectionListener)
+  {
+    zaen.lock();
+    try
+    {
+      if ((zafc) && (!zaac()))
+      {
+        zabm.zao();
+        zaff = new zaaa(this, paramSignInConnectionListener);
+        zabm.zaa(zaeu.values()).addOnCompleteListener(new HandlerExecutor(zabj), zaff);
+        return true;
+      }
+      return false;
+    }
+    finally
+    {
+      zaen.unlock();
+    }
+  }
+  
+  public final void maybeSignOut()
+  {
+    zaen.lock();
+    try
+    {
+      zabm.maybeSignOut();
+      if (zaff != null)
+      {
+        zaff.cancel();
+        zaff = null;
+      }
+      if (zafe == null) {
+        zafe = new ArrayMap(zaeu.size());
+      }
+      ConnectionResult localConnectionResult = new ConnectionResult(4);
+      Iterator localIterator = zaeu.values().iterator();
+      while (localIterator.hasNext())
+      {
+        zaw localZaw = (zaw)localIterator.next();
+        zafe.put(localZaw.zak(), localConnectionResult);
+      }
+      if (zafd != null) {
+        zafd.putAll(zafe);
+      }
+      return;
+    }
+    finally
+    {
+      zaen.unlock();
+    }
+  }
+  
+  public final void zaw() {}
+}

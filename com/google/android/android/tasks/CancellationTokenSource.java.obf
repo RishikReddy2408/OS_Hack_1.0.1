@@ -1,0 +1,18 @@
+package com.google.android.gms.tasks;
+
+public class CancellationTokenSource
+{
+  private final zza zzc = new zza();
+  
+  public CancellationTokenSource() {}
+  
+  public void cancel()
+  {
+    zzc.cancel();
+  }
+  
+  public CancellationToken getToken()
+  {
+    return zzc;
+  }
+}

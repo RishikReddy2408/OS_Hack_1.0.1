@@ -1,0 +1,41 @@
+package com.google.android.gms.measurement.internal;
+
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.support.annotation.WorkerThread;
+import com.google.android.gms.common.internal.Preconditions;
+
+public final class zzbc
+{
+  private boolean value;
+  private final boolean zzanw;
+  private boolean zzanx;
+  private final String zzoj;
+  
+  public zzbc(zzba paramZzba, String paramString, boolean paramBoolean)
+  {
+    Preconditions.checkNotEmpty(paramString);
+    zzoj = paramString;
+    zzanw = true;
+  }
+  
+  @WorkerThread
+  public final boolean get()
+  {
+    if (!zzanx)
+    {
+      zzanx = true;
+      value = zzba.zza(zzany).getBoolean(zzoj, zzanw);
+    }
+    return value;
+  }
+  
+  @WorkerThread
+  public final void set(boolean paramBoolean)
+  {
+    SharedPreferences.Editor localEditor = zzba.zza(zzany).edit();
+    localEditor.putBoolean(zzoj, paramBoolean);
+    localEditor.apply();
+    value = paramBoolean;
+  }
+}

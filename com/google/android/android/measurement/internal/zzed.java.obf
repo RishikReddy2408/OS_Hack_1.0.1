@@ -1,0 +1,26 @@
+package com.google.android.gms.measurement.internal;
+
+final class zzed
+  implements Runnable
+{
+  zzed(zzdr paramZzdr, boolean paramBoolean, zzfh paramZzfh, zzh paramZzh) {}
+  
+  public final void run()
+  {
+    zzag localZzag = zzdr.zzd(zzasg);
+    if (localZzag == null)
+    {
+      zzasg.zzgo().zzjd().zzbx("Discarding data. Failed to set user attribute");
+      return;
+    }
+    zzdr localZzdr = zzasg;
+    zzfh localZzfh;
+    if (zzasj) {
+      localZzfh = null;
+    } else {
+      localZzfh = zzaqs;
+    }
+    localZzdr.zza(localZzag, localZzfh, zzaqn);
+    zzdr.zze(zzasg);
+  }
+}

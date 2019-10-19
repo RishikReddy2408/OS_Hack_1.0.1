@@ -1,0 +1,78 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.IOException;
+import java.util.Map.Entry;
+
+final class zzvb
+  extends zzva<Object>
+{
+  zzvb() {}
+  
+  final Object zza(zzuz paramZzuz, zzwt paramZzwt, int paramInt)
+  {
+    return paramZzuz.zza(paramZzwt, paramInt);
+  }
+  
+  final <UT, UB> UB zza(zzxi paramZzxi, Object paramObject, zzuz paramZzuz, zzvd<Object> paramZzvd, UB paramUB, zzyb<UT, UB> paramZzyb)
+    throws IOException
+  {
+    throw new NoSuchMethodError();
+  }
+  
+  final void zza(zzud paramZzud, Object paramObject, zzuz paramZzuz, zzvd<Object> paramZzvd)
+    throws IOException
+  {
+    throw new NoSuchMethodError();
+  }
+  
+  final void zza(zzxi paramZzxi, Object paramObject, zzuz paramZzuz, zzvd<Object> paramZzvd)
+    throws IOException
+  {
+    throw new NoSuchMethodError();
+  }
+  
+  final void zza(zzyw paramZzyw, Map.Entry<?, ?> paramEntry)
+    throws IOException
+  {
+    paramEntry.getKey();
+    throw new NoSuchMethodError();
+  }
+  
+  final void zza(Object paramObject, zzvd<Object> paramZzvd)
+  {
+    zzbys = paramZzvd;
+  }
+  
+  final int zzb(Map.Entry<?, ?> paramEntry)
+  {
+    paramEntry.getKey();
+    throw new NoSuchMethodError();
+  }
+  
+  final boolean zze(zzwt paramZzwt)
+  {
+    return paramZzwt instanceof zzvm.zzc;
+  }
+  
+  final zzvd<Object> zzs(Object paramObject)
+  {
+    return zzbys;
+  }
+  
+  final zzvd<Object> zzt(Object paramObject)
+  {
+    zzvd localZzvd2 = zzs(paramObject);
+    zzvd localZzvd1 = localZzvd2;
+    if (localZzvd2.isImmutable())
+    {
+      localZzvd1 = (zzvd)localZzvd2.clone();
+      zza(paramObject, localZzvd1);
+    }
+    return localZzvd1;
+  }
+  
+  final void zzu(Object paramObject)
+  {
+    zzs(paramObject).zzsm();
+  }
+}

@@ -1,0 +1,38 @@
+package com.google.android.gms.common.internal;
+
+import android.support.annotation.NonNull;
+
+public final class zzh
+{
+  @NonNull
+  private final String mPackageName;
+  private final int zzdt;
+  @NonNull
+  private final String zzej;
+  private final boolean zzek;
+  
+  public zzh(@NonNull String paramString1, @NonNull String paramString2, boolean paramBoolean, int paramInt)
+  {
+    mPackageName = paramString1;
+    zzej = paramString2;
+    zzek = paramBoolean;
+    zzdt = 129;
+  }
+  
+  @NonNull
+  final String getPackageName()
+  {
+    return mPackageName;
+  }
+  
+  final int zzq()
+  {
+    return zzdt;
+  }
+  
+  @NonNull
+  final String zzt()
+  {
+    return zzej;
+  }
+}

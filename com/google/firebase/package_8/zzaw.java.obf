@@ -1,0 +1,232 @@
+package com.google.firebase.iid;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.support.annotation.GuardedBy;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.util.ArrayMap;
+import android.util.Log;
+import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+final class zzaw
+{
+  private final SharedPreferences zzdc;
+  private final zzy zzdd;
+  @GuardedBy("this")
+  private final Map<String, zzz> zzde = new ArrayMap();
+  private final Context zzx;
+  
+  public zzaw(Context paramContext)
+  {
+    this(paramContext, new zzy());
+  }
+  
+  private zzaw(Context paramContext, zzy paramZzy)
+  {
+    zzx = paramContext;
+    zzdc = paramContext.getSharedPreferences("com.google.android.gms.appid", 0);
+    zzdd = paramZzy;
+    paramContext = new File(ContextCompat.getNoBackupFilesDir(zzx), "com.google.android.gms.appid-no-backup");
+    if (!paramContext.exists()) {
+      try
+      {
+        if ((paramContext.createNewFile()) && (!isEmpty()))
+        {
+          Log.i("FirebaseInstanceId", "App restored, clearing state");
+          zzal();
+          FirebaseInstanceId.getInstance().zzm();
+        }
+        return;
+      }
+      catch (IOException paramContext)
+      {
+        if (Log.isLoggable("FirebaseInstanceId", 3))
+        {
+          paramContext = String.valueOf(paramContext.getMessage());
+          if (paramContext.length() != 0) {
+            paramContext = "Error creating file in no backup dir: ".concat(paramContext);
+          } else {
+            paramContext = new String("Error creating file in no backup dir: ");
+          }
+          Log.d("FirebaseInstanceId", paramContext);
+        }
+      }
+    }
+  }
+  
+  private final boolean isEmpty()
+  {
+    try
+    {
+      boolean bool = zzdc.getAll().isEmpty();
+      return bool;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  private static String zza(String paramString1, String paramString2, String paramString3)
+  {
+    StringBuilder localStringBuilder = new StringBuilder(String.valueOf(paramString1).length() + 4 + String.valueOf(paramString2).length() + String.valueOf(paramString3).length());
+    localStringBuilder.append(paramString1);
+    localStringBuilder.append("|T|");
+    localStringBuilder.append(paramString2);
+    localStringBuilder.append("|");
+    localStringBuilder.append(paramString3);
+    return localStringBuilder.toString();
+  }
+  
+  static String zzd(String paramString1, String paramString2)
+  {
+    StringBuilder localStringBuilder = new StringBuilder(String.valueOf(paramString1).length() + 3 + String.valueOf(paramString2).length());
+    localStringBuilder.append(paramString1);
+    localStringBuilder.append("|S|");
+    localStringBuilder.append(paramString2);
+    return localStringBuilder.toString();
+  }
+  
+  public final void zza(String paramString1, String paramString2, String paramString3, String paramString4, String paramString5)
+  {
+    try
+    {
+      paramString4 = zzax.zza(paramString4, paramString5, System.currentTimeMillis());
+      if (paramString4 == null) {
+        return;
+      }
+      paramString5 = zzdc.edit();
+      paramString5.putString(zza(paramString1, paramString2, paramString3), paramString4);
+      paramString5.commit();
+      return;
+    }
+    finally {}
+  }
+  
+  public final String zzak()
+  {
+    try
+    {
+      String str = zzdc.getString("topic_operaion_queue", "");
+      return str;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  public final void zzal()
+  {
+    try
+    {
+      zzde.clear();
+      zzy.zza(zzx);
+      zzdc.edit().clear().commit();
+      return;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  public final zzax zzb(String paramString1, String paramString2, String paramString3)
+  {
+    try
+    {
+      paramString1 = zzax.zzi(zzdc.getString(zza(paramString1, paramString2, paramString3), null));
+      return paramString1;
+    }
+    finally
+    {
+      paramString1 = finally;
+      throw paramString1;
+    }
+  }
+  
+  public final void zzc(String paramString1, String paramString2, String paramString3)
+  {
+    try
+    {
+      paramString1 = zza(paramString1, paramString2, paramString3);
+      paramString2 = zzdc.edit();
+      paramString2.remove(paramString1);
+      paramString2.commit();
+      return;
+    }
+    finally
+    {
+      paramString1 = finally;
+      throw paramString1;
+    }
+  }
+  
+  public final void zzf(String paramString)
+  {
+    try
+    {
+      zzdc.edit().putString("topic_operaion_queue", paramString).apply();
+      return;
+    }
+    finally
+    {
+      paramString = finally;
+      throw paramString;
+    }
+  }
+  
+  public final zzz zzg(String paramString)
+  {
+    for (;;)
+    {
+      zzz localZzz;
+      try
+      {
+        localZzz = (zzz)zzde.get(paramString);
+        if (localZzz != null) {
+          return localZzz;
+        }
+      }
+      finally {}
+      try
+      {
+        localZzz = zzdd.zzb(zzx, paramString);
+      }
+      catch (zzaa localZzaa) {}
+    }
+    Log.w("FirebaseInstanceId", "Stored data is corrupt, generating new identity");
+    FirebaseInstanceId.getInstance().zzm();
+    localZzz = zzdd.zzc(zzx, paramString);
+    zzde.put(paramString, localZzz);
+    return localZzz;
+  }
+  
+  public final void zzh(String paramString)
+  {
+    try
+    {
+      paramString = String.valueOf(paramString).concat("|T|");
+      SharedPreferences.Editor localEditor = zzdc.edit();
+      Iterator localIterator = zzdc.getAll().keySet().iterator();
+      while (localIterator.hasNext())
+      {
+        String str = (String)localIterator.next();
+        if (str.startsWith(paramString)) {
+          localEditor.remove(str);
+        }
+      }
+      localEditor.commit();
+      return;
+    }
+    finally {}
+  }
+}

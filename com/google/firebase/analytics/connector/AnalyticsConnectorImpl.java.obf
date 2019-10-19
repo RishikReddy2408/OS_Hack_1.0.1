@@ -1,0 +1,230 @@
+package com.google.firebase.analytics.connector;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresPermission;
+import android.support.annotation.Size;
+import android.support.annotation.WorkerThread;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.util.VisibleForTesting;
+import com.google.android.gms.measurement.AppMeasurement;
+import com.google.android.gms.measurement.AppMeasurement.ConditionalUserProperty;
+import com.google.android.gms.measurement.internal.zzak;
+import com.google.android.gms.measurement.internal.zzbt;
+import com.google.firebase.DataCollectionDefaultChange;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.analytics.connector.internal.zzc;
+import com.google.firebase.analytics.connector.internal.zzd;
+import com.google.firebase.analytics.connector.internal.zzf;
+import com.google.firebase.events.Subscriber;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class AnalyticsConnectorImpl
+  implements AnalyticsConnector
+{
+  private static volatile AnalyticsConnector zzbsf;
+  @VisibleForTesting
+  private final AppMeasurement zzbsg;
+  @VisibleForTesting
+  final Map<String, com.google.firebase.analytics.connector.internal.zza> zzbsh;
+  
+  private AnalyticsConnectorImpl(AppMeasurement paramAppMeasurement)
+  {
+    Preconditions.checkNotNull(paramAppMeasurement);
+    zzbsg = paramAppMeasurement;
+    zzbsh = new ConcurrentHashMap();
+  }
+  
+  @KeepForSdk
+  public static AnalyticsConnector getInstance()
+  {
+    return getInstance(FirebaseApp.getInstance());
+  }
+  
+  @KeepForSdk
+  public static AnalyticsConnector getInstance(FirebaseApp paramFirebaseApp)
+  {
+    return (AnalyticsConnector)paramFirebaseApp.get(AnalyticsConnector.class);
+  }
+  
+  @RequiresPermission(allOf={"android.permission.INTERNET", "android.permission.ACCESS_NETWORK_STATE", "android.permission.WAKE_LOCK"})
+  @KeepForSdk
+  public static AnalyticsConnector getInstance(FirebaseApp paramFirebaseApp, Context paramContext, Subscriber paramSubscriber)
+  {
+    Preconditions.checkNotNull(paramFirebaseApp);
+    Preconditions.checkNotNull(paramContext);
+    Preconditions.checkNotNull(paramSubscriber);
+    Preconditions.checkNotNull(paramContext.getApplicationContext());
+    if (zzbsf == null) {
+      try
+      {
+        if (zzbsf == null)
+        {
+          Bundle localBundle = new Bundle(1);
+          if (paramFirebaseApp.isDefaultApp())
+          {
+            paramSubscriber.subscribe(DataCollectionDefaultChange.class, zza.zzbsi, zzb.zzbsj);
+            localBundle.putBoolean("dataCollectionDefaultEnabled", paramFirebaseApp.isDataCollectionDefaultEnabled());
+          }
+          zzbsf = new AnalyticsConnectorImpl(zzbt.zza(paramContext, zzak.zzc(localBundle)).zzki());
+        }
+      }
+      finally {}
+    }
+    return zzbsf;
+  }
+  
+  private final boolean zzfn(@NonNull String paramString)
+  {
+    return (!paramString.isEmpty()) && (zzbsh.containsKey(paramString)) && (zzbsh.get(paramString) != null);
+  }
+  
+  @KeepForSdk
+  public void clearConditionalUserProperty(@NonNull @Size(max=24L, min=1L) String paramString1, @Nullable String paramString2, @Nullable Bundle paramBundle)
+  {
+    if ((paramString2 != null) && (!zzc.zza(paramString2, paramBundle))) {
+      return;
+    }
+    zzbsg.clearConditionalUserProperty(paramString1, paramString2, paramBundle);
+  }
+  
+  @WorkerThread
+  @KeepForSdk
+  public List<AnalyticsConnector.ConditionalUserProperty> getConditionalUserProperties(@NonNull String paramString1, @Nullable @Size(max=23L, min=1L) String paramString2)
+  {
+    ArrayList localArrayList = new ArrayList();
+    paramString1 = zzbsg.getConditionalUserProperties(paramString1, paramString2).iterator();
+    while (paramString1.hasNext()) {
+      localArrayList.add(zzc.zzd((AppMeasurement.ConditionalUserProperty)paramString1.next()));
+    }
+    return localArrayList;
+  }
+  
+  @WorkerThread
+  @KeepForSdk
+  public int getMaxUserProperties(@NonNull @Size(min=1L) String paramString)
+  {
+    return zzbsg.getMaxUserProperties(paramString);
+  }
+  
+  @WorkerThread
+  @KeepForSdk
+  public Map<String, Object> getUserProperties(boolean paramBoolean)
+  {
+    return zzbsg.getUserProperties(paramBoolean);
+  }
+  
+  @KeepForSdk
+  public void logEvent(@NonNull String paramString1, @NonNull String paramString2, Bundle paramBundle)
+  {
+    Bundle localBundle = paramBundle;
+    if (paramBundle == null) {
+      localBundle = new Bundle();
+    }
+    if (!zzc.zzfo(paramString1)) {
+      return;
+    }
+    if (!zzc.zza(paramString2, localBundle)) {
+      return;
+    }
+    if (!zzc.zzb(paramString1, paramString2, localBundle)) {
+      return;
+    }
+    zzbsg.logEventInternal(paramString1, paramString2, localBundle);
+  }
+  
+  @WorkerThread
+  @KeepForSdk
+  public AnalyticsConnector.AnalyticsConnectorHandle registerAnalyticsConnectorListener(@NonNull final String paramString, AnalyticsConnector.AnalyticsConnectorListener paramAnalyticsConnectorListener)
+  {
+    Preconditions.checkNotNull(paramAnalyticsConnectorListener);
+    if (!zzc.zzfo(paramString)) {
+      return null;
+    }
+    if (zzfn(paramString)) {
+      return null;
+    }
+    AppMeasurement localAppMeasurement = zzbsg;
+    if ("fiam".equals(paramString)) {
+      paramAnalyticsConnectorListener = new zzd(localAppMeasurement, paramAnalyticsConnectorListener);
+    } else if ("crash".equals(paramString)) {
+      paramAnalyticsConnectorListener = new zzf(localAppMeasurement, paramAnalyticsConnectorListener);
+    } else {
+      paramAnalyticsConnectorListener = null;
+    }
+    if (paramAnalyticsConnectorListener != null)
+    {
+      zzbsh.put(paramString, paramAnalyticsConnectorListener);
+      new AnalyticsConnector.AnalyticsConnectorHandle()
+      {
+        @KeepForSdk
+        public void registerEventNames(Set<String> paramAnonymousSet)
+        {
+          if ((AnalyticsConnectorImpl.zza(AnalyticsConnectorImpl.this, paramString)) && (paramString.equals("fiam")) && (paramAnonymousSet != null))
+          {
+            if (paramAnonymousSet.isEmpty()) {
+              return;
+            }
+            ((com.google.firebase.analytics.connector.internal.zza)zzbsh.get(paramString)).registerEventNames(paramAnonymousSet);
+            return;
+          }
+        }
+        
+        public void unregister()
+        {
+          if (!AnalyticsConnectorImpl.zza(AnalyticsConnectorImpl.this, paramString)) {
+            return;
+          }
+          AnalyticsConnector.AnalyticsConnectorListener localAnalyticsConnectorListener = ((com.google.firebase.analytics.connector.internal.zza)zzbsh.get(paramString)).zztl();
+          if (localAnalyticsConnectorListener != null) {
+            localAnalyticsConnectorListener.onMessageTriggered(0, null);
+          }
+          zzbsh.remove(paramString);
+        }
+        
+        @KeepForSdk
+        public void unregisterEventNames()
+        {
+          if (AnalyticsConnectorImpl.zza(AnalyticsConnectorImpl.this, paramString))
+          {
+            if (!paramString.equals("fiam")) {
+              return;
+            }
+            ((com.google.firebase.analytics.connector.internal.zza)zzbsh.get(paramString)).unregisterEventNames();
+            return;
+          }
+        }
+      };
+    }
+    return null;
+  }
+  
+  @KeepForSdk
+  public void setConditionalUserProperty(@NonNull AnalyticsConnector.ConditionalUserProperty paramConditionalUserProperty)
+  {
+    if (!zzc.zza(paramConditionalUserProperty)) {
+      return;
+    }
+    zzbsg.setConditionalUserProperty(zzc.zzb(paramConditionalUserProperty));
+  }
+  
+  @KeepForSdk
+  public void setUserProperty(@NonNull String paramString1, @NonNull String paramString2, Object paramObject)
+  {
+    if (!zzc.zzfo(paramString1)) {
+      return;
+    }
+    if (!zzc.zzy(paramString1, paramString2)) {
+      return;
+    }
+    zzbsg.setUserPropertyInternal(paramString1, paramString2, paramObject);
+  }
+}

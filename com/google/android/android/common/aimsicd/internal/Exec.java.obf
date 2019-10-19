@@ -1,0 +1,64 @@
+package com.google.android.gms.common.api.internal;
+
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import com.google.android.gms.common.ConnectionResult;
+import java.util.concurrent.locks.Lock;
+
+final class zav
+  implements zabt
+{
+  private zav(zas paramZas) {}
+  
+  public final void zab(int paramInt, boolean paramBoolean)
+  {
+    zas.zaa(zaep).lock();
+    try
+    {
+      if (zas.zac(zaep))
+      {
+        zas.zaa(zaep, false);
+        zas.zaa(zaep, paramInt, paramBoolean);
+        return;
+      }
+      zas.zaa(zaep, true);
+      zas.zaf(zaep).onConnectionSuspended(paramInt);
+      return;
+    }
+    finally
+    {
+      zas.zaa(zaep).unlock();
+    }
+  }
+  
+  public final void zab(@Nullable Bundle paramBundle)
+  {
+    zas.zaa(zaep).lock();
+    try
+    {
+      zas.zab(zaep, ConnectionResult.RESULT_SUCCESS);
+      zas.zab(zaep);
+      return;
+    }
+    finally
+    {
+      zas.zaa(zaep).unlock();
+    }
+  }
+  
+  public final void zac(@NonNull ConnectionResult paramConnectionResult)
+  {
+    zas.zaa(zaep).lock();
+    try
+    {
+      zas.zab(zaep, paramConnectionResult);
+      zas.zab(zaep);
+      return;
+    }
+    finally
+    {
+      zas.zaa(zaep).unlock();
+    }
+  }
+}

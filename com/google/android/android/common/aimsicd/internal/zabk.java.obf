@@ -1,0 +1,12 @@
+package com.google.android.gms.common.api.internal;
+
+final class zabk
+  implements Runnable
+{
+  zabk(GoogleApiManager.zaa paramZaa) {}
+  
+  public final void run()
+  {
+    GoogleApiManager.zaa.zaf(zaix);
+  }
+}

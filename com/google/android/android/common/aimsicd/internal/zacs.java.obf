@@ -1,0 +1,6 @@
+package com.google.android.gms.common.api.internal;
+
+abstract interface zacs
+{
+  public abstract void zac(BasePendingResult<?> paramBasePendingResult);
+}

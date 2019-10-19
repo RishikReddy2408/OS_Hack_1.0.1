@@ -1,0 +1,49 @@
+package com.google.android.gms.measurement.internal;
+
+import android.os.RemoteException;
+import android.text.TextUtils;
+import java.util.Collections;
+import java.util.concurrent.atomic.AtomicReference;
+
+final class zzeb
+  implements Runnable
+{
+  zzeb(zzdr paramZzdr, AtomicReference paramAtomicReference, String paramString1, String paramString2, String paramString3, zzh paramZzh) {}
+  
+  public final void run()
+  {
+    try
+    {
+      synchronized (zzash)
+      {
+        zzag localZzag = zzdr.zzd(zzasg);
+        if (localZzag == null)
+        {
+          zzasg.zzgo().zzjd().zzd("Failed to get conditional properties", zzap.zzbv(zzaqq), zzaeh, zzaeo);
+          zzash.set(Collections.emptyList());
+        }
+        try
+        {
+          zzash.notify();
+          return;
+        }
+        finally {}
+        if (TextUtils.isEmpty(zzaqq)) {
+          zzash.set(localZzag.zza(zzaeh, zzaeo, zzaqn));
+        } else {
+          zzash.set(localZzag.zze(zzaqq, zzaeh, zzaeo));
+        }
+        zzdr.zze(zzasg);
+        zzash.notify();
+      }
+      zzash.notify();
+    }
+    catch (RemoteException localRemoteException)
+    {
+      zzasg.zzgo().zzjd().zzd("Failed to get conditional properties", zzap.zzbv(zzaqq), zzaeh, localRemoteException);
+      zzash.set(Collections.emptyList());
+      zzash.notify();
+      return;
+    }
+  }
+}

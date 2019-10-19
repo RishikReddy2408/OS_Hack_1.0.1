@@ -1,0 +1,17 @@
+package com.google.firebase.events;
+
+import com.google.android.gms.common.annotation.KeepForSdk;
+import java.util.concurrent.Executor;
+
+@KeepForSdk
+public abstract interface Subscriber
+{
+  @KeepForSdk
+  public abstract <T> void subscribe(Class<T> paramClass, EventHandler<? super T> paramEventHandler);
+  
+  @KeepForSdk
+  public abstract <T> void subscribe(Class<T> paramClass, Executor paramExecutor, EventHandler<? super T> paramEventHandler);
+  
+  @KeepForSdk
+  public abstract <T> void unsubscribe(Class<T> paramClass, EventHandler<? super T> paramEventHandler);
+}

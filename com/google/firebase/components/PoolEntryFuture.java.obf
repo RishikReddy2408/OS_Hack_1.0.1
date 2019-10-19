@@ -1,0 +1,42 @@
+package com.google.firebase.components;
+
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ServiceInfo;
+import android.os.Bundle;
+import android.util.Log;
+
+final class zzd
+  implements zze<Context>
+{
+  private zzd() {}
+  
+  private static Bundle zza(Context paramContext)
+  {
+    try
+    {
+      PackageManager localPackageManager = paramContext.getPackageManager();
+      if (localPackageManager == null)
+      {
+        Log.w("ComponentDiscovery", "Context has no PackageManager.");
+        return null;
+      }
+      paramContext = localPackageManager.getServiceInfo(new ComponentName(paramContext, ComponentDiscoveryService.class), 128);
+      if (paramContext == null)
+      {
+        Log.w("ComponentDiscovery", "ComponentDiscoveryService has no service info.");
+        return null;
+      }
+      paramContext = metaData;
+      return paramContext;
+    }
+    catch (PackageManager.NameNotFoundException paramContext)
+    {
+      for (;;) {}
+    }
+    Log.w("ComponentDiscovery", "Application info not found.");
+    return null;
+  }
+}

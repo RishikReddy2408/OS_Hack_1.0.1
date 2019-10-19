@@ -1,0 +1,538 @@
+package com.google.firebase.iid;
+
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Messenger;
+import android.support.v4.util.SimpleArrayMap;
+import android.util.Log;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.annotation.concurrent.GuardedBy;
+
+final class zzat
+{
+  private static int zzcf;
+  private static PendingIntent zzcr;
+  private final zzan zzan;
+  @GuardedBy("responseCallbacks")
+  private final SimpleArrayMap<String, TaskCompletionSource<Bundle>> zzcs = new SimpleArrayMap();
+  private Messenger zzct;
+  private Messenger zzcu;
+  private zzl zzcv;
+  private final Context zzx;
+  
+  public zzat(Context paramContext, zzan paramZzan)
+  {
+    zzx = paramContext;
+    zzan = paramZzan;
+    zzct = new Messenger(new zzau(this, Looper.getMainLooper()));
+  }
+  
+  private static void zza(Context paramContext, Intent paramIntent)
+  {
+    try
+    {
+      if (zzcr == null)
+      {
+        Intent localIntent = new Intent();
+        localIntent.setPackage("com.google.example.invalidpackage");
+        zzcr = PendingIntent.getBroadcast(paramContext, 0, localIntent, 0);
+      }
+      paramIntent.putExtra("app", zzcr);
+      return;
+    }
+    finally {}
+  }
+  
+  private final void zza(String paramString, Bundle paramBundle)
+  {
+    synchronized (zzcs)
+    {
+      TaskCompletionSource localTaskCompletionSource = (TaskCompletionSource)zzcs.remove(paramString);
+      if (localTaskCompletionSource == null)
+      {
+        paramString = String.valueOf(paramString);
+        if (paramString.length() != 0) {
+          paramString = "Missing callback for ".concat(paramString);
+        } else {
+          paramString = new String("Missing callback for ");
+        }
+        Log.w("FirebaseInstanceId", paramString);
+        return;
+      }
+      localTaskCompletionSource.setResult(paramBundle);
+      return;
+    }
+  }
+  
+  private static String zzah()
+  {
+    try
+    {
+      int i = zzcf;
+      zzcf = i + 1;
+      String str = Integer.toString(i);
+      return str;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  private final void zzb(Message paramMessage)
+  {
+    if ((paramMessage != null) && ((obj instanceof Intent)))
+    {
+      Object localObject1 = (Intent)obj;
+      ((Intent)localObject1).setExtrasClassLoader(new zzl.zza());
+      if (((Intent)localObject1).hasExtra("google.messenger"))
+      {
+        localObject1 = ((Intent)localObject1).getParcelableExtra("google.messenger");
+        if ((localObject1 instanceof zzl)) {
+          zzcv = ((zzl)localObject1);
+        }
+        if ((localObject1 instanceof Messenger)) {
+          zzcu = ((Messenger)localObject1);
+        }
+      }
+      Object localObject4 = (Intent)obj;
+      paramMessage = ((Intent)localObject4).getAction();
+      if (!"com.google.android.c2dm.intent.REGISTRATION".equals(paramMessage))
+      {
+        if (Log.isLoggable("FirebaseInstanceId", 3))
+        {
+          paramMessage = String.valueOf(paramMessage);
+          if (paramMessage.length() != 0) {
+            paramMessage = "Unexpected response action: ".concat(paramMessage);
+          } else {
+            paramMessage = new String("Unexpected response action: ");
+          }
+          Log.d("FirebaseInstanceId", paramMessage);
+        }
+        return;
+      }
+      localObject1 = ((Intent)localObject4).getStringExtra("registration_id");
+      paramMessage = (Message)localObject1;
+      if (localObject1 == null) {
+        paramMessage = ((Intent)localObject4).getStringExtra("unregistered");
+      }
+      if (paramMessage == null)
+      {
+        localObject1 = ((Intent)localObject4).getStringExtra("error");
+        if (localObject1 == null)
+        {
+          paramMessage = String.valueOf(((Intent)localObject4).getExtras());
+          localObject1 = new StringBuilder(String.valueOf(paramMessage).length() + 49);
+          ((StringBuilder)localObject1).append("Unexpected response, no error or registration id ");
+          ((StringBuilder)localObject1).append(paramMessage);
+          Log.w("FirebaseInstanceId", ((StringBuilder)localObject1).toString());
+          return;
+        }
+        if (Log.isLoggable("FirebaseInstanceId", 3))
+        {
+          paramMessage = String.valueOf(localObject1);
+          if (paramMessage.length() != 0) {
+            paramMessage = "Received InstanceID error ".concat(paramMessage);
+          } else {
+            paramMessage = new String("Received InstanceID error ");
+          }
+          Log.d("FirebaseInstanceId", paramMessage);
+        }
+        if (((String)localObject1).startsWith("|"))
+        {
+          paramMessage = ((String)localObject1).split("\\|");
+          if ((paramMessage.length > 2) && ("ID".equals(paramMessage[1])))
+          {
+            String str = paramMessage[2];
+            localObject1 = paramMessage[3];
+            paramMessage = (Message)localObject1;
+            if (((String)localObject1).startsWith(":")) {
+              paramMessage = ((String)localObject1).substring(1);
+            }
+            zza(str, ((Intent)localObject4).putExtra("error", paramMessage).getExtras());
+            return;
+          }
+          paramMessage = String.valueOf(localObject1);
+          if (paramMessage.length() != 0) {
+            paramMessage = "Unexpected structured response ".concat(paramMessage);
+          } else {
+            paramMessage = new String("Unexpected structured response ");
+          }
+          Log.w("FirebaseInstanceId", paramMessage);
+          return;
+        }
+        paramMessage = zzcs;
+        int i = 0;
+        try
+        {
+          while (i < zzcs.size())
+          {
+            zza((String)zzcs.keyAt(i), ((Intent)localObject4).getExtras());
+            i += 1;
+          }
+          return;
+        }
+        finally {}
+      }
+      Object localObject3 = Pattern.compile("\\|ID\\|([^|]+)\\|:?+(.*)").matcher(paramMessage);
+      if (!((Matcher)localObject3).matches())
+      {
+        if (Log.isLoggable("FirebaseInstanceId", 3))
+        {
+          paramMessage = String.valueOf(paramMessage);
+          if (paramMessage.length() != 0) {
+            paramMessage = "Unexpected response string: ".concat(paramMessage);
+          } else {
+            paramMessage = new String("Unexpected response string: ");
+          }
+          Log.d("FirebaseInstanceId", paramMessage);
+        }
+        return;
+      }
+      paramMessage = ((Matcher)localObject3).group(1);
+      localObject3 = ((Matcher)localObject3).group(2);
+      localObject4 = ((Intent)localObject4).getExtras();
+      ((Bundle)localObject4).putString("registration_id", (String)localObject3);
+      zza(paramMessage, (Bundle)localObject4);
+      return;
+    }
+    Log.w("FirebaseInstanceId", "Dropping invalid message");
+  }
+  
+  private final Bundle zzd(Bundle paramBundle)
+    throws IOException
+  {
+    Bundle localBundle2 = zze(paramBundle);
+    Bundle localBundle1 = localBundle2;
+    if (localBundle2 != null)
+    {
+      localBundle1 = localBundle2;
+      if (localBundle2.containsKey("google.messenger"))
+      {
+        paramBundle = zze(paramBundle);
+        localBundle1 = paramBundle;
+        if (paramBundle != null)
+        {
+          localBundle1 = paramBundle;
+          if (paramBundle.containsKey("google.messenger")) {
+            localBundle1 = null;
+          }
+        }
+      }
+    }
+    return localBundle1;
+  }
+  
+  /* Error */
+  private final Bundle zze(Bundle arg1)
+    throws IOException
+  {
+    // Byte code:
+    //   0: invokestatic 294	com/google/firebase/iid/zzat:zzah	()Ljava/lang/String;
+    //   3: astore_2
+    //   4: new 94	com/google/android/gms/tasks/TaskCompletionSource
+    //   7: dup
+    //   8: invokespecial 295	com/google/android/gms/tasks/TaskCompletionSource:<init>	()V
+    //   11: astore_3
+    //   12: aload_0
+    //   13: getfield 35	com/google/firebase/iid/zzat:zzcs	Landroid/support/v4/util/SimpleArrayMap;
+    //   16: astore 4
+    //   18: aload 4
+    //   20: monitorenter
+    //   21: aload_0
+    //   22: getfield 35	com/google/firebase/iid/zzat:zzcs	Landroid/support/v4/util/SimpleArrayMap;
+    //   25: aload_2
+    //   26: aload_3
+    //   27: invokevirtual 299	android/support/v4/util/SimpleArrayMap:put	(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+    //   30: pop
+    //   31: aload 4
+    //   33: monitorexit
+    //   34: aload_0
+    //   35: getfield 39	com/google/firebase/iid/zzat:zzan	Lcom/google/firebase/iid/zzan;
+    //   38: invokevirtual 304	com/google/firebase/iid/zzan:zzac	()I
+    //   41: ifeq +401 -> 442
+    //   44: new 63	android/content/Intent
+    //   47: dup
+    //   48: invokespecial 64	android/content/Intent:<init>	()V
+    //   51: astore 4
+    //   53: aload 4
+    //   55: ldc_w 306
+    //   58: invokevirtual 70	android/content/Intent:setPackage	(Ljava/lang/String;)Landroid/content/Intent;
+    //   61: pop
+    //   62: aload_0
+    //   63: getfield 39	com/google/firebase/iid/zzat:zzan	Lcom/google/firebase/iid/zzan;
+    //   66: invokevirtual 304	com/google/firebase/iid/zzan:zzac	()I
+    //   69: iconst_2
+    //   70: if_icmpne +15 -> 85
+    //   73: aload 4
+    //   75: ldc_w 308
+    //   78: invokevirtual 311	android/content/Intent:setAction	(Ljava/lang/String;)Landroid/content/Intent;
+    //   81: pop
+    //   82: goto +12 -> 94
+    //   85: aload 4
+    //   87: ldc_w 313
+    //   90: invokevirtual 311	android/content/Intent:setAction	(Ljava/lang/String;)Landroid/content/Intent;
+    //   93: pop
+    //   94: aload 4
+    //   96: aload_1
+    //   97: invokevirtual 317	android/content/Intent:putExtras	(Landroid/os/Bundle;)Landroid/content/Intent;
+    //   100: pop
+    //   101: aload_0
+    //   102: getfield 37	com/google/firebase/iid/zzat:zzx	Landroid/content/Context;
+    //   105: aload 4
+    //   107: invokestatic 319	com/google/firebase/iid/zzat:zza	(Landroid/content/Context;Landroid/content/Intent;)V
+    //   110: new 197	java/lang/StringBuilder
+    //   113: dup
+    //   114: aload_2
+    //   115: invokestatic 100	java/lang/String:valueOf	(Ljava/lang/Object;)Ljava/lang/String;
+    //   118: invokevirtual 104	java/lang/String:length	()I
+    //   121: iconst_5
+    //   122: iadd
+    //   123: invokespecial 200	java/lang/StringBuilder:<init>	(I)V
+    //   126: astore_1
+    //   127: aload_1
+    //   128: ldc_w 321
+    //   131: invokevirtual 206	java/lang/StringBuilder:append	(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    //   134: pop
+    //   135: aload_1
+    //   136: aload_2
+    //   137: invokevirtual 206	java/lang/StringBuilder:append	(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    //   140: pop
+    //   141: aload_1
+    //   142: ldc -44
+    //   144: invokevirtual 206	java/lang/StringBuilder:append	(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    //   147: pop
+    //   148: aload 4
+    //   150: ldc_w 323
+    //   153: aload_1
+    //   154: invokevirtual 208	java/lang/StringBuilder:toString	()Ljava/lang/String;
+    //   157: invokevirtual 231	android/content/Intent:putExtra	(Ljava/lang/String;Ljava/lang/String;)Landroid/content/Intent;
+    //   160: pop
+    //   161: ldc 115
+    //   163: iconst_3
+    //   164: invokestatic 177	android/util/Log:isLoggable	(Ljava/lang/String;I)Z
+    //   167: ifeq +58 -> 225
+    //   170: aload 4
+    //   172: invokevirtual 195	android/content/Intent:getExtras	()Landroid/os/Bundle;
+    //   175: invokestatic 100	java/lang/String:valueOf	(Ljava/lang/Object;)Ljava/lang/String;
+    //   178: astore_1
+    //   179: new 197	java/lang/StringBuilder
+    //   182: dup
+    //   183: aload_1
+    //   184: invokestatic 100	java/lang/String:valueOf	(Ljava/lang/Object;)Ljava/lang/String;
+    //   187: invokevirtual 104	java/lang/String:length	()I
+    //   190: bipush 8
+    //   192: iadd
+    //   193: invokespecial 200	java/lang/StringBuilder:<init>	(I)V
+    //   196: astore 5
+    //   198: aload 5
+    //   200: ldc_w 325
+    //   203: invokevirtual 206	java/lang/StringBuilder:append	(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    //   206: pop
+    //   207: aload 5
+    //   209: aload_1
+    //   210: invokevirtual 206	java/lang/StringBuilder:append	(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    //   213: pop
+    //   214: ldc 115
+    //   216: aload 5
+    //   218: invokevirtual 208	java/lang/StringBuilder:toString	()Ljava/lang/String;
+    //   221: invokestatic 182	android/util/Log:d	(Ljava/lang/String;Ljava/lang/String;)I
+    //   224: pop
+    //   225: aload 4
+    //   227: ldc -106
+    //   229: aload_0
+    //   230: getfield 57	com/google/firebase/iid/zzat:zzct	Landroid/os/Messenger;
+    //   233: invokevirtual 82	android/content/Intent:putExtra	(Ljava/lang/String;Landroid/os/Parcelable;)Landroid/content/Intent;
+    //   236: pop
+    //   237: aload_0
+    //   238: getfield 164	com/google/firebase/iid/zzat:zzcu	Landroid/os/Messenger;
+    //   241: ifnonnull +10 -> 251
+    //   244: aload_0
+    //   245: getfield 162	com/google/firebase/iid/zzat:zzcv	Lcom/google/firebase/iid/zzl;
+    //   248: ifnull +60 -> 308
+    //   251: invokestatic 329	android/os/Message:obtain	()Landroid/os/Message;
+    //   254: astore_1
+    //   255: aload_1
+    //   256: aload 4
+    //   258: putfield 141	android/os/Message:obj	Ljava/lang/Object;
+    //   261: aload_0
+    //   262: getfield 164	com/google/firebase/iid/zzat:zzcu	Landroid/os/Messenger;
+    //   265: ifnull +14 -> 279
+    //   268: aload_0
+    //   269: getfield 164	com/google/firebase/iid/zzat:zzcu	Landroid/os/Messenger;
+    //   272: aload_1
+    //   273: invokevirtual 332	android/os/Messenger:send	(Landroid/os/Message;)V
+    //   276: goto +65 -> 341
+    //   279: aload_0
+    //   280: getfield 162	com/google/firebase/iid/zzat:zzcv	Lcom/google/firebase/iid/zzl;
+    //   283: aload_1
+    //   284: invokevirtual 333	com/google/firebase/iid/zzl:send	(Landroid/os/Message;)V
+    //   287: goto +54 -> 341
+    //   290: ldc 115
+    //   292: iconst_3
+    //   293: invokestatic 177	android/util/Log:isLoggable	(Ljava/lang/String;I)Z
+    //   296: ifeq +12 -> 308
+    //   299: ldc 115
+    //   301: ldc_w 335
+    //   304: invokestatic 182	android/util/Log:d	(Ljava/lang/String;Ljava/lang/String;)I
+    //   307: pop
+    //   308: aload_0
+    //   309: getfield 39	com/google/firebase/iid/zzat:zzan	Lcom/google/firebase/iid/zzan;
+    //   312: invokevirtual 304	com/google/firebase/iid/zzan:zzac	()I
+    //   315: iconst_2
+    //   316: if_icmpne +15 -> 331
+    //   319: aload_0
+    //   320: getfield 37	com/google/firebase/iid/zzat:zzx	Landroid/content/Context;
+    //   323: aload 4
+    //   325: invokevirtual 341	android/content/Context:sendBroadcast	(Landroid/content/Intent;)V
+    //   328: goto +13 -> 341
+    //   331: aload_0
+    //   332: getfield 37	com/google/firebase/iid/zzat:zzx	Landroid/content/Context;
+    //   335: aload 4
+    //   337: invokevirtual 345	android/content/Context:startService	(Landroid/content/Intent;)Landroid/content/ComponentName;
+    //   340: pop
+    //   341: aload_3
+    //   342: invokevirtual 349	com/google/android/gms/tasks/TaskCompletionSource:getTask	()Lcom/google/android/gms/tasks/Task;
+    //   345: ldc2_w 350
+    //   348: getstatic 357	java/util/concurrent/TimeUnit:MILLISECONDS	Ljava/util/concurrent/TimeUnit;
+    //   351: invokestatic 363	com/google/android/gms/tasks/Tasks:await	(Lcom/google/android/gms/tasks/Task;JLjava/util/concurrent/TimeUnit;)Ljava/lang/Object;
+    //   354: checkcast 267	android/os/Bundle
+    //   357: astore_3
+    //   358: aload_0
+    //   359: getfield 35	com/google/firebase/iid/zzat:zzcs	Landroid/support/v4/util/SimpleArrayMap;
+    //   362: astore_1
+    //   363: aload_1
+    //   364: monitorenter
+    //   365: aload_0
+    //   366: getfield 35	com/google/firebase/iid/zzat:zzcs	Landroid/support/v4/util/SimpleArrayMap;
+    //   369: aload_2
+    //   370: invokevirtual 92	android/support/v4/util/SimpleArrayMap:remove	(Ljava/lang/Object;)Ljava/lang/Object;
+    //   373: pop
+    //   374: aload_1
+    //   375: monitorexit
+    //   376: aload_3
+    //   377: areturn
+    //   378: astore_2
+    //   379: aload_1
+    //   380: monitorexit
+    //   381: aload_2
+    //   382: athrow
+    //   383: astore_3
+    //   384: goto +33 -> 417
+    //   387: astore_1
+    //   388: new 277	java/io/IOException
+    //   391: dup
+    //   392: aload_1
+    //   393: invokespecial 366	java/io/IOException:<init>	(Ljava/lang/Throwable;)V
+    //   396: athrow
+    //   397: ldc 115
+    //   399: ldc_w 368
+    //   402: invokestatic 121	android/util/Log:w	(Ljava/lang/String;Ljava/lang/String;)I
+    //   405: pop
+    //   406: new 277	java/io/IOException
+    //   409: dup
+    //   410: ldc_w 370
+    //   413: invokespecial 371	java/io/IOException:<init>	(Ljava/lang/String;)V
+    //   416: athrow
+    //   417: aload_0
+    //   418: getfield 35	com/google/firebase/iid/zzat:zzcs	Landroid/support/v4/util/SimpleArrayMap;
+    //   421: astore_1
+    //   422: aload_1
+    //   423: monitorenter
+    //   424: aload_0
+    //   425: getfield 35	com/google/firebase/iid/zzat:zzcs	Landroid/support/v4/util/SimpleArrayMap;
+    //   428: aload_2
+    //   429: invokevirtual 92	android/support/v4/util/SimpleArrayMap:remove	(Ljava/lang/Object;)Ljava/lang/Object;
+    //   432: pop
+    //   433: aload_1
+    //   434: monitorexit
+    //   435: aload_3
+    //   436: athrow
+    //   437: astore_2
+    //   438: aload_1
+    //   439: monitorexit
+    //   440: aload_2
+    //   441: athrow
+    //   442: new 277	java/io/IOException
+    //   445: dup
+    //   446: ldc_w 373
+    //   449: invokespecial 371	java/io/IOException:<init>	(Ljava/lang/String;)V
+    //   452: athrow
+    //   453: astore_1
+    //   454: aload 4
+    //   456: monitorexit
+    //   457: aload_1
+    //   458: athrow
+    //   459: astore_1
+    //   460: goto -170 -> 290
+    //   463: astore_1
+    //   464: goto -67 -> 397
+    // Local variable table:
+    //   start	length	slot	name	signature
+    //   0	467	0	this	zzat
+    //   3	367	2	str	String
+    //   378	51	2	localObject1	Object
+    //   437	4	2	localObject2	Object
+    //   11	366	3	localObject3	Object
+    //   383	53	3	localObject4	Object
+    //   16	439	4	localObject5	Object
+    //   196	21	5	localStringBuilder	StringBuilder
+    // Exception table:
+    //   from	to	target	type
+    //   365	376	378	finally
+    //   379	381	378	finally
+    //   341	358	383	finally
+    //   388	397	383	finally
+    //   397	417	383	finally
+    //   341	358	387	java/util/concurrent/ExecutionException
+    //   424	435	437	finally
+    //   438	440	437	finally
+    //   21	34	453	finally
+    //   454	457	453	finally
+    //   261	276	459	android/os/RemoteException
+    //   279	287	459	android/os/RemoteException
+    //   341	358	463	java/lang/InterruptedException
+    //   341	358	463	java/util/concurrent/TimeoutException
+  }
+  
+  final Bundle zzc(Bundle paramBundle)
+    throws IOException
+  {
+    if (zzan.zzaf() >= 12000000)
+    {
+      Object localObject = zzab.zzc(zzx).zzb(1, paramBundle);
+      try
+      {
+        localObject = (Bundle)Tasks.await((Task)localObject);
+        return localObject;
+      }
+      catch (InterruptedException|ExecutionException localInterruptedException)
+      {
+        if (Log.isLoggable("FirebaseInstanceId", 3))
+        {
+          String str = String.valueOf(localInterruptedException);
+          StringBuilder localStringBuilder = new StringBuilder(String.valueOf(str).length() + 22);
+          localStringBuilder.append("Error making request: ");
+          localStringBuilder.append(str);
+          Log.d("FirebaseInstanceId", localStringBuilder.toString());
+        }
+        if (((localInterruptedException.getCause() instanceof zzal)) && (((zzal)localInterruptedException.getCause()).getErrorCode() == 4)) {
+          return zzd(paramBundle);
+        }
+        return null;
+      }
+    }
+    return zzd(paramBundle);
+  }
+}

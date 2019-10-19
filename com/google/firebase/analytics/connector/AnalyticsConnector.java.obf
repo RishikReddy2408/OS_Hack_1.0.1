@@ -1,0 +1,98 @@
+package com.google.firebase.analytics.connector;
+
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.Size;
+import android.support.annotation.WorkerThread;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public abstract interface AnalyticsConnector
+{
+  @KeepForSdk
+  public abstract void clearConditionalUserProperty(@NonNull @Size(max=24L, min=1L) String paramString1, @Nullable String paramString2, @Nullable Bundle paramBundle);
+  
+  @WorkerThread
+  @KeepForSdk
+  public abstract List<ConditionalUserProperty> getConditionalUserProperties(@NonNull String paramString1, @Nullable @Size(max=23L, min=1L) String paramString2);
+  
+  @WorkerThread
+  @KeepForSdk
+  public abstract int getMaxUserProperties(@NonNull @Size(min=1L) String paramString);
+  
+  @WorkerThread
+  @KeepForSdk
+  public abstract Map<String, Object> getUserProperties(boolean paramBoolean);
+  
+  @KeepForSdk
+  public abstract void logEvent(@NonNull String paramString1, @NonNull String paramString2, Bundle paramBundle);
+  
+  @KeepForSdk
+  public abstract AnalyticsConnectorHandle registerAnalyticsConnectorListener(String paramString, AnalyticsConnectorListener paramAnalyticsConnectorListener);
+  
+  @KeepForSdk
+  public abstract void setConditionalUserProperty(@NonNull ConditionalUserProperty paramConditionalUserProperty);
+  
+  @KeepForSdk
+  public abstract void setUserProperty(@NonNull String paramString1, @NonNull String paramString2, Object paramObject);
+  
+  @KeepForSdk
+  public static abstract interface AnalyticsConnectorHandle
+  {
+    @KeepForSdk
+    public abstract void registerEventNames(Set<String> paramSet);
+    
+    @KeepForSdk
+    public abstract void unregister();
+    
+    @KeepForSdk
+    public abstract void unregisterEventNames();
+  }
+  
+  @KeepForSdk
+  public static abstract interface AnalyticsConnectorListener
+  {
+    @KeepForSdk
+    public abstract void onMessageTriggered(int paramInt, @Nullable Bundle paramBundle);
+  }
+  
+  @KeepForSdk
+  public static class ConditionalUserProperty
+  {
+    @KeepForSdk
+    public boolean active;
+    @KeepForSdk
+    public long creationTimestamp;
+    @KeepForSdk
+    public String expiredEventName;
+    @KeepForSdk
+    public Bundle expiredEventParams;
+    @KeepForSdk
+    public String name;
+    @KeepForSdk
+    public String origin;
+    @KeepForSdk
+    public long timeToLive;
+    @KeepForSdk
+    public String timedOutEventName;
+    @KeepForSdk
+    public Bundle timedOutEventParams;
+    @KeepForSdk
+    public String triggerEventName;
+    @KeepForSdk
+    public long triggerTimeout;
+    @KeepForSdk
+    public String triggeredEventName;
+    @KeepForSdk
+    public Bundle triggeredEventParams;
+    @KeepForSdk
+    public long triggeredTimestamp;
+    @KeepForSdk
+    public Object value;
+    
+    public ConditionalUserProperty() {}
+  }
+}

@@ -1,0 +1,27 @@
+package com.google.android.gms.tasks;
+
+import android.support.annotation.NonNull;
+
+final class zza
+  extends CancellationToken
+{
+  private final zzu<Void> zza = new zzu();
+  
+  zza() {}
+  
+  public final void cancel()
+  {
+    zza.trySetResult(null);
+  }
+  
+  public final boolean isCancellationRequested()
+  {
+    return zza.isComplete();
+  }
+  
+  public final CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener paramOnTokenCanceledListener)
+  {
+    zza.addOnSuccessListener(new zzb(this, paramOnTokenCanceledListener));
+    return this;
+  }
+}

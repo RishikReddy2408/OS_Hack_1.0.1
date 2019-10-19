@@ -1,0 +1,10 @@
+package com.google.android.gms.common.config;
+
+final class zze
+  extends GservicesValue<String>
+{
+  zze(String paramString1, String paramString2)
+  {
+    super(paramString1, paramString2);
+  }
+}

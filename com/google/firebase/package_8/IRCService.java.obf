@@ -1,0 +1,101 @@
+package com.google.firebase.iid;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.Binder;
+import android.os.IBinder;
+import android.support.annotation.VisibleForTesting;
+import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.Log;
+import com.google.android.gms.common.util.concurrent.NamedThreadFactory;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public abstract class zzb
+  extends Service
+{
+  private final Object lock;
+  @VisibleForTesting
+  final ExecutorService zzi;
+  private Binder zzj;
+  private int zzk;
+  private int zzl;
+  
+  public zzb()
+  {
+    String str = String.valueOf(getClass().getSimpleName());
+    if (str.length() != 0) {
+      str = "Firebase-".concat(str);
+    } else {
+      str = new String("Firebase-");
+    }
+    zzi = Executors.newSingleThreadExecutor(new NamedThreadFactory(str));
+    lock = new Object();
+    zzl = 0;
+  }
+  
+  private final void zza(Intent arg1)
+  {
+    if (??? != null) {
+      WakefulBroadcastReceiver.completeWakefulIntent(???);
+    }
+    synchronized (lock)
+    {
+      zzl -= 1;
+      if (zzl == 0) {
+        stopSelfResult(zzk);
+      }
+      return;
+    }
+  }
+  
+  public final IBinder onBind(Intent paramIntent)
+  {
+    try
+    {
+      if (Log.isLoggable("EnhancedIntentService", 3)) {
+        Log.d("EnhancedIntentService", "Service received bind request");
+      }
+      if (zzj == null) {
+        zzj = new zzf(this);
+      }
+      paramIntent = zzj;
+      return paramIntent;
+    }
+    finally {}
+  }
+  
+  public final int onStartCommand(Intent paramIntent, int paramInt1, int paramInt2)
+  {
+    synchronized (lock)
+    {
+      zzk = paramInt2;
+      zzl += 1;
+      ??? = zzb(paramIntent);
+      if (??? == null)
+      {
+        zza(paramIntent);
+        return 2;
+      }
+      if (zzc((Intent)???))
+      {
+        zza(paramIntent);
+        return 2;
+      }
+      zzi.execute(new zzc(this, (Intent)???, paramIntent));
+      return 3;
+    }
+  }
+  
+  protected Intent zzb(Intent paramIntent)
+  {
+    return paramIntent;
+  }
+  
+  public boolean zzc(Intent paramIntent)
+  {
+    return false;
+  }
+  
+  public abstract void zzd(Intent paramIntent);
+}

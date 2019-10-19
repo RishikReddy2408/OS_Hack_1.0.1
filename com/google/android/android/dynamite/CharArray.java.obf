@@ -1,0 +1,15 @@
+package com.google.android.gms.dynamite;
+
+import android.os.IInterface;
+import android.os.RemoteException;
+import com.google.android.gms.dynamic.IObjectWrapper;
+
+public abstract interface zzk
+  extends IInterface
+{
+  public abstract IObjectWrapper zza(IObjectWrapper paramIObjectWrapper1, String paramString, int paramInt, IObjectWrapper paramIObjectWrapper2)
+    throws RemoteException;
+  
+  public abstract IObjectWrapper zzb(IObjectWrapper paramIObjectWrapper1, String paramString, int paramInt, IObjectWrapper paramIObjectWrapper2)
+    throws RemoteException;
+}

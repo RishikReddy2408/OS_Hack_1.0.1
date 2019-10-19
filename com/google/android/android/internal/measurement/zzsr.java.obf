@@ -1,0 +1,10 @@
+package com.google.android.gms.internal.measurement;
+
+final class zzsr
+  extends zzsl<Boolean>
+{
+  zzsr(zzsv paramZzsv, String paramString, Boolean paramBoolean)
+  {
+    super(paramZzsv, paramString, paramBoolean, null);
+  }
+}

@@ -1,0 +1,27 @@
+package com.google.android.gms.common.api.internal;
+
+import android.support.annotation.BinderThread;
+import com.google.android.gms.signin.internal.zac;
+import com.google.android.gms.signin.internal.zaj;
+import java.lang.ref.WeakReference;
+
+final class zaar
+  extends zac
+{
+  private final WeakReference<zaak> zagj;
+  
+  zaar(zaak paramZaak)
+  {
+    zagj = new WeakReference(paramZaak);
+  }
+  
+  @BinderThread
+  public final void zab(zaj paramZaj)
+  {
+    zaak localZaak = (zaak)zagj.get();
+    if (localZaak == null) {
+      return;
+    }
+    zaak.zad(localZaak).zaa(new zaas(this, localZaak, localZaak, paramZaj));
+  }
+}

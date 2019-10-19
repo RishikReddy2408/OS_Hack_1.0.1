@@ -1,0 +1,30 @@
+package com.google.firebase.analytics.connector.internal;
+
+import com.google.android.gms.measurement.AppMeasurement;
+import com.google.firebase.analytics.connector.AnalyticsConnector.AnalyticsConnectorListener;
+import java.util.Set;
+
+public final class zzf
+  implements zza
+{
+  private AppMeasurement zzbsg;
+  private AnalyticsConnector.AnalyticsConnectorListener zzbst;
+  private zzg zzbsw;
+  
+  public zzf(AppMeasurement paramAppMeasurement, AnalyticsConnector.AnalyticsConnectorListener paramAnalyticsConnectorListener)
+  {
+    zzbst = paramAnalyticsConnectorListener;
+    zzbsg = paramAppMeasurement;
+    zzbsw = new zzg(this);
+    zzbsg.registerOnMeasurementEventListener(zzbsw);
+  }
+  
+  public final void registerEventNames(Set<String> paramSet) {}
+  
+  public final void unregisterEventNames() {}
+  
+  public final AnalyticsConnector.AnalyticsConnectorListener zztl()
+  {
+    return zzbst;
+  }
+}

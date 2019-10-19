@@ -1,0 +1,417 @@
+package com.google.firebase.messaging;
+
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable.Creator;
+import android.support.annotation.IntRange;
+import android.support.annotation.Nullable;
+import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
+import android.util.Log;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.internal.safeparcel.AbstractSafeParcelable;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelWriter;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Class;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Constructor;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Field;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Param;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Reserved;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+@SafeParcelable.Class(creator="RemoteMessageCreator")
+@SafeParcelable.Reserved({1})
+public final class RemoteMessage
+  extends AbstractSafeParcelable
+{
+  public static final Parcelable.Creator<RemoteMessage> CREATOR = new zzc();
+  public static final int PRIORITY_HIGH = 1;
+  public static final int PRIORITY_NORMAL = 2;
+  public static final int PRIORITY_UNKNOWN = 0;
+  @SafeParcelable.Field(id=2)
+  Bundle zzds;
+  private Map<String, String> zzdt;
+  private Notification zzdu;
+  
+  @SafeParcelable.Constructor
+  public RemoteMessage(@SafeParcelable.Param(id=2) Bundle paramBundle)
+  {
+    zzds = paramBundle;
+  }
+  
+  private static int zzm(String paramString)
+  {
+    if ("high".equals(paramString)) {
+      return 1;
+    }
+    if ("normal".equals(paramString)) {
+      return 2;
+    }
+    return 0;
+  }
+  
+  @Nullable
+  public final String getCollapseKey()
+  {
+    return zzds.getString("collapse_key");
+  }
+  
+  public final Map<String, String> getData()
+  {
+    if (zzdt == null)
+    {
+      Bundle localBundle = zzds;
+      ArrayMap localArrayMap = new ArrayMap();
+      Iterator localIterator = localBundle.keySet().iterator();
+      while (localIterator.hasNext())
+      {
+        String str = (String)localIterator.next();
+        Object localObject = localBundle.get(str);
+        if ((localObject instanceof String))
+        {
+          localObject = (String)localObject;
+          if ((!str.startsWith("google.")) && (!str.startsWith("gcm.")) && (!str.equals("from")) && (!str.equals("message_type")) && (!str.equals("collapse_key"))) {
+            localArrayMap.put(str, localObject);
+          }
+        }
+      }
+      zzdt = localArrayMap;
+    }
+    return zzdt;
+  }
+  
+  @Nullable
+  public final String getFrom()
+  {
+    return zzds.getString("from");
+  }
+  
+  @Nullable
+  public final String getMessageId()
+  {
+    String str2 = zzds.getString("google.message_id");
+    String str1 = str2;
+    if (str2 == null) {
+      str1 = zzds.getString("message_id");
+    }
+    return str1;
+  }
+  
+  @Nullable
+  public final String getMessageType()
+  {
+    return zzds.getString("message_type");
+  }
+  
+  @Nullable
+  public final Notification getNotification()
+  {
+    if ((zzdu == null) && (zza.zzf(zzds))) {
+      zzdu = new Notification(zzds, null);
+    }
+    return zzdu;
+  }
+  
+  public final int getOriginalPriority()
+  {
+    String str2 = zzds.getString("google.original_priority");
+    String str1 = str2;
+    if (str2 == null) {
+      str1 = zzds.getString("google.priority");
+    }
+    return zzm(str1);
+  }
+  
+  public final int getPriority()
+  {
+    String str2 = zzds.getString("google.delivered_priority");
+    String str1 = str2;
+    if (str2 == null)
+    {
+      if ("1".equals(zzds.getString("google.priority_reduced"))) {
+        return 2;
+      }
+      str1 = zzds.getString("google.priority");
+    }
+    return zzm(str1);
+  }
+  
+  public final long getSentTime()
+  {
+    Object localObject = zzds.get("google.sent_time");
+    if ((localObject instanceof Long)) {
+      return ((Long)localObject).longValue();
+    }
+    if ((localObject instanceof String)) {}
+    try
+    {
+      long l = Long.parseLong((String)localObject);
+      return l;
+    }
+    catch (NumberFormatException localNumberFormatException)
+    {
+      StringBuilder localStringBuilder;
+      for (;;) {}
+    }
+    localObject = String.valueOf(localObject);
+    localStringBuilder = new StringBuilder(String.valueOf(localObject).length() + 19);
+    localStringBuilder.append("Invalid sent time: ");
+    localStringBuilder.append((String)localObject);
+    Log.w("FirebaseMessaging", localStringBuilder.toString());
+    return 0L;
+  }
+  
+  @Nullable
+  public final String getTo()
+  {
+    return zzds.getString("google.to");
+  }
+  
+  public final int getTtl()
+  {
+    Object localObject = zzds.get("google.ttl");
+    if ((localObject instanceof Integer)) {
+      return ((Integer)localObject).intValue();
+    }
+    if ((localObject instanceof String)) {}
+    try
+    {
+      int i = Integer.parseInt((String)localObject);
+      return i;
+    }
+    catch (NumberFormatException localNumberFormatException)
+    {
+      StringBuilder localStringBuilder;
+      for (;;) {}
+    }
+    localObject = String.valueOf(localObject);
+    localStringBuilder = new StringBuilder(String.valueOf(localObject).length() + 13);
+    localStringBuilder.append("Invalid TTL: ");
+    localStringBuilder.append((String)localObject);
+    Log.w("FirebaseMessaging", localStringBuilder.toString());
+    return 0;
+  }
+  
+  @KeepForSdk
+  public final Intent toIntent()
+  {
+    Intent localIntent = new Intent();
+    localIntent.putExtras(zzds);
+    return localIntent;
+  }
+  
+  public final void writeToParcel(Parcel paramParcel, int paramInt)
+  {
+    paramInt = SafeParcelWriter.beginObjectHeader(paramParcel);
+    SafeParcelWriter.writeBundle(paramParcel, 2, zzds, false);
+    SafeParcelWriter.finishObjectHeader(paramParcel, paramInt);
+  }
+  
+  public static class Builder
+  {
+    private final Bundle zzds = new Bundle();
+    private final Map<String, String> zzdt = new ArrayMap();
+    
+    public Builder(String paramString)
+    {
+      if (TextUtils.isEmpty(paramString))
+      {
+        paramString = String.valueOf(paramString);
+        if (paramString.length() != 0) {
+          paramString = "Invalid to: ".concat(paramString);
+        } else {
+          paramString = new String("Invalid to: ");
+        }
+        throw new IllegalArgumentException(paramString);
+      }
+      zzds.putString("google.to", paramString);
+    }
+    
+    public Builder addData(String paramString1, String paramString2)
+    {
+      zzdt.put(paramString1, paramString2);
+      return this;
+    }
+    
+    public RemoteMessage build()
+    {
+      Bundle localBundle = new Bundle();
+      Iterator localIterator = zzdt.entrySet().iterator();
+      while (localIterator.hasNext())
+      {
+        Map.Entry localEntry = (Map.Entry)localIterator.next();
+        localBundle.putString((String)localEntry.getKey(), (String)localEntry.getValue());
+      }
+      localBundle.putAll(zzds);
+      zzds.remove("from");
+      return new RemoteMessage(localBundle);
+    }
+    
+    public Builder clearData()
+    {
+      zzdt.clear();
+      return this;
+    }
+    
+    public Builder setCollapseKey(String paramString)
+    {
+      zzds.putString("collapse_key", paramString);
+      return this;
+    }
+    
+    public Builder setData(Map<String, String> paramMap)
+    {
+      zzdt.clear();
+      zzdt.putAll(paramMap);
+      return this;
+    }
+    
+    public Builder setMessageId(String paramString)
+    {
+      zzds.putString("google.message_id", paramString);
+      return this;
+    }
+    
+    public Builder setMessageType(String paramString)
+    {
+      zzds.putString("message_type", paramString);
+      return this;
+    }
+    
+    public Builder setTtl(@IntRange(from=0L, to=86400L) int paramInt)
+    {
+      zzds.putString("google.ttl", String.valueOf(paramInt));
+      return this;
+    }
+  }
+  
+  @Retention(RetentionPolicy.SOURCE)
+  public static @interface MessagePriority {}
+  
+  public static class Notification
+  {
+    private final String tag;
+    private final String zzdv;
+    private final String zzdw;
+    private final String[] zzdx;
+    private final String zzdy;
+    private final String zzdz;
+    private final String[] zzea;
+    private final String zzeb;
+    private final String zzec;
+    private final String zzed;
+    private final String zzee;
+    private final Uri zzef;
+    
+    private Notification(Bundle paramBundle)
+    {
+      zzdv = zza.zza(paramBundle, "gcm.n.title");
+      zzdw = zza.zzb(paramBundle, "gcm.n.title");
+      zzdx = zze(paramBundle, "gcm.n.title");
+      zzdy = zza.zza(paramBundle, "gcm.n.body");
+      zzdz = zza.zzb(paramBundle, "gcm.n.body");
+      zzea = zze(paramBundle, "gcm.n.body");
+      zzeb = zza.zza(paramBundle, "gcm.n.icon");
+      zzec = zza.zzi(paramBundle);
+      tag = zza.zza(paramBundle, "gcm.n.tag");
+      zzed = zza.zza(paramBundle, "gcm.n.color");
+      zzee = zza.zza(paramBundle, "gcm.n.click_action");
+      zzef = zza.zzg(paramBundle);
+    }
+    
+    private static String[] zze(Bundle paramBundle, String paramString)
+    {
+      paramBundle = zza.zzc(paramBundle, paramString);
+      if (paramBundle == null) {
+        return null;
+      }
+      paramString = new String[paramBundle.length];
+      int i = 0;
+      while (i < paramBundle.length)
+      {
+        paramString[i] = String.valueOf(paramBundle[i]);
+        i += 1;
+      }
+      return paramString;
+    }
+    
+    @Nullable
+    public String getBody()
+    {
+      return zzdy;
+    }
+    
+    @Nullable
+    public String[] getBodyLocalizationArgs()
+    {
+      return zzea;
+    }
+    
+    @Nullable
+    public String getBodyLocalizationKey()
+    {
+      return zzdz;
+    }
+    
+    @Nullable
+    public String getClickAction()
+    {
+      return zzee;
+    }
+    
+    @Nullable
+    public String getColor()
+    {
+      return zzed;
+    }
+    
+    @Nullable
+    public String getIcon()
+    {
+      return zzeb;
+    }
+    
+    @Nullable
+    public Uri getLink()
+    {
+      return zzef;
+    }
+    
+    @Nullable
+    public String getSound()
+    {
+      return zzec;
+    }
+    
+    @Nullable
+    public String getTag()
+    {
+      return tag;
+    }
+    
+    @Nullable
+    public String getTitle()
+    {
+      return zzdv;
+    }
+    
+    @Nullable
+    public String[] getTitleLocalizationArgs()
+    {
+      return zzdx;
+    }
+    
+    @Nullable
+    public String getTitleLocalizationKey()
+    {
+      return zzdw;
+    }
+  }
+}

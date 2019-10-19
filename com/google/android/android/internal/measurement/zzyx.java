@@ -1,0 +1,392 @@
+package com.google.android.android.internal.measurement;
+
+import java.io.IOException;
+
+public final class zzyx
+{
+  private final byte[] buffer;
+  private int zzbuh;
+  private int zzbui = 64;
+  private int zzbuj = 67108864;
+  private int zzbun;
+  private int zzbup;
+  private int zzbuq = Integer.MAX_VALUE;
+  private final int zzcev;
+  private final int zzcew;
+  private int zzcex;
+  private int zzcey;
+  private zzuo zzcez;
+  
+  private zzyx(byte[] paramArrayOfByte, int paramInt1, int paramInt2)
+  {
+    buffer = paramArrayOfByte;
+    zzcev = paramInt1;
+    paramInt2 += paramInt1;
+    zzcex = paramInt2;
+    zzcew = paramInt2;
+    zzcey = paramInt1;
+  }
+  
+  public static zzyx get(byte[] paramArrayOfByte, int paramInt1, int paramInt2)
+  {
+    return new zzyx(paramArrayOfByte, 0, paramInt2);
+  }
+  
+  public static zzyx getInputStream(byte[] paramArrayOfByte)
+  {
+    return get(paramArrayOfByte, 0, paramArrayOfByte.length);
+  }
+  
+  private final void zzas(int paramInt)
+    throws IOException
+  {
+    if (paramInt >= 0)
+    {
+      if (zzcey + paramInt <= zzbuq)
+      {
+        if (paramInt <= zzcex - zzcey)
+        {
+          zzcey += paramInt;
+          return;
+        }
+        throw zzzf.zzyw();
+      }
+      zzas(zzbuq - zzcey);
+      throw zzzf.zzyw();
+    }
+    throw zzzf.zzyx();
+  }
+  
+  private final void zzvc()
+  {
+    zzcex += zzbun;
+    int i = zzcex;
+    if (i > zzbuq)
+    {
+      zzbun = (i - zzbuq);
+      zzcex -= zzbun;
+      return;
+    }
+    zzbun = 0;
+  }
+  
+  private final byte zzvd()
+    throws IOException
+  {
+    if (zzcey != zzcex)
+    {
+      byte[] arrayOfByte = buffer;
+      int i = zzcey;
+      zzcey = (i + 1);
+      return arrayOfByte[i];
+    }
+    throw zzzf.zzyw();
+  }
+  
+  public final byte[] add(int paramInt1, int paramInt2)
+  {
+    if (paramInt2 == 0) {
+      return zzzj.zzcfx;
+    }
+    byte[] arrayOfByte = new byte[paramInt2];
+    int i = zzcev;
+    System.arraycopy(buffer, i + paramInt1, arrayOfByte, 0, paramInt2);
+    return arrayOfByte;
+  }
+  
+  public final zzvm digest(zzxd paramZzxd)
+    throws IOException
+  {
+    Object localObject;
+    int i;
+    int j;
+    if (zzcez == null)
+    {
+      localObject = buffer;
+      i = zzcev;
+      j = zzcew;
+    }
+    try
+    {
+      localObject = zzuo.readFully((byte[])localObject, i, j);
+      zzcez = ((zzuo)localObject);
+      localObject = zzcez;
+      i = ((zzuo)localObject).zzux();
+      j = zzcey - zzcev;
+      if (i <= j)
+      {
+        localObject = zzcez;
+        ((zzuo)localObject).zzas(j - i);
+        localObject = zzcez;
+        i = zzbui;
+        j = zzbuh;
+        ((zzuo)localObject).zzap(i - j);
+        localObject = zzcez;
+        paramZzxd = ((zzuo)localObject).blur(paramZzxd, zzuz.zzvp());
+        paramZzxd = (zzvm)paramZzxd;
+        i = zzbup;
+        zzao(i);
+        return paramZzxd;
+      }
+      throw new IOException(String.format("CodedInputStream read ahead of CodedInputByteBufferNano: %s > %s", new Object[] { Integer.valueOf(i), Integer.valueOf(j) }));
+    }
+    catch (zzvt paramZzxd)
+    {
+      throw new zzzf("", paramZzxd);
+    }
+  }
+  
+  public final void digest(zzzg paramZzzg)
+    throws IOException
+  {
+    int i = zzuy();
+    if (zzbuh < zzbui)
+    {
+      i = zzaq(i);
+      zzbuh += 1;
+      paramZzzg.digest(this);
+      zzan(0);
+      zzbuh -= 1;
+      zzar(i);
+      return;
+    }
+    throw zzzf.zzyz();
+  }
+  
+  public final int getPosition()
+  {
+    return zzcey - zzcev;
+  }
+  
+  public final void readFrom(zzzg paramZzzg, int paramInt)
+    throws IOException
+  {
+    if (zzbuh < zzbui)
+    {
+      zzbuh += 1;
+      paramZzzg.digest(this);
+      zzan(paramInt << 3 | 0x4);
+      zzbuh -= 1;
+      return;
+    }
+    throw zzzf.zzyz();
+  }
+  
+  public final String readString()
+    throws IOException
+  {
+    int i = zzuy();
+    if (i >= 0)
+    {
+      if (i <= zzcex - zzcey)
+      {
+        String str = new String(buffer, zzcey, i, zzze.UTF_8);
+        zzcey += i;
+        return str;
+      }
+      throw zzzf.zzyw();
+    }
+    throw zzzf.zzyx();
+  }
+  
+  final void readTag(int paramInt1, int paramInt2)
+  {
+    if (paramInt1 <= zzcey - zzcev)
+    {
+      if (paramInt1 >= 0)
+      {
+        zzcey = (zzcev + paramInt1);
+        zzbup = paramInt2;
+        return;
+      }
+      localStringBuilder = new StringBuilder(24);
+      localStringBuilder.append("Bad position ");
+      localStringBuilder.append(paramInt1);
+      throw new IllegalArgumentException(localStringBuilder.toString());
+    }
+    paramInt2 = zzcey;
+    int i = zzcev;
+    StringBuilder localStringBuilder = new StringBuilder(50);
+    localStringBuilder.append("Position ");
+    localStringBuilder.append(paramInt1);
+    localStringBuilder.append(" is beyond current ");
+    localStringBuilder.append(paramInt2 - i);
+    throw new IllegalArgumentException(localStringBuilder.toString());
+  }
+  
+  public final void zzan(int paramInt)
+    throws zzzf
+  {
+    if (zzbup == paramInt) {
+      return;
+    }
+    throw new zzzf("Protocol message end-group tag did not match expected tag.");
+  }
+  
+  public final boolean zzao(int paramInt)
+    throws IOException
+  {
+    switch (paramInt & 0x7)
+    {
+    default: 
+      throw new zzzf("Protocol message tag had invalid wire type.");
+    case 5: 
+      zzva();
+      return true;
+    case 4: 
+      return false;
+    case 3: 
+      int i;
+      do
+      {
+        i = zzug();
+      } while ((i != 0) && (zzao(i)));
+      zzan(paramInt >>> 3 << 3 | 0x4);
+      return true;
+    case 2: 
+      zzas(zzuy());
+      return true;
+    case 1: 
+      zzvb();
+      return true;
+    }
+    zzuy();
+    return true;
+  }
+  
+  public final int zzaq(int paramInt)
+    throws zzzf
+  {
+    if (paramInt >= 0)
+    {
+      paramInt += zzcey;
+      int i = zzbuq;
+      if (paramInt <= i)
+      {
+        zzbuq = paramInt;
+        zzvc();
+        return i;
+      }
+      throw zzzf.zzyw();
+    }
+    throw zzzf.zzyx();
+  }
+  
+  public final void zzar(int paramInt)
+  {
+    zzbuq = paramInt;
+    zzvc();
+  }
+  
+  public final void zzby(int paramInt)
+  {
+    readTag(paramInt, zzbup);
+  }
+  
+  public final int zzug()
+    throws IOException
+  {
+    if (zzcey == zzcex)
+    {
+      zzbup = 0;
+      return 0;
+    }
+    zzbup = zzuy();
+    if (zzbup != 0) {
+      return zzbup;
+    }
+    throw new zzzf("Protocol message contained an invalid tag (zero).");
+  }
+  
+  public final boolean zzum()
+    throws IOException
+  {
+    return zzuy() != 0;
+  }
+  
+  public final int zzuy()
+    throws IOException
+  {
+    int i = zzvd();
+    if (i >= 0) {
+      return i;
+    }
+    i &= 0x7F;
+    int j = zzvd();
+    if (j >= 0) {
+      return i | j << 7;
+    }
+    i |= (j & 0x7F) << 7;
+    j = zzvd();
+    if (j >= 0) {
+      return i | j << 14;
+    }
+    j = i | (j & 0x7F) << 14;
+    int k = zzvd();
+    if (k >= 0) {
+      return j | k << 21;
+    }
+    i = zzvd();
+    j = j | (k & 0x7F) << 21 | i << 28;
+    if (i < 0)
+    {
+      i = 0;
+      while (i < 5)
+      {
+        if (zzvd() >= 0) {
+          return j;
+        }
+        i += 1;
+      }
+      throw zzzf.zzyy();
+    }
+    return j;
+  }
+  
+  public final long zzuz()
+    throws IOException
+  {
+    int i = 0;
+    long l = 0L;
+    while (i < 64)
+    {
+      int j = zzvd();
+      l |= (j & 0x7F) << i;
+      if ((j & 0x80) == 0) {
+        return l;
+      }
+      i += 7;
+    }
+    throw zzzf.zzyy();
+  }
+  
+  public final int zzva()
+    throws IOException
+  {
+    return zzvd() & 0xFF | (zzvd() & 0xFF) << 8 | (zzvd() & 0xFF) << 16 | (zzvd() & 0xFF) << 24;
+  }
+  
+  public final long zzvb()
+    throws IOException
+  {
+    int i = zzvd();
+    int j = zzvd();
+    int k = zzvd();
+    int m = zzvd();
+    int n = zzvd();
+    int i1 = zzvd();
+    int i2 = zzvd();
+    int i3 = zzvd();
+    long l = i;
+    return (j & 0xFF) << 8 | l & 0xFF | (k & 0xFF) << 16 | (m & 0xFF) << 24 | (n & 0xFF) << 32 | (i1 & 0xFF) << 40 | (i2 & 0xFF) << 48 | (i3 & 0xFF) << 56;
+  }
+  
+  public final int zzyr()
+  {
+    if (zzbuq == Integer.MAX_VALUE) {
+      return -1;
+    }
+    int i = zzcey;
+    return zzbuq - i;
+  }
+}

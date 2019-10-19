@@ -1,0 +1,14 @@
+package com.comfortclick.bosclient.profiles;
+
+public class Controller
+{
+  public String AccessID;
+  public boolean DynamicIP;
+  public String GatewayAddress;
+  public String LocalAddress;
+  public String PublicAddress;
+  public String PublicKey;
+  public String ServerName;
+  
+  public Controller() {}
+}

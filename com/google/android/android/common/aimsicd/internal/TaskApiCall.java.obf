@@ -1,0 +1,106 @@
+package com.google.android.gms.common.api.internal;
+
+import android.os.RemoteException;
+import android.support.annotation.Nullable;
+import com.google.android.gms.common.Feature;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.api.Api.AnyClient;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.util.BiConsumer;
+import com.google.android.gms.tasks.TaskCompletionSource;
+
+@KeepForSdk
+public abstract class TaskApiCall<A extends Api.AnyClient, ResultT>
+{
+  private final Feature[] zakd;
+  private final boolean zakk;
+  
+  @Deprecated
+  @KeepForSdk
+  public TaskApiCall()
+  {
+    zakd = null;
+    zakk = false;
+  }
+  
+  @KeepForSdk
+  private TaskApiCall(Feature[] paramArrayOfFeature, boolean paramBoolean)
+  {
+    zakd = paramArrayOfFeature;
+    zakk = paramBoolean;
+  }
+  
+  @KeepForSdk
+  public static <A extends Api.AnyClient, ResultT> Builder<A, ResultT> builder()
+  {
+    return new Builder(null);
+  }
+  
+  @KeepForSdk
+  protected abstract void doExecute(A paramA, TaskCompletionSource<ResultT> paramTaskCompletionSource)
+    throws RemoteException;
+  
+  @KeepForSdk
+  public boolean shouldAutoResolveMissingFeatures()
+  {
+    return zakk;
+  }
+  
+  @Nullable
+  public final Feature[] zabt()
+  {
+    return zakd;
+  }
+  
+  @KeepForSdk
+  public static class Builder<A extends Api.AnyClient, ResultT>
+  {
+    private Feature[] zakd;
+    private boolean zakk = true;
+    private RemoteCall<A, TaskCompletionSource<ResultT>> zakl;
+    
+    private Builder() {}
+    
+    @KeepForSdk
+    public TaskApiCall<A, ResultT> build()
+    {
+      boolean bool;
+      if (zakl != null) {
+        bool = true;
+      } else {
+        bool = false;
+      }
+      Preconditions.checkArgument(bool, "execute parameter required");
+      return new zack(this, zakd, zakk);
+    }
+    
+    @Deprecated
+    @KeepForSdk
+    public Builder<A, ResultT> execute(BiConsumer<A, TaskCompletionSource<ResultT>> paramBiConsumer)
+    {
+      zakl = new zacj(paramBiConsumer);
+      return this;
+    }
+    
+    @KeepForSdk
+    public Builder<A, ResultT> run(RemoteCall<A, TaskCompletionSource<ResultT>> paramRemoteCall)
+    {
+      zakl = paramRemoteCall;
+      return this;
+    }
+    
+    @KeepForSdk
+    public Builder<A, ResultT> setAutoResolveMissingFeatures(boolean paramBoolean)
+    {
+      zakk = paramBoolean;
+      return this;
+    }
+    
+    @KeepForSdk
+    public Builder<A, ResultT> setFeatures(Feature... paramVarArgs)
+    {
+      zakd = paramVarArgs;
+      return this;
+    }
+  }
+}

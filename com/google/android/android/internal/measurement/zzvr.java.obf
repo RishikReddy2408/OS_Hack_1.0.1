@@ -1,0 +1,6 @@
+package com.google.android.gms.internal.measurement;
+
+public abstract interface zzvr
+{
+  public abstract boolean zzb(int paramInt);
+}

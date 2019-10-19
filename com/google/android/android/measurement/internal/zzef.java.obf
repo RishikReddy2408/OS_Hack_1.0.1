@@ -1,0 +1,235 @@
+package com.google.android.gms.measurement.internal;
+
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.DeadObjectException;
+import android.os.IBinder;
+import android.os.IInterface;
+import android.os.Looper;
+import android.os.RemoteException;
+import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.internal.BaseGmsClient.BaseConnectionCallbacks;
+import com.google.android.gms.common.internal.BaseGmsClient.BaseOnConnectionFailedListener;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.stats.ConnectionTracker;
+import com.google.android.gms.common.util.VisibleForTesting;
+
+@VisibleForTesting
+public final class zzef
+  implements ServiceConnection, BaseGmsClient.BaseConnectionCallbacks, BaseGmsClient.BaseOnConnectionFailedListener
+{
+  private volatile boolean zzasm;
+  private volatile zzao zzasn;
+  
+  protected zzef(zzdr paramZzdr) {}
+  
+  @MainThread
+  public final void onConnected(@Nullable Bundle paramBundle)
+  {
+    Preconditions.checkMainThread("MeasurementServiceConnection.onConnected");
+    try
+    {
+      try
+      {
+        paramBundle = (zzag)zzasn.getService();
+        if (!zzn.zzia()) {
+          zzasn = null;
+        }
+        zzasg.zzgn().zzc(new zzei(this, paramBundle));
+      }
+      finally
+      {
+        break label68;
+      }
+    }
+    catch (DeadObjectException|IllegalStateException paramBundle)
+    {
+      for (;;) {}
+    }
+    zzasn = null;
+    zzasm = false;
+    return;
+    label68:
+    throw paramBundle;
+  }
+  
+  @MainThread
+  public final void onConnectionFailed(@NonNull ConnectionResult paramConnectionResult)
+  {
+    Preconditions.checkMainThread("MeasurementServiceConnection.onConnectionFailed");
+    zzap localZzap = zzasg.zzadj.zzkf();
+    if (localZzap != null) {
+      localZzap.zzjg().zzg("Service connection failed", paramConnectionResult);
+    }
+    try
+    {
+      zzasm = false;
+      zzasn = null;
+      zzasg.zzgn().zzc(new zzek(this));
+      return;
+    }
+    finally {}
+  }
+  
+  @MainThread
+  public final void onConnectionSuspended(int paramInt)
+  {
+    Preconditions.checkMainThread("MeasurementServiceConnection.onConnectionSuspended");
+    zzasg.zzgo().zzjk().zzbx("Service connection suspended");
+    zzasg.zzgn().zzc(new zzej(this));
+  }
+  
+  @MainThread
+  public final void onServiceConnected(ComponentName paramComponentName, IBinder paramIBinder)
+  {
+    Preconditions.checkMainThread("MeasurementServiceConnection.onServiceConnected");
+    if (paramIBinder == null) {
+      try
+      {
+        zzasm = false;
+        zzasg.zzgo().zzjd().zzbx("Service connected with null binder");
+        return;
+      }
+      finally
+      {
+        break label241;
+      }
+    }
+    Object localObject = null;
+    paramComponentName = null;
+    IInterface localIInterface = null;
+    ComponentName localComponentName = paramComponentName;
+    try
+    {
+      str = paramIBinder.getInterfaceDescriptor();
+      localComponentName = paramComponentName;
+      if (!"com.google.android.gms.measurement.internal.IMeasurementService".equals(str)) {
+        break label145;
+      }
+      if (paramIBinder == null)
+      {
+        paramComponentName = localIInterface;
+      }
+      else
+      {
+        localComponentName = paramComponentName;
+        localIInterface = paramIBinder.queryLocalInterface("com.google.android.gms.measurement.internal.IMeasurementService");
+        localComponentName = paramComponentName;
+        if ((localIInterface instanceof zzag))
+        {
+          localComponentName = paramComponentName;
+          paramComponentName = (zzag)localIInterface;
+        }
+        else
+        {
+          localComponentName = paramComponentName;
+          paramComponentName = new zzai(paramIBinder);
+        }
+      }
+    }
+    catch (RemoteException paramComponentName)
+    {
+      for (;;)
+      {
+        String str;
+      }
+    }
+    localComponentName = paramComponentName;
+    zzasg.zzgo().zzjl().zzbx("Bound to IMeasurementService interface");
+    break label187;
+    label145:
+    localComponentName = paramComponentName;
+    zzasg.zzgo().zzjd().zzg("Got binder with a wrong descriptor", str);
+    paramComponentName = localObject;
+    break label187;
+    zzasg.zzgo().zzjd().zzbx("Service connect failed to get IMeasurementService");
+    paramComponentName = localComponentName;
+    label187:
+    if (paramComponentName == null) {
+      zzasm = false;
+    }
+    try
+    {
+      ConnectionTracker.getInstance().unbindService(zzasg.getContext(), zzdr.zza(zzasg));
+    }
+    catch (IllegalArgumentException paramComponentName)
+    {
+      for (;;) {}
+    }
+    zzasg.zzgn().zzc(new zzeg(this, paramComponentName));
+    return;
+    label241:
+    throw paramComponentName;
+  }
+  
+  @MainThread
+  public final void onServiceDisconnected(ComponentName paramComponentName)
+  {
+    Preconditions.checkMainThread("MeasurementServiceConnection.onServiceDisconnected");
+    zzasg.zzgo().zzjk().zzbx("Service disconnected");
+    zzasg.zzgn().zzc(new zzeh(this, paramComponentName));
+  }
+  
+  @WorkerThread
+  public final void zzc(Intent paramIntent)
+  {
+    zzasg.zzaf();
+    Context localContext = zzasg.getContext();
+    ConnectionTracker localConnectionTracker = ConnectionTracker.getInstance();
+    try
+    {
+      if (zzasm)
+      {
+        zzasg.zzgo().zzjl().zzbx("Connection attempt already in progress");
+        return;
+      }
+      zzasg.zzgo().zzjl().zzbx("Using local app measurement service");
+      zzasm = true;
+      localConnectionTracker.bindService(localContext, paramIntent, zzdr.zza(zzasg), 129);
+      return;
+    }
+    finally {}
+  }
+  
+  @WorkerThread
+  public final void zzlg()
+  {
+    if ((zzasn != null) && ((zzasn.isConnected()) || (zzasn.isConnecting()))) {
+      zzasn.disconnect();
+    }
+    zzasn = null;
+  }
+  
+  @WorkerThread
+  public final void zzlh()
+  {
+    zzasg.zzaf();
+    Context localContext = zzasg.getContext();
+    try
+    {
+      if (zzasm)
+      {
+        zzasg.zzgo().zzjl().zzbx("Connection attempt already in progress");
+        return;
+      }
+      if ((zzasn != null) && ((!zzn.zzia()) || (zzasn.isConnecting()) || (zzasn.isConnected())))
+      {
+        zzasg.zzgo().zzjl().zzbx("Already awaiting connection attempt");
+        return;
+      }
+      zzasn = new zzao(localContext, Looper.getMainLooper(), this, this);
+      zzasg.zzgo().zzjl().zzbx("Connecting to remote service");
+      zzasm = true;
+      zzasn.checkAvailabilityAndConnect();
+      return;
+    }
+    finally {}
+  }
+}

@@ -1,0 +1,20 @@
+package com.google.android.android.internal.measurement;
+
+public enum zzvv
+{
+  private final Class<?> zzbzx;
+  private final Class<?> zzbzy;
+  private final Object zzbzz;
+  
+  private zzvv(Class paramClass1, Class paramClass2, Object paramObject)
+  {
+    zzbzx = paramClass1;
+    zzbzy = paramClass2;
+    zzbzz = paramObject;
+  }
+  
+  public final Class zzws()
+  {
+    return zzbzy;
+  }
+}

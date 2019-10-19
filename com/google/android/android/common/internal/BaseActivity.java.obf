@@ -1,0 +1,132 @@
+package com.google.android.gms.common.internal;
+
+import android.content.ComponentName;
+import android.content.ServiceConnection;
+import android.os.Handler;
+import android.os.IBinder;
+import com.google.android.gms.common.stats.ConnectionTracker;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+final class zzf
+  implements ServiceConnection
+{
+  private ComponentName mComponentName;
+  private int mState;
+  private IBinder zzcy;
+  private final Set<ServiceConnection> zzdz;
+  private boolean zzea;
+  private final GmsClientSupervisor.zza zzeb;
+  
+  public zzf(zze paramZze, GmsClientSupervisor.zza paramZza)
+  {
+    zzeb = paramZza;
+    zzdz = new HashSet();
+    mState = 2;
+  }
+  
+  public final IBinder getBinder()
+  {
+    return zzcy;
+  }
+  
+  public final ComponentName getComponentName()
+  {
+    return mComponentName;
+  }
+  
+  public final int getState()
+  {
+    return mState;
+  }
+  
+  public final boolean isBound()
+  {
+    return zzea;
+  }
+  
+  public final void onServiceConnected(ComponentName paramComponentName, IBinder paramIBinder)
+  {
+    synchronized (zze.zza(zzec))
+    {
+      zze.zzb(zzec).removeMessages(1, zzeb);
+      zzcy = paramIBinder;
+      mComponentName = paramComponentName;
+      Iterator localIterator = zzdz.iterator();
+      while (localIterator.hasNext()) {
+        ((ServiceConnection)localIterator.next()).onServiceConnected(paramComponentName, paramIBinder);
+      }
+      mState = 1;
+      return;
+    }
+  }
+  
+  public final void onServiceDisconnected(ComponentName paramComponentName)
+  {
+    synchronized (zze.zza(zzec))
+    {
+      zze.zzb(zzec).removeMessages(1, zzeb);
+      zzcy = null;
+      mComponentName = paramComponentName;
+      Iterator localIterator = zzdz.iterator();
+      while (localIterator.hasNext()) {
+        ((ServiceConnection)localIterator.next()).onServiceDisconnected(paramComponentName);
+      }
+      mState = 2;
+      return;
+    }
+  }
+  
+  public final void zza(ServiceConnection paramServiceConnection, String paramString)
+  {
+    zze.zzd(zzec);
+    zze.zzc(zzec);
+    zzeb.zzb(zze.zzc(zzec));
+    zzdz.add(paramServiceConnection);
+  }
+  
+  public final boolean zza(ServiceConnection paramServiceConnection)
+  {
+    return zzdz.contains(paramServiceConnection);
+  }
+  
+  public final void zzb(ServiceConnection paramServiceConnection, String paramString)
+  {
+    zze.zzd(zzec);
+    zze.zzc(zzec);
+    zzdz.remove(paramServiceConnection);
+  }
+  
+  public final void zze(String paramString)
+  {
+    mState = 3;
+    zzea = zze.zzd(zzec).zza(zze.zzc(zzec), paramString, zzeb.zzb(zze.zzc(zzec)), this, zzeb.zzq());
+    if (zzea)
+    {
+      paramString = zze.zzb(zzec).obtainMessage(1, zzeb);
+      zze.zzb(zzec).sendMessageDelayed(paramString, zze.zze(zzec));
+      return;
+    }
+    mState = 2;
+    try
+    {
+      zze.zzd(zzec).unbindService(zze.zzc(zzec), this);
+      return;
+    }
+    catch (IllegalArgumentException paramString) {}
+  }
+  
+  public final void zzf(String paramString)
+  {
+    zze.zzb(zzec).removeMessages(1, zzeb);
+    zze.zzd(zzec).unbindService(zze.zzc(zzec), this);
+    zzea = false;
+    mState = 2;
+  }
+  
+  public final boolean zzr()
+  {
+    return zzdz.isEmpty();
+  }
+}

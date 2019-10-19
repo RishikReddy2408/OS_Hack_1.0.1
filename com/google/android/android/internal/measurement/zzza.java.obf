@@ -1,0 +1,83 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.IOException;
+
+public abstract class zzza<M extends zzza<M>>
+  extends zzzg
+{
+  protected zzzc zzcfc;
+  
+  public zzza() {}
+  
+  public final <T> T zza(zzzb<M, T> paramZzzb)
+  {
+    if (zzcfc == null) {
+      return null;
+    }
+    zzzd localZzzd = zzcfc.zzcb(tag >>> 3);
+    if (localZzzd == null) {
+      return null;
+    }
+    return localZzzd.zzb(paramZzzb);
+  }
+  
+  public void zza(zzyy paramZzyy)
+    throws IOException
+  {
+    if (zzcfc == null) {
+      return;
+    }
+    int i = 0;
+    while (i < zzcfc.size())
+    {
+      zzcfc.zzcc(i).zza(paramZzyy);
+      i += 1;
+    }
+  }
+  
+  protected final boolean zza(zzyx paramZzyx, int paramInt)
+    throws IOException
+  {
+    int i = paramZzyx.getPosition();
+    if (!paramZzyx.zzao(paramInt)) {
+      return false;
+    }
+    int j = paramInt >>> 3;
+    zzzi localZzzi = new zzzi(paramInt, paramZzyx.zzs(i, paramZzyx.getPosition() - i));
+    paramZzyx = null;
+    if (zzcfc == null) {
+      zzcfc = new zzzc();
+    } else {
+      paramZzyx = zzcfc.zzcb(j);
+    }
+    Object localObject = paramZzyx;
+    if (paramZzyx == null)
+    {
+      localObject = new zzzd();
+      zzcfc.zza(j, (zzzd)localObject);
+    }
+    ((zzzd)localObject).zza(localZzzi);
+    return true;
+  }
+  
+  protected int zzf()
+  {
+    zzzc localZzzc = zzcfc;
+    int j = 0;
+    if (localZzzc != null)
+    {
+      int i = 0;
+      for (;;)
+      {
+        k = i;
+        if (j >= zzcfc.size()) {
+          break;
+        }
+        i += zzcfc.zzcc(j).zzf();
+        j += 1;
+      }
+    }
+    int k = 0;
+    return k;
+  }
+}

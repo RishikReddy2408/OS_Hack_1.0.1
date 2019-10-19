@@ -1,0 +1,15 @@
+package com.google.android.gms.common.api.internal;
+
+final class zaaj
+  extends zabf
+{
+  zaaj(zaah paramZaah, zabd paramZabd)
+  {
+    super(paramZabd);
+  }
+  
+  public final void zaan()
+  {
+    zaazafu).zahs.zab(null);
+  }
+}

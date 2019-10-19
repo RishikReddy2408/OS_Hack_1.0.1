@@ -1,0 +1,32 @@
+package com.google.android.gms.measurement.internal;
+
+import com.google.android.gms.common.internal.Preconditions;
+
+class zzey
+  extends zzco
+  implements zzcq
+{
+  protected final zzfa zzamz;
+  
+  zzey(zzfa paramZzfa)
+  {
+    super(paramZzfa.zzmb());
+    Preconditions.checkNotNull(paramZzfa);
+    zzamz = paramZzfa;
+  }
+  
+  public zzfg zzjo()
+  {
+    return zzamz.zzjo();
+  }
+  
+  public zzj zzjp()
+  {
+    return zzamz.zzjp();
+  }
+  
+  public zzq zzjq()
+  {
+    return zzamz.zzjq();
+  }
+}

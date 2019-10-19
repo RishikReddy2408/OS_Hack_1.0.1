@@ -1,0 +1,96 @@
+package com.google.firebase.components;
+
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.internal.Preconditions;
+
+@KeepForSdk
+public final class Dependency
+{
+  private final Class<?> zza;
+  private final int zzb;
+  private final int zzc;
+  
+  private Dependency(Class<?> paramClass, int paramInt1, int paramInt2)
+  {
+    zza = ((Class)Preconditions.checkNotNull(paramClass, "Null dependency anInterface."));
+    zzb = paramInt1;
+    zzc = paramInt2;
+  }
+  
+  @KeepForSdk
+  public static Dependency optional(Class<?> paramClass)
+  {
+    return new Dependency(paramClass, 0, 0);
+  }
+  
+  @KeepForSdk
+  public static Dependency optionalProvider(Class<?> paramClass)
+  {
+    return new Dependency(paramClass, 0, 1);
+  }
+  
+  @KeepForSdk
+  public static Dependency required(Class<?> paramClass)
+  {
+    return new Dependency(paramClass, 1, 0);
+  }
+  
+  @KeepForSdk
+  public static Dependency requiredProvider(Class<?> paramClass)
+  {
+    return new Dependency(paramClass, 1, 1);
+  }
+  
+  public final boolean equals(Object paramObject)
+  {
+    if ((paramObject instanceof Dependency))
+    {
+      paramObject = (Dependency)paramObject;
+      return (zza == zza) && (zzb == zzb) && (zzc == zzc);
+    }
+    return false;
+  }
+  
+  public final int hashCode()
+  {
+    return ((zza.hashCode() ^ 0xF4243) * 1000003 ^ zzb) * 1000003 ^ zzc;
+  }
+  
+  public final String toString()
+  {
+    StringBuilder localStringBuilder = new StringBuilder("Dependency{anInterface=");
+    localStringBuilder.append(zza);
+    localStringBuilder.append(", required=");
+    int i = zzb;
+    boolean bool2 = false;
+    if (i == 1) {
+      bool1 = true;
+    } else {
+      bool1 = false;
+    }
+    localStringBuilder.append(bool1);
+    localStringBuilder.append(", direct=");
+    boolean bool1 = bool2;
+    if (zzc == 0) {
+      bool1 = true;
+    }
+    localStringBuilder.append(bool1);
+    localStringBuilder.append("}");
+    return localStringBuilder.toString();
+  }
+  
+  public final Class<?> zza()
+  {
+    return zza;
+  }
+  
+  public final boolean zzb()
+  {
+    return zzb == 1;
+  }
+  
+  public final boolean zzc()
+  {
+    return zzc == 0;
+  }
+}

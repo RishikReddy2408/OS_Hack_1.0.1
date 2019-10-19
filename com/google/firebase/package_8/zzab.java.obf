@@ -1,0 +1,92 @@
+package com.google.firebase.iid;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
+import android.util.Log;
+import com.google.android.gms.common.util.concurrent.NamedThreadFactory;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import javax.annotation.concurrent.GuardedBy;
+
+public final class zzab
+{
+  @GuardedBy("MessengerIpcClient.class")
+  private static zzab zzbt;
+  private final ScheduledExecutorService zzbu;
+  @GuardedBy("this")
+  private zzad zzbv = new zzad(this, null);
+  @GuardedBy("this")
+  private int zzbw = 1;
+  private final Context zzx;
+  
+  @VisibleForTesting
+  private zzab(Context paramContext, ScheduledExecutorService paramScheduledExecutorService)
+  {
+    zzbu = paramScheduledExecutorService;
+    zzx = paramContext.getApplicationContext();
+  }
+  
+  private final <T> Task<T> zza(zzak<T> paramZzak)
+  {
+    try
+    {
+      if (Log.isLoggable("MessengerIpcClient", 3))
+      {
+        String str = String.valueOf(paramZzak);
+        StringBuilder localStringBuilder = new StringBuilder(String.valueOf(str).length() + 9);
+        localStringBuilder.append("Queueing ");
+        localStringBuilder.append(str);
+        Log.d("MessengerIpcClient", localStringBuilder.toString());
+      }
+      if (!zzbv.zzb(paramZzak))
+      {
+        zzbv = new zzad(this, null);
+        zzbv.zzb(paramZzak);
+      }
+      paramZzak = zzcg.getTask();
+      return paramZzak;
+    }
+    finally {}
+  }
+  
+  public static zzab zzc(Context paramContext)
+  {
+    try
+    {
+      if (zzbt == null) {
+        zzbt = new zzab(paramContext, Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("MessengerIpcClient")));
+      }
+      paramContext = zzbt;
+      return paramContext;
+    }
+    finally {}
+  }
+  
+  private final int zzx()
+  {
+    try
+    {
+      int i = zzbw;
+      zzbw = (i + 1);
+      return i;
+    }
+    finally
+    {
+      localObject = finally;
+      throw localObject;
+    }
+  }
+  
+  public final Task<Void> zza(int paramInt, Bundle paramBundle)
+  {
+    return zza(new zzaj(zzx(), 2, paramBundle));
+  }
+  
+  public final Task<Bundle> zzb(int paramInt, Bundle paramBundle)
+  {
+    return zza(new zzam(zzx(), 1, paramBundle));
+  }
+}

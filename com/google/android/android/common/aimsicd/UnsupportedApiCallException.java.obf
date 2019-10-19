@@ -1,0 +1,25 @@
+package com.google.android.gms.common.api;
+
+import com.google.android.gms.common.Feature;
+import com.google.android.gms.common.annotation.KeepForSdk;
+
+public final class UnsupportedApiCallException
+  extends UnsupportedOperationException
+{
+  private final Feature zzar;
+  
+  @KeepForSdk
+  public UnsupportedApiCallException(Feature paramFeature)
+  {
+    zzar = paramFeature;
+  }
+  
+  public final String getMessage()
+  {
+    String str = String.valueOf(zzar);
+    StringBuilder localStringBuilder = new StringBuilder(String.valueOf(str).length() + 8);
+    localStringBuilder.append("Missing ");
+    localStringBuilder.append(str);
+    return localStringBuilder.toString();
+  }
+}

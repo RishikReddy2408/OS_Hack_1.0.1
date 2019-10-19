@@ -1,0 +1,134 @@
+package com.google.android.gms.common.data;
+
+import android.database.CharArrayBuffer;
+import android.net.Uri;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.internal.Objects;
+import com.google.android.gms.common.internal.Preconditions;
+
+@KeepForSdk
+public class DataBufferRef
+{
+  @KeepForSdk
+  protected final DataHolder mDataHolder;
+  @KeepForSdk
+  protected int mDataRow;
+  private int zalm;
+  
+  @KeepForSdk
+  public DataBufferRef(DataHolder paramDataHolder, int paramInt)
+  {
+    mDataHolder = ((DataHolder)Preconditions.checkNotNull(paramDataHolder));
+    zag(paramInt);
+  }
+  
+  @KeepForSdk
+  protected void copyToBuffer(String paramString, CharArrayBuffer paramCharArrayBuffer)
+  {
+    mDataHolder.zaa(paramString, mDataRow, zalm, paramCharArrayBuffer);
+  }
+  
+  public boolean equals(Object paramObject)
+  {
+    if ((paramObject instanceof DataBufferRef))
+    {
+      paramObject = (DataBufferRef)paramObject;
+      return (Objects.equal(Integer.valueOf(mDataRow), Integer.valueOf(mDataRow))) && (Objects.equal(Integer.valueOf(zalm), Integer.valueOf(zalm))) && (mDataHolder == mDataHolder);
+    }
+    return false;
+  }
+  
+  @KeepForSdk
+  protected boolean getBoolean(String paramString)
+  {
+    return mDataHolder.getBoolean(paramString, mDataRow, zalm);
+  }
+  
+  @KeepForSdk
+  protected byte[] getByteArray(String paramString)
+  {
+    return mDataHolder.getByteArray(paramString, mDataRow, zalm);
+  }
+  
+  @KeepForSdk
+  protected int getDataRow()
+  {
+    return mDataRow;
+  }
+  
+  @KeepForSdk
+  protected double getDouble(String paramString)
+  {
+    return mDataHolder.zab(paramString, mDataRow, zalm);
+  }
+  
+  @KeepForSdk
+  protected float getFloat(String paramString)
+  {
+    return mDataHolder.zaa(paramString, mDataRow, zalm);
+  }
+  
+  @KeepForSdk
+  protected int getInteger(String paramString)
+  {
+    return mDataHolder.getInteger(paramString, mDataRow, zalm);
+  }
+  
+  @KeepForSdk
+  protected long getLong(String paramString)
+  {
+    return mDataHolder.getLong(paramString, mDataRow, zalm);
+  }
+  
+  @KeepForSdk
+  protected String getString(String paramString)
+  {
+    return mDataHolder.getString(paramString, mDataRow, zalm);
+  }
+  
+  @KeepForSdk
+  public boolean hasColumn(String paramString)
+  {
+    return mDataHolder.hasColumn(paramString);
+  }
+  
+  @KeepForSdk
+  protected boolean hasNull(String paramString)
+  {
+    return mDataHolder.hasNull(paramString, mDataRow, zalm);
+  }
+  
+  public int hashCode()
+  {
+    return Objects.hashCode(new Object[] { Integer.valueOf(mDataRow), Integer.valueOf(zalm), mDataHolder });
+  }
+  
+  @KeepForSdk
+  public boolean isDataValid()
+  {
+    return !mDataHolder.isClosed();
+  }
+  
+  @KeepForSdk
+  protected Uri parseUri(String paramString)
+  {
+    paramString = mDataHolder.getString(paramString, mDataRow, zalm);
+    if (paramString == null) {
+      return null;
+    }
+    return Uri.parse(paramString);
+  }
+  
+  protected final void zag(int paramInt)
+  {
+    boolean bool;
+    if ((paramInt >= 0) && (paramInt < mDataHolder.getCount())) {
+      bool = true;
+    } else {
+      bool = false;
+    }
+    Preconditions.checkState(bool);
+    mDataRow = paramInt;
+    zalm = mDataHolder.getWindowIndex(mDataRow);
+  }
+}

@@ -1,0 +1,79 @@
+package com.google.android.gms.measurement;
+
+import android.app.Service;
+import android.app.job.JobParameters;
+import android.content.Intent;
+import android.os.IBinder;
+import android.support.annotation.MainThread;
+import com.google.android.gms.measurement.internal.zzel;
+import com.google.android.gms.measurement.internal.zzep;
+
+public final class AppMeasurementService
+  extends Service
+  implements zzep
+{
+  private zzel<AppMeasurementService> zzadr;
+  
+  public AppMeasurementService() {}
+  
+  private final zzel<AppMeasurementService> zzfu()
+  {
+    if (zzadr == null) {
+      zzadr = new zzel(this);
+    }
+    return zzadr;
+  }
+  
+  public final boolean callServiceStopSelfResult(int paramInt)
+  {
+    return stopSelfResult(paramInt);
+  }
+  
+  @MainThread
+  public final IBinder onBind(Intent paramIntent)
+  {
+    return zzfu().onBind(paramIntent);
+  }
+  
+  @MainThread
+  public final void onCreate()
+  {
+    super.onCreate();
+    zzfu().onCreate();
+  }
+  
+  @MainThread
+  public final void onDestroy()
+  {
+    zzfu().onDestroy();
+    super.onDestroy();
+  }
+  
+  @MainThread
+  public final void onRebind(Intent paramIntent)
+  {
+    zzfu().onRebind(paramIntent);
+  }
+  
+  @MainThread
+  public final int onStartCommand(Intent paramIntent, int paramInt1, int paramInt2)
+  {
+    return zzfu().onStartCommand(paramIntent, paramInt1, paramInt2);
+  }
+  
+  @MainThread
+  public final boolean onUnbind(Intent paramIntent)
+  {
+    return zzfu().onUnbind(paramIntent);
+  }
+  
+  public final void zza(JobParameters paramJobParameters, boolean paramBoolean)
+  {
+    throw new UnsupportedOperationException();
+  }
+  
+  public final void zzb(Intent paramIntent)
+  {
+    AppMeasurementReceiver.completeWakefulIntent(paramIntent);
+  }
+}

@@ -1,0 +1,34 @@
+package com.google.android.gms.measurement.internal;
+
+import android.content.Context;
+import android.os.RemoteException;
+
+final class zzdw
+  implements Runnable
+{
+  zzdw(zzdr paramZzdr, zzdn paramZzdn) {}
+  
+  public final void run()
+  {
+    zzag localZzag = zzdr.zzd(zzasg);
+    if (localZzag == null)
+    {
+      zzasg.zzgo().zzjd().zzbx("Failed to send current screen to service");
+      return;
+    }
+    try
+    {
+      if (zzary == null) {
+        localZzag.zza(0L, null, null, zzasg.getContext().getPackageName());
+      } else {
+        localZzag.zza(zzary.zzarm, zzary.zzuw, zzary.zzarl, zzasg.getContext().getPackageName());
+      }
+      zzdr.zze(zzasg);
+      return;
+    }
+    catch (RemoteException localRemoteException)
+    {
+      zzasg.zzgo().zzjd().zzg("Failed to send current screen to the service", localRemoteException);
+    }
+  }
+}

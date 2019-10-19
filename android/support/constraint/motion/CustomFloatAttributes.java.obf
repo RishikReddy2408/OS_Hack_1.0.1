@@ -1,0 +1,10 @@
+package android.support.constraint.motion;
+
+public abstract interface CustomFloatAttributes
+{
+  public abstract float get(String paramString);
+  
+  public abstract String[] getListOfAttributes();
+  
+  public abstract void set(String paramString, float paramFloat);
+}

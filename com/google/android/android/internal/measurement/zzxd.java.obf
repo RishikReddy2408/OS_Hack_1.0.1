@@ -1,0 +1,7 @@
+package com.google.android.gms.internal.measurement;
+
+public abstract interface zzxd<MessageType>
+{
+  public abstract MessageType zza(zzuo paramZzuo, zzuz paramZzuz)
+    throws zzvt;
+}

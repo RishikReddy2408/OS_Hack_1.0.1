@@ -1,0 +1,13 @@
+package com.google.android.gms.measurement.internal;
+
+final class zzfb
+  implements Runnable
+{
+  zzfb(zzfa paramZzfa, zzff paramZzff) {}
+  
+  public final void run()
+  {
+    zzfa.zza(zzaty, zzatx);
+    zzaty.start();
+  }
+}

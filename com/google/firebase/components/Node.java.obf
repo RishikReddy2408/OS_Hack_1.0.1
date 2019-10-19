@@ -1,0 +1,138 @@
+package com.google.firebase.components;
+
+import android.support.annotation.GuardedBy;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.firebase.events.Event;
+import com.google.firebase.events.EventHandler;
+import com.google.firebase.events.Publisher;
+import com.google.firebase.events.Subscriber;
+import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+
+class zzh
+  implements Publisher, Subscriber
+{
+  @GuardedBy("this")
+  private final Map<Class<?>, ConcurrentHashMap<EventHandler<Object>, Executor>> zza = new HashMap();
+  @GuardedBy("this")
+  private Queue<Event<?>> zzb = new ArrayDeque();
+  private final Executor zzc;
+  
+  zzh(Executor paramExecutor)
+  {
+    zzc = paramExecutor;
+  }
+  
+  private Set<Map.Entry<EventHandler<Object>, Executor>> zza(Event<?> paramEvent)
+  {
+    try
+    {
+      paramEvent = (Map)zza.get(paramEvent.getType());
+      if (paramEvent == null)
+      {
+        paramEvent = Collections.emptySet();
+        return paramEvent;
+      }
+      paramEvent = paramEvent.entrySet();
+      return paramEvent;
+    }
+    finally {}
+  }
+  
+  public void publish(Event<?> paramEvent)
+  {
+    Preconditions.checkNotNull(paramEvent);
+    try
+    {
+      if (zzb != null)
+      {
+        zzb.add(paramEvent);
+        return;
+      }
+      Iterator localIterator = zza(paramEvent).iterator();
+      while (localIterator.hasNext())
+      {
+        Map.Entry localEntry = (Map.Entry)localIterator.next();
+        ((Executor)localEntry.getValue()).execute(zzi.zza(localEntry, paramEvent));
+      }
+      return;
+    }
+    finally {}
+  }
+  
+  public <T> void subscribe(Class<T> paramClass, EventHandler<? super T> paramEventHandler)
+  {
+    subscribe(paramClass, zzc, paramEventHandler);
+  }
+  
+  public <T> void subscribe(Class<T> paramClass, Executor paramExecutor, EventHandler<? super T> paramEventHandler)
+  {
+    try
+    {
+      Preconditions.checkNotNull(paramClass);
+      Preconditions.checkNotNull(paramEventHandler);
+      Preconditions.checkNotNull(paramExecutor);
+      if (!zza.containsKey(paramClass)) {
+        zza.put(paramClass, new ConcurrentHashMap());
+      }
+      ((ConcurrentHashMap)zza.get(paramClass)).put(paramEventHandler, paramExecutor);
+      return;
+    }
+    finally {}
+  }
+  
+  public <T> void unsubscribe(Class<T> paramClass, EventHandler<? super T> paramEventHandler)
+  {
+    try
+    {
+      Preconditions.checkNotNull(paramClass);
+      Preconditions.checkNotNull(paramEventHandler);
+      boolean bool = zza.containsKey(paramClass);
+      if (!bool) {
+        return;
+      }
+      ConcurrentHashMap localConcurrentHashMap = (ConcurrentHashMap)zza.get(paramClass);
+      localConcurrentHashMap.remove(paramEventHandler);
+      if (localConcurrentHashMap.isEmpty()) {
+        zza.remove(paramClass);
+      }
+      return;
+    }
+    finally {}
+  }
+  
+  final void zza()
+  {
+    for (;;)
+    {
+      try
+      {
+        if (zzb != null)
+        {
+          Object localObject1 = zzb;
+          zzb = null;
+          if (localObject1 != null)
+          {
+            localObject1 = ((Queue)localObject1).iterator();
+            if (((Iterator)localObject1).hasNext())
+            {
+              publish((Event)((Iterator)localObject1).next());
+              continue;
+            }
+          }
+          return;
+        }
+      }
+      finally {}
+      Object localObject3 = null;
+    }
+  }
+}

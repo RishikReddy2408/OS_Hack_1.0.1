@@ -1,0 +1,14 @@
+package com.google.android.gms.common.api.internal;
+
+import android.os.Handler;
+
+final class zabi
+  implements BackgroundDetector.BackgroundStateChangeListener
+{
+  zabi(GoogleApiManager paramGoogleApiManager) {}
+  
+  public final void onBackgroundStateChanged(boolean paramBoolean)
+  {
+    GoogleApiManager.zaa(zail).sendMessage(GoogleApiManager.zaa(zail).obtainMessage(1, Boolean.valueOf(paramBoolean)));
+  }
+}

@@ -1,0 +1,103 @@
+package com.google.android.gms.common.stats;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.SystemClock;
+import android.text.TextUtils;
+import android.util.Log;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.util.VisibleForTesting;
+import com.google.android.gms.common.util.zza;
+import java.util.Arrays;
+import java.util.List;
+
+@KeepForSdk
+public class WakeLockTracker
+{
+  @VisibleForTesting
+  private static boolean zzfb = false;
+  private static WakeLockTracker zzgb = new WakeLockTracker();
+  private static Boolean zzgc;
+  
+  public WakeLockTracker() {}
+  
+  @KeepForSdk
+  public static WakeLockTracker getInstance()
+  {
+    return zzgb;
+  }
+  
+  @KeepForSdk
+  public void registerAcquireEvent(Context paramContext, Intent paramIntent, String paramString1, String paramString2, String paramString3, int paramInt, String paramString4)
+  {
+    paramString4 = Arrays.asList(new String[] { paramString4 });
+    registerEvent(paramContext, paramIntent.getStringExtra("WAKE_LOCK_KEY"), 7, paramString1, paramString2, paramString3, paramInt, paramString4);
+  }
+  
+  @KeepForSdk
+  public void registerEvent(Context paramContext, String paramString1, int paramInt1, String paramString2, String paramString3, String paramString4, int paramInt2, List<String> paramList)
+  {
+    registerEvent(paramContext, paramString1, paramInt1, paramString2, paramString3, paramString4, paramInt2, paramList, 0L);
+  }
+  
+  @KeepForSdk
+  public void registerEvent(Context paramContext, String paramString1, int paramInt1, String paramString2, String paramString3, String paramString4, int paramInt2, List<String> paramList, long paramLong)
+  {
+    List<String> localList2 = paramList;
+    if (zzgc == null) {
+      zzgc = Boolean.valueOf(false);
+    }
+    if (!zzgc.booleanValue()) {
+      return;
+    }
+    if (TextUtils.isEmpty(paramString1))
+    {
+      paramContext = String.valueOf(paramString1);
+      if (paramContext.length() != 0) {
+        paramContext = "missing wakeLock key. ".concat(paramContext);
+      } else {
+        paramContext = new String("missing wakeLock key. ");
+      }
+      Log.e("WakeLockTracker", paramContext);
+      return;
+    }
+    long l1 = System.currentTimeMillis();
+    if ((7 == paramInt1) || (8 == paramInt1) || (10 == paramInt1) || (11 == paramInt1))
+    {
+      List<String> localList1 = localList2;
+      if (localList2 != null)
+      {
+        localList1 = localList2;
+        if (paramList.size() == 1)
+        {
+          localList1 = localList2;
+          if ("com.google.android.gms".equals(localList2.get(0))) {
+            localList1 = null;
+          }
+        }
+      }
+      long l2 = SystemClock.elapsedRealtime();
+      int i = zza.zzg(paramContext);
+      paramList = paramContext.getPackageName();
+      if ("com.google.android.gms".equals(paramList)) {
+        paramList = null;
+      }
+      paramString1 = new WakeLockEvent(l1, paramInt1, paramString2, paramInt2, localList1, paramString1, l2, i, paramString3, paramList, zza.zzh(paramContext), paramLong, paramString4);
+      try
+      {
+        paramContext.startService(new Intent().setComponent(LoggingConstants.zzfg).putExtra("com.google.android.gms.common.stats.EXTRA_LOG_EVENT", paramString1));
+        return;
+      }
+      catch (Exception paramContext)
+      {
+        Log.wtf("WakeLockTracker", paramContext);
+      }
+    }
+  }
+  
+  @KeepForSdk
+  public void registerReleaseEvent(Context paramContext, Intent paramIntent)
+  {
+    registerEvent(paramContext, paramIntent.getStringExtra("WAKE_LOCK_KEY"), 8, null, null, null, 0, null);
+  }
+}

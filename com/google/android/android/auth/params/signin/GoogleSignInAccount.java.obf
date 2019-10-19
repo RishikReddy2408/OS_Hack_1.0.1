@@ -1,0 +1,315 @@
+package com.google.android.gms.auth.api.signin;
+
+import android.accounts.Account;
+import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable.Creator;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.internal.ReflectedParcelable;
+import com.google.android.gms.common.internal.safeparcel.AbstractSafeParcelable;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelWriter;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Class;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Constructor;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Field;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Param;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.VersionField;
+import com.google.android.gms.common.util.Clock;
+import com.google.android.gms.common.util.DefaultClock;
+import com.google.android.gms.common.util.VisibleForTesting;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+@SafeParcelable.Class(creator="GoogleSignInAccountCreator")
+public class GoogleSignInAccount
+  extends AbstractSafeParcelable
+  implements ReflectedParcelable
+{
+  public static final Parcelable.Creator<GoogleSignInAccount> CREATOR = new zab();
+  @VisibleForTesting
+  private static Clock zae = DefaultClock.getInstance();
+  @SafeParcelable.Field(getter="getId", id=2)
+  private String mId;
+  @SafeParcelable.VersionField(id=1)
+  private final int versionCode;
+  @SafeParcelable.Field(getter="getIdToken", id=3)
+  private String zaf;
+  @SafeParcelable.Field(getter="getEmail", id=4)
+  private String zag;
+  @SafeParcelable.Field(getter="getDisplayName", id=5)
+  private String zah;
+  @SafeParcelable.Field(getter="getPhotoUrl", id=6)
+  private Uri zai;
+  @SafeParcelable.Field(getter="getServerAuthCode", id=7)
+  private String zaj;
+  @SafeParcelable.Field(getter="getExpirationTimeSecs", id=8)
+  private long zak;
+  @SafeParcelable.Field(getter="getObfuscatedIdentifier", id=9)
+  private String zal;
+  @SafeParcelable.Field(id=10)
+  private List<Scope> zam;
+  @SafeParcelable.Field(getter="getGivenName", id=11)
+  private String zan;
+  @SafeParcelable.Field(getter="getFamilyName", id=12)
+  private String zao;
+  private Set<Scope> zap = new HashSet();
+  
+  @SafeParcelable.Constructor
+  GoogleSignInAccount(@SafeParcelable.Param(id=1) int paramInt, @SafeParcelable.Param(id=2) String paramString1, @SafeParcelable.Param(id=3) String paramString2, @SafeParcelable.Param(id=4) String paramString3, @SafeParcelable.Param(id=5) String paramString4, @SafeParcelable.Param(id=6) Uri paramUri, @SafeParcelable.Param(id=7) String paramString5, @SafeParcelable.Param(id=8) long paramLong, @SafeParcelable.Param(id=9) String paramString6, @SafeParcelable.Param(id=10) List<Scope> paramList, @SafeParcelable.Param(id=11) String paramString7, @SafeParcelable.Param(id=12) String paramString8)
+  {
+    versionCode = paramInt;
+    mId = paramString1;
+    zaf = paramString2;
+    zag = paramString3;
+    zah = paramString4;
+    zai = paramUri;
+    zaj = paramString5;
+    zak = paramLong;
+    zal = paramString6;
+    zam = paramList;
+    zan = paramString7;
+    zao = paramString8;
+  }
+  
+  @KeepForSdk
+  public static GoogleSignInAccount createDefault()
+  {
+    Account localAccount = new Account("<<default account>>", "com.google");
+    HashSet localHashSet = new HashSet();
+    return zaa(null, null, name, null, null, null, null, Long.valueOf(0L), name, localHashSet);
+  }
+  
+  @Nullable
+  public static GoogleSignInAccount zaa(@Nullable String paramString)
+    throws JSONException
+  {
+    if (TextUtils.isEmpty(paramString)) {
+      return null;
+    }
+    JSONObject localJSONObject = new JSONObject(paramString);
+    paramString = localJSONObject.optString("photoUrl", null);
+    if (!TextUtils.isEmpty(paramString)) {
+      paramString = Uri.parse(paramString);
+    } else {
+      paramString = null;
+    }
+    long l = Long.parseLong(localJSONObject.getString("expirationTime"));
+    HashSet localHashSet = new HashSet();
+    JSONArray localJSONArray = localJSONObject.getJSONArray("grantedScopes");
+    int j = localJSONArray.length();
+    int i = 0;
+    while (i < j)
+    {
+      localHashSet.add(new Scope(localJSONArray.getString(i)));
+      i += 1;
+    }
+    paramString = zaa(localJSONObject.optString("id"), localJSONObject.optString("tokenId", null), localJSONObject.optString("email", null), localJSONObject.optString("displayName", null), localJSONObject.optString("givenName", null), localJSONObject.optString("familyName", null), paramString, Long.valueOf(l), localJSONObject.getString("obfuscatedIdentifier"), localHashSet);
+    zaj = localJSONObject.optString("serverAuthCode", null);
+    return paramString;
+  }
+  
+  private static GoogleSignInAccount zaa(@Nullable String paramString1, @Nullable String paramString2, @Nullable String paramString3, @Nullable String paramString4, @Nullable String paramString5, @Nullable String paramString6, @Nullable Uri paramUri, @Nullable Long paramLong, @NonNull String paramString7, @NonNull Set<Scope> paramSet)
+  {
+    if (paramLong == null) {
+      paramLong = Long.valueOf(zae.currentTimeMillis() / 1000L);
+    }
+    return new GoogleSignInAccount(3, paramString1, paramString2, paramString3, paramString4, paramUri, null, paramLong.longValue(), Preconditions.checkNotEmpty(paramString7), new ArrayList((Collection)Preconditions.checkNotNull(paramSet)), paramString5, paramString6);
+  }
+  
+  private final JSONObject zad()
+  {
+    JSONObject localJSONObject = new JSONObject();
+    try
+    {
+      if (getId() != null) {
+        localJSONObject.put("id", getId());
+      }
+      if (getIdToken() != null) {
+        localJSONObject.put("tokenId", getIdToken());
+      }
+      if (getEmail() != null) {
+        localJSONObject.put("email", getEmail());
+      }
+      if (getDisplayName() != null) {
+        localJSONObject.put("displayName", getDisplayName());
+      }
+      if (getGivenName() != null) {
+        localJSONObject.put("givenName", getGivenName());
+      }
+      if (getFamilyName() != null) {
+        localJSONObject.put("familyName", getFamilyName());
+      }
+      if (getPhotoUrl() != null) {
+        localJSONObject.put("photoUrl", getPhotoUrl().toString());
+      }
+      if (getServerAuthCode() != null) {
+        localJSONObject.put("serverAuthCode", getServerAuthCode());
+      }
+      localJSONObject.put("expirationTime", zak);
+      localJSONObject.put("obfuscatedIdentifier", zal);
+      JSONArray localJSONArray = new JSONArray();
+      Scope[] arrayOfScope = (Scope[])zam.toArray(new Scope[zam.size()]);
+      Arrays.sort(arrayOfScope, zaa.zaq);
+      int j = arrayOfScope.length;
+      int i = 0;
+      while (i < j)
+      {
+        localJSONArray.put(arrayOfScope[i].getScopeUri());
+        i += 1;
+      }
+      localJSONObject.put("grantedScopes", localJSONArray);
+      return localJSONObject;
+    }
+    catch (JSONException localJSONException)
+    {
+      throw new RuntimeException(localJSONException);
+    }
+  }
+  
+  public boolean equals(Object paramObject)
+  {
+    if (paramObject == this) {
+      return true;
+    }
+    if (!(paramObject instanceof GoogleSignInAccount)) {
+      return false;
+    }
+    paramObject = (GoogleSignInAccount)paramObject;
+    return (zal.equals(zal)) && (paramObject.getRequestedScopes().equals(getRequestedScopes()));
+  }
+  
+  @Nullable
+  public Account getAccount()
+  {
+    if (zag == null) {
+      return null;
+    }
+    return new Account(zag, "com.google");
+  }
+  
+  @Nullable
+  public String getDisplayName()
+  {
+    return zah;
+  }
+  
+  @Nullable
+  public String getEmail()
+  {
+    return zag;
+  }
+  
+  @Nullable
+  public String getFamilyName()
+  {
+    return zao;
+  }
+  
+  @Nullable
+  public String getGivenName()
+  {
+    return zan;
+  }
+  
+  @NonNull
+  public Set<Scope> getGrantedScopes()
+  {
+    return new HashSet(zam);
+  }
+  
+  @Nullable
+  public String getId()
+  {
+    return mId;
+  }
+  
+  @Nullable
+  public String getIdToken()
+  {
+    return zaf;
+  }
+  
+  @Nullable
+  public Uri getPhotoUrl()
+  {
+    return zai;
+  }
+  
+  @NonNull
+  @KeepForSdk
+  public Set<Scope> getRequestedScopes()
+  {
+    HashSet localHashSet = new HashSet(zam);
+    localHashSet.addAll(zap);
+    return localHashSet;
+  }
+  
+  @Nullable
+  public String getServerAuthCode()
+  {
+    return zaj;
+  }
+  
+  public int hashCode()
+  {
+    return (zal.hashCode() + 527) * 31 + getRequestedScopes().hashCode();
+  }
+  
+  @KeepForSdk
+  public boolean isExpired()
+  {
+    return zae.currentTimeMillis() / 1000L >= zak - 300L;
+  }
+  
+  @KeepForSdk
+  public GoogleSignInAccount requestExtraScopes(Scope... paramVarArgs)
+  {
+    if (paramVarArgs != null) {
+      Collections.addAll(zap, paramVarArgs);
+    }
+    return this;
+  }
+  
+  public void writeToParcel(Parcel paramParcel, int paramInt)
+  {
+    int i = SafeParcelWriter.beginObjectHeader(paramParcel);
+    SafeParcelWriter.writeInt(paramParcel, 1, versionCode);
+    SafeParcelWriter.writeString(paramParcel, 2, getId(), false);
+    SafeParcelWriter.writeString(paramParcel, 3, getIdToken(), false);
+    SafeParcelWriter.writeString(paramParcel, 4, getEmail(), false);
+    SafeParcelWriter.writeString(paramParcel, 5, getDisplayName(), false);
+    SafeParcelWriter.writeParcelable(paramParcel, 6, getPhotoUrl(), paramInt, false);
+    SafeParcelWriter.writeString(paramParcel, 7, getServerAuthCode(), false);
+    SafeParcelWriter.writeLong(paramParcel, 8, zak);
+    SafeParcelWriter.writeString(paramParcel, 9, zal, false);
+    SafeParcelWriter.writeTypedList(paramParcel, 10, zam, false);
+    SafeParcelWriter.writeString(paramParcel, 11, getGivenName(), false);
+    SafeParcelWriter.writeString(paramParcel, 12, getFamilyName(), false);
+    SafeParcelWriter.finishObjectHeader(paramParcel, i);
+  }
+  
+  @NonNull
+  public final String zab()
+  {
+    return zal;
+  }
+  
+  public final String zac()
+  {
+    JSONObject localJSONObject = zad();
+    localJSONObject.remove("serverAuthCode");
+    return localJSONObject.toString();
+  }
+}

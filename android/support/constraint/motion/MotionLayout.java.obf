@@ -1,0 +1,1290 @@
+package android.support.constraint.motion;
+
+import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.graphics.Path;
+import android.graphics.Rect;
+import android.os.Build.VERSION;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintLayoutStates;
+import android.support.constraint.ConstraintSet;
+import android.support.constraint.R.styleable;
+import android.support.constraint.motion.utils.StopLogic;
+import android.support.v4.view.NestedScrollingParent2;
+import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.animation.Interpolator;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+
+public class MotionLayout
+  extends ConstraintLayout
+  implements NestedScrollingParent2
+{
+  private static final boolean DEBUG = false;
+  static final int MAX_KEY_FRAMES = 50;
+  static final String TAG = "MotionLayout";
+  boolean firstDown = true;
+  private float lastPos;
+  private float lastY;
+  private long mAnimationStartTime = 0L;
+  private int mBeginState = -1;
+  int mCurrentState = -1;
+  private int mDebugPath = 0;
+  private DesignTool mDesignTool;
+  DevModeDraw mDevModeDraw;
+  boolean mEndConstraintSetComputed = false;
+  private int mEndState = -1;
+  HashMap<View, MotionController> mFrameArrayList = new HashMap();
+  boolean mInTransition = false;
+  boolean mIndirectTransition = false;
+  Interpolator mInterpolator;
+  private boolean mKeepAnimating = false;
+  private int mLastHeightMeasureSpec = 0;
+  private int mLastHeightMeasureSpecOnLayout = 0;
+  int mLastLayoutHeight;
+  int mLastLayoutWidth;
+  private int mLastWidthMeasureSpec = 0;
+  private int mLastWidthMeasureSpecOnLayout = 0;
+  private TransitionListener mListener;
+  int mOldHeight;
+  int mOldWidth;
+  private ArrayList<MotionHelper> mOnHideHelpers = null;
+  private ArrayList<MotionHelper> mOnShowHelpers = null;
+  MotionScene mScene;
+  View mScrollTarget;
+  float mScrollTargetDT;
+  float mScrollTargetDX;
+  float mScrollTargetDY;
+  long mScrollTargetTime;
+  boolean mSetup = false;
+  boolean mStartConstraintSetComputed = false;
+  StopLogic mStopLogic = new StopLogic();
+  private boolean mTemporalInterpolator = false;
+  private float mTransitionDuration = 1.0F;
+  float mTransitionGoalPosition = 0.0F;
+  private boolean mTransitionInstantly;
+  float mTransitionLastPosition = 0.0F;
+  private long mTransitionLastTime;
+  float mTransitionPosition = 0.0F;
+  
+  public MotionLayout(Context paramContext)
+  {
+    super(paramContext);
+    init(null);
+  }
+  
+  public MotionLayout(Context paramContext, AttributeSet paramAttributeSet)
+  {
+    super(paramContext, paramAttributeSet);
+    init(paramAttributeSet);
+  }
+  
+  public MotionLayout(Context paramContext, AttributeSet paramAttributeSet, int paramInt)
+  {
+    super(paramContext, paramAttributeSet, paramInt);
+    init(paramAttributeSet);
+  }
+  
+  private void computeCurrentPositions()
+  {
+    int j = getChildCount();
+    int i = 0;
+    while (i < j)
+    {
+      View localView = getChildAt(i);
+      MotionController localMotionController = (MotionController)mFrameArrayList.get(localView);
+      if (localMotionController != null) {
+        localMotionController.setStartCurrentState(localView);
+      }
+      i += 1;
+    }
+  }
+  
+  private void computeEndPositions(ConstraintSet paramConstraintSet)
+  {
+    try
+    {
+      super.onMeasure(mLastWidthMeasureSpecOnLayout, mLastHeightMeasureSpecOnLayout);
+      mInTransition = true;
+      int j = getChildCount();
+      int i = 0;
+      while (i < j)
+      {
+        View localView = getChildAt(i);
+        MotionController localMotionController = (MotionController)mFrameArrayList.get(localView);
+        if (localMotionController != null) {
+          localMotionController.setEndState(getViewWidget(localView), paramConstraintSet);
+        }
+        i += 1;
+      }
+      return;
+    }
+    catch (Exception paramConstraintSet)
+    {
+      paramConstraintSet.printStackTrace();
+    }
+  }
+  
+  private void computeStartPositions(ConstraintSet paramConstraintSet)
+  {
+    try
+    {
+      super.onMeasure(mLastWidthMeasureSpecOnLayout, mLastHeightMeasureSpecOnLayout);
+      mInTransition = true;
+      int j = getChildCount();
+      int i = 0;
+      while (i < j)
+      {
+        View localView = getChildAt(i);
+        MotionController localMotionController = (MotionController)mFrameArrayList.get(localView);
+        if (localMotionController != null) {
+          localMotionController.setStartState(getViewWidget(localView), paramConstraintSet);
+        }
+        i += 1;
+      }
+      return;
+    }
+    catch (Exception paramConstraintSet)
+    {
+      paramConstraintSet.printStackTrace();
+    }
+  }
+  
+  private void init(AttributeSet paramAttributeSet)
+  {
+    if (paramAttributeSet != null)
+    {
+      paramAttributeSet = getContext().obtainStyledAttributes(paramAttributeSet, R.styleable.MotionLayout);
+      int k = paramAttributeSet.getIndexCount();
+      int i = 0;
+      boolean bool2;
+      for (boolean bool1 = true; i < k; bool1 = bool2)
+      {
+        int j = paramAttributeSet.getIndex(i);
+        if (j == R.styleable.MotionLayout_layoutDescription)
+        {
+          j = paramAttributeSet.getResourceId(j, -1);
+          mScene = new MotionScene(getContext(), this, j);
+          bool2 = bool1;
+        }
+        else if (j == R.styleable.MotionLayout_currentState)
+        {
+          mCurrentState = paramAttributeSet.getResourceId(j, -1);
+          bool2 = bool1;
+        }
+        else if (j == R.styleable.MotionLayout_progress)
+        {
+          mTransitionGoalPosition = paramAttributeSet.getFloat(j, 0.0F);
+          mInTransition = true;
+          bool2 = bool1;
+        }
+        else if (j == R.styleable.MotionLayout_applyMotionScene)
+        {
+          bool2 = paramAttributeSet.getBoolean(j, bool1);
+        }
+        else
+        {
+          bool2 = bool1;
+          if (j == R.styleable.MotionLayout_showPaths)
+          {
+            if (paramAttributeSet.getBoolean(j, false)) {
+              j = 2;
+            } else {
+              j = 0;
+            }
+            mDebugPath = j;
+            bool2 = bool1;
+          }
+        }
+        i += 1;
+      }
+      paramAttributeSet.recycle();
+      if (mScene == null) {
+        Log.e("MotionLayout", "WARNING NO app:layoutDescription tag");
+      }
+      if (!bool1) {
+        mScene = null;
+      }
+    }
+    mStartConstraintSetComputed = false;
+    mEndConstraintSetComputed = false;
+    if ((mCurrentState == -1) && (mScene != null))
+    {
+      mCurrentState = mScene.getStartId();
+      mBeginState = mScene.getStartId();
+      mEndState = mScene.getEndId();
+    }
+  }
+  
+  private void setupMotionViews()
+  {
+    if (mSetup) {
+      return;
+    }
+    if ((Build.VERSION.SDK_INT >= 18) && (isInLayout())) {
+      return;
+    }
+    int j = mScene.getStartId();
+    int n = mScene.getEndId();
+    int m = getChildCount();
+    mFrameArrayList.clear();
+    int k = 0;
+    int i = 0;
+    Object localObject;
+    while (i < m)
+    {
+      localObject = getChildAt(i);
+      MotionController localMotionController = new MotionController((View)localObject);
+      mFrameArrayList.put(localObject, localMotionController);
+      i += 1;
+    }
+    mInTransition = true;
+    if (!mStartConstraintSetComputed)
+    {
+      localObject = mScene.getConstraintSet(j);
+      if (localObject != null)
+      {
+        ((ConstraintSet)localObject).applyTo(this);
+        computeStartPositions((ConstraintSet)localObject);
+        requestLayout();
+      }
+    }
+    if (!mEndConstraintSetComputed)
+    {
+      localObject = mScene.getConstraintSet(n);
+      if (localObject != null)
+      {
+        ((ConstraintSet)localObject).applyTo(this);
+        computeEndPositions((ConstraintSet)localObject);
+      }
+    }
+    j = getWidth();
+    n = getHeight();
+    i = 0;
+    while (i < m)
+    {
+      localObject = (MotionController)mFrameArrayList.get(getChildAt(i));
+      if (localObject != null)
+      {
+        mScene.getKeyFrames((MotionController)localObject);
+        ((MotionController)localObject).setup(j, n, mTransitionDuration);
+      }
+      i += 1;
+    }
+    float f3 = mScene.getStaggered();
+    if (f3 != 0.0F)
+    {
+      i = 0;
+      float f2 = Float.MAX_VALUE;
+      float f1 = -3.4028235E38F;
+      float f4;
+      for (;;)
+      {
+        j = k;
+        if (i >= m) {
+          break;
+        }
+        localObject = (MotionController)mFrameArrayList.get(getChildAt(i));
+        f4 = ((MotionController)localObject).getFinalX();
+        f4 = ((MotionController)localObject).getFinalY() + f4;
+        f2 = Math.min(f2, f4);
+        f1 = Math.max(f1, f4);
+        i += 1;
+      }
+      while (j < m)
+      {
+        localObject = (MotionController)mFrameArrayList.get(getChildAt(j));
+        f4 = ((MotionController)localObject).getFinalX();
+        float f5 = ((MotionController)localObject).getFinalY();
+        stagger_scale = (1.0F / (1.0F - f3));
+        stagger_offset = (f3 - (f4 + f5 - f2) * f3 / (f1 - f2));
+        j += 1;
+      }
+    }
+    requestLayout();
+    mSetup = true;
+    mTransitionPosition = 0.0F;
+    mTransitionLastPosition = 0.0F;
+  }
+  
+  void animateTo(float paramFloat)
+  {
+    if (mScene == null) {
+      return;
+    }
+    if (mTransitionLastPosition == paramFloat) {
+      return;
+    }
+    mTemporalInterpolator = false;
+    float f = mTransitionLastPosition;
+    mTransitionGoalPosition = paramFloat;
+    mTransitionDuration = (mScene.getDuration() / 1000.0F);
+    setProgress(mTransitionGoalPosition);
+    mInterpolator = mScene.getInterpolator();
+    mTransitionInstantly = false;
+    mAnimationStartTime = System.nanoTime();
+    mInTransition = true;
+    mTransitionPosition = f;
+    mTransitionLastPosition = f;
+    requestLayout();
+    invalidate();
+  }
+  
+  public void dispatchDraw(Canvas paramCanvas)
+  {
+    evaluate(false);
+    super.dispatchDraw(paramCanvas);
+    if (mDebugPath != 0)
+    {
+      if (mScene == null) {
+        return;
+      }
+      if (mDevModeDraw == null) {
+        mDevModeDraw = new DevModeDraw();
+      }
+      mDevModeDraw.draw(paramCanvas, mFrameArrayList, mScene.getDuration(), mDebugPath);
+      return;
+    }
+  }
+  
+  void evaluate(boolean paramBoolean)
+  {
+    if ((mTransitionLastPosition > 0.0F) && (mTransitionLastPosition < 1.0F)) {
+      mCurrentState = -1;
+    }
+    boolean bool = mSetup;
+    int i = 1;
+    if (!bool) {
+      paramBoolean = true;
+    }
+    if ((mKeepAnimating) || ((mInTransition) && ((paramBoolean) || (mTransitionGoalPosition != mTransitionLastPosition))))
+    {
+      if (!mSetup) {
+        setupMotionViews();
+      }
+      float f3 = Math.signum(mTransitionGoalPosition - mTransitionLastPosition);
+      long l = System.nanoTime();
+      if (!(mInterpolator instanceof StopLogic)) {
+        f1 = (float)(l - mTransitionLastTime) * f3 * 1.0E-9F / mTransitionDuration;
+      } else {
+        f1 = 0.0F;
+      }
+      float f2 = mTransitionLastPosition + f1;
+      if (mTransitionInstantly) {
+        f2 = mTransitionGoalPosition;
+      }
+      int j = 0;
+      if (((f3 > 0.0F) && (f2 >= mTransitionGoalPosition)) || ((f3 <= 0.0F) && (f2 <= mTransitionGoalPosition)))
+      {
+        f2 = mTransitionGoalPosition;
+        mInTransition = false;
+      }
+      else
+      {
+        i = 0;
+      }
+      mTransitionLastPosition = f2;
+      mTransitionLastTime = l;
+      if (mListener != null) {
+        mListener.onTransitionChange(this, mScene.getStartId(), mScene.getEndId(), f2);
+      }
+      float f1 = f2;
+      if (mInterpolator != null)
+      {
+        f1 = f2;
+        if (i == 0) {
+          if (mTemporalInterpolator)
+          {
+            f1 = (float)(l - mAnimationStartTime);
+            f1 = mInterpolator.getInterpolation(f1 * 1.0E-9F);
+            mTransitionLastPosition = f1;
+            mTransitionLastTime = l;
+          }
+          else
+          {
+            f1 = mInterpolator.getInterpolation(f2);
+          }
+        }
+      }
+      if ((f3 <= 0.0F) || (f1 < mTransitionGoalPosition))
+      {
+        f2 = f1;
+        if (f3 <= 0.0F)
+        {
+          f2 = f1;
+          if (f1 > mTransitionGoalPosition) {}
+        }
+      }
+      else
+      {
+        f2 = mTransitionGoalPosition;
+        mInTransition = false;
+      }
+      if ((f2 >= 1.0F) || (f2 <= 0.0F)) {
+        mInTransition = false;
+      }
+      int k = getChildCount();
+      mKeepAnimating = false;
+      l = System.nanoTime();
+      i = j;
+      Object localObject;
+      while (i < k)
+      {
+        localObject = getChildAt(i);
+        MotionController localMotionController = (MotionController)mFrameArrayList.get(localObject);
+        if (localMotionController != null)
+        {
+          paramBoolean = mKeepAnimating;
+          mKeepAnimating = (localMotionController.interpolate((View)localObject, f2, l) | paramBoolean);
+        }
+        i += 1;
+      }
+      if (mKeepAnimating) {
+        invalidate();
+      }
+      if (mInTransition) {
+        invalidate();
+      }
+      if ((f2 <= 0.0F) && (mBeginState != -1))
+      {
+        localObject = mScene.getConstraintSet(mBeginState);
+        if (localObject != null) {
+          ((ConstraintSet)localObject).applyTo(this);
+        }
+        if ((mListener != null) && (!mInTransition) && ((mTransitionLastPosition <= 0.0F) || (mTransitionLastPosition >= 1.0F))) {
+          mListener.onTransitionCompleted(this, mBeginState);
+        }
+      }
+      if (f2 >= 1.0D)
+      {
+        mCurrentState = mEndState;
+        mScene.getConstraintSet(mCurrentState).applyTo(this);
+        if ((mListener != null) && (!mInTransition) && ((mTransitionLastPosition <= 0.0F) || (mTransitionLastPosition >= 1.0F))) {
+          mListener.onTransitionCompleted(this, mEndState);
+        }
+      }
+    }
+    mTransitionPosition = mTransitionLastPosition;
+  }
+  
+  void getAnchorDpDt(int paramInt, float paramFloat1, float paramFloat2, float paramFloat3, float[] paramArrayOfFloat)
+  {
+    Object localObject2 = mFrameArrayList;
+    Object localObject1 = getViewById(paramInt);
+    localObject2 = (MotionController)((HashMap)localObject2).get(localObject1);
+    if (localObject2 != null)
+    {
+      ((MotionController)localObject2).getDpDt(paramFloat1, paramFloat2, paramFloat3, paramArrayOfFloat);
+      paramFloat2 = ((View)localObject1).getY();
+      paramFloat3 = lastPos;
+      paramFloat3 = lastY;
+      lastPos = paramFloat1;
+      lastY = paramFloat2;
+      return;
+    }
+    if (localObject1 == null)
+    {
+      paramArrayOfFloat = new StringBuilder();
+      paramArrayOfFloat.append("");
+      paramArrayOfFloat.append(paramInt);
+      paramArrayOfFloat = paramArrayOfFloat.toString();
+    }
+    else
+    {
+      paramArrayOfFloat = ((View)localObject1).getContext().getResources().getResourceName(paramInt);
+    }
+    localObject1 = new StringBuilder();
+    ((StringBuilder)localObject1).append("WARNING could not find view id ");
+    ((StringBuilder)localObject1).append(paramArrayOfFloat);
+    Log.v("MotionLayout", ((StringBuilder)localObject1).toString());
+  }
+  
+  public int getCurrentState()
+  {
+    return mCurrentState;
+  }
+  
+  public DesignTool getDesignTool()
+  {
+    if (mDesignTool == null) {
+      mDesignTool = new DesignTool(this);
+    }
+    return mDesignTool;
+  }
+  
+  public float getProgress()
+  {
+    return mTransitionLastPosition;
+  }
+  
+  public long getTransitionTimeMs()
+  {
+    if (mScene != null) {
+      mTransitionDuration = (mScene.getDuration() / 1000.0F);
+    }
+    return mTransitionDuration * 1000L;
+  }
+  
+  public void loadLayoutDescription(int paramInt)
+  {
+    if (paramInt != 0) {
+      try
+      {
+        mScene = new MotionScene(getContext(), this, paramInt);
+        return;
+      }
+      catch (Exception localException)
+      {
+        throw new IllegalArgumentException("unable to parse MotionScene file", localException);
+      }
+    }
+    mScene = null;
+  }
+  
+  protected void onAttachedToWindow()
+  {
+    super.onAttachedToWindow();
+    if ((mScene != null) && (mCurrentState != -1))
+    {
+      ConstraintSet localConstraintSet = mScene.getConstraintSet(mCurrentState);
+      if (mScene.mCurrentTransition != null) {
+        mScene.addOnClickListeners(this);
+      }
+      mScene.readFallback(this);
+      if (localConstraintSet != null) {
+        localConstraintSet.applyTo(this);
+      }
+    }
+    if ((mScene != null) && (mScene.supportTouch())) {
+      mScene.setupTouch();
+    }
+  }
+  
+  protected void onLayout(boolean paramBoolean, int paramInt1, int paramInt2, int paramInt3, int paramInt4)
+  {
+    int i = paramInt3 - paramInt1;
+    int j = paramInt4 - paramInt2;
+    if ((mLastLayoutWidth != i) || (mLastLayoutHeight != j))
+    {
+      mStartConstraintSetComputed = false;
+      mEndConstraintSetComputed = false;
+      mSetup = false;
+    }
+    mLastLayoutWidth = i;
+    mLastLayoutHeight = j;
+    mLastWidthMeasureSpecOnLayout = mLastWidthMeasureSpec;
+    mLastHeightMeasureSpecOnLayout = mLastHeightMeasureSpec;
+    if ((!mIndirectTransition) && (!mInTransition) && ((mTransitionPosition == 0.0D) || (mTransitionPosition == 1.0D))) {
+      super.onLayout(paramBoolean, paramInt1, paramInt2, paramInt3, paramInt4);
+    }
+    mOldWidth = i;
+    mOldHeight = j;
+  }
+  
+  protected void onMeasure(int paramInt1, int paramInt2)
+  {
+    mLastWidthMeasureSpec = paramInt1;
+    mLastHeightMeasureSpec = paramInt2;
+    super.onMeasure(paramInt1, paramInt2);
+  }
+  
+  public boolean onNestedFling(View paramView, float paramFloat1, float paramFloat2, boolean paramBoolean)
+  {
+    return false;
+  }
+  
+  public boolean onNestedPreFling(View paramView, float paramFloat1, float paramFloat2)
+  {
+    return false;
+  }
+  
+  public void onNestedPreScroll(View paramView, int paramInt1, int paramInt2, int[] paramArrayOfInt, int paramInt3)
+  {
+    if ((mScene != null) && (mScene.getMoveWhenScrollAtTop()) && (mTransitionPosition == 1.0F) && (paramView.canScrollVertically(-1))) {
+      return;
+    }
+    float f1 = mTransitionPosition;
+    long l = System.nanoTime();
+    float f2 = paramInt1;
+    mScrollTargetDX = f2;
+    float f3 = -paramInt2;
+    mScrollTargetDY = f3;
+    double d = l - mScrollTargetTime;
+    Double.isNaN(d);
+    mScrollTargetDT = ((float)(d * 1.0E-9D));
+    mScrollTargetTime = l;
+    mScene.processScrollMove(f2, f3);
+    if (f1 != mTransitionPosition)
+    {
+      paramArrayOfInt[0] = paramInt1;
+      paramArrayOfInt[1] = paramInt2;
+    }
+    evaluate(false);
+  }
+  
+  public void onNestedScroll(View paramView, int paramInt1, int paramInt2, int paramInt3, int paramInt4, int paramInt5) {}
+  
+  public void onNestedScrollAccepted(View paramView1, View paramView2, int paramInt1, int paramInt2) {}
+  
+  public boolean onStartNestedScroll(View paramView1, View paramView2, int paramInt1, int paramInt2)
+  {
+    mScrollTarget = paramView2;
+    return true;
+  }
+  
+  public void onStopNestedScroll(View paramView, int paramInt)
+  {
+    mScene.processScrollUp(mScrollTargetDX / mScrollTargetDT, mScrollTargetDY / mScrollTargetDT);
+  }
+  
+  public boolean onTouchEvent(MotionEvent paramMotionEvent)
+  {
+    if ((mScene != null) && (mScene.supportTouch()))
+    {
+      mScene.processTouchEvent(paramMotionEvent, this);
+      return true;
+    }
+    return super.onTouchEvent(paramMotionEvent);
+  }
+  
+  public void onViewAdded(View paramView)
+  {
+    super.onViewAdded(paramView);
+    if ((paramView instanceof MotionHelper))
+    {
+      paramView = (MotionHelper)paramView;
+      if (paramView.isUsedOnShow())
+      {
+        if (mOnShowHelpers == null) {
+          mOnShowHelpers = new ArrayList();
+        }
+        mOnShowHelpers.add(paramView);
+      }
+      if (paramView.isUseOnHide())
+      {
+        if (mOnHideHelpers == null) {
+          mOnHideHelpers = new ArrayList();
+        }
+        mOnHideHelpers.add(paramView);
+      }
+    }
+  }
+  
+  public void onViewRemoved(View paramView)
+  {
+    super.onViewRemoved(paramView);
+    if (mOnShowHelpers != null) {
+      mOnShowHelpers.remove(paramView);
+    }
+    if (mOnHideHelpers != null) {
+      mOnHideHelpers.remove(paramView);
+    }
+  }
+  
+  protected void parseLayoutDescription(int paramInt)
+  {
+    mConstraintLayoutSpec = null;
+  }
+  
+  public void setOnHide(float paramFloat)
+  {
+    if (mOnHideHelpers != null)
+    {
+      int j = mOnHideHelpers.size();
+      int i = 0;
+      while (i < j)
+      {
+        ((MotionHelper)mOnHideHelpers.get(i)).setProgress(paramFloat);
+        i += 1;
+      }
+    }
+  }
+  
+  public void setOnShow(float paramFloat)
+  {
+    if (mOnShowHelpers != null)
+    {
+      int j = mOnShowHelpers.size();
+      int i = 0;
+      while (i < j)
+      {
+        ((MotionHelper)mOnShowHelpers.get(i)).setProgress(paramFloat);
+        i += 1;
+      }
+    }
+  }
+  
+  public void setProgress(float paramFloat)
+  {
+    if (paramFloat <= 0.0F) {
+      mCurrentState = mBeginState;
+    } else if (paramFloat >= 1.0F) {
+      mCurrentState = mEndState;
+    } else {
+      mCurrentState = -1;
+    }
+    if (mScene == null) {
+      return;
+    }
+    mScene.getStartId();
+    mScene.getEndId();
+    mTransitionGoalPosition = paramFloat;
+    mTransitionPosition = paramFloat;
+    mAnimationStartTime = -1L;
+    mInterpolator = null;
+    mTransitionInstantly = true;
+    mTransitionLastTime = System.nanoTime();
+    setupMotionViews();
+    mInTransition = true;
+    invalidate();
+  }
+  
+  public void setShowPaths(boolean paramBoolean)
+  {
+    int i;
+    if (paramBoolean) {
+      i = 2;
+    } else {
+      i = 0;
+    }
+    mDebugPath = i;
+    invalidate();
+  }
+  
+  public void setState(int paramInt1, int paramInt2, int paramInt3)
+  {
+    mCurrentState = paramInt1;
+    mBeginState = -1;
+    mEndState = -1;
+    if (mConstraintLayoutSpec != null)
+    {
+      mConstraintLayoutSpec.updateConstraints(paramInt1, paramInt2, paramInt3);
+      return;
+    }
+    if (mScene != null) {
+      mScene.getConstraintSet(paramInt1).applyTo(this);
+    }
+  }
+  
+  public void setTransition(int paramInt1, int paramInt2)
+  {
+    if (mScene != null)
+    {
+      mBeginState = paramInt1;
+      mEndState = paramInt2;
+      mScene.setTransition(paramInt1, paramInt2);
+      mSetup = false;
+      mTransitionLastPosition = 0.0F;
+      transitionToStart();
+    }
+  }
+  
+  public void setTransitionListener(TransitionListener paramTransitionListener)
+  {
+    mListener = paramTransitionListener;
+  }
+  
+  void touchAnimateTo(float paramFloat1, float paramFloat2)
+  {
+    if (mScene == null) {
+      return;
+    }
+    if (mTransitionLastPosition == paramFloat1) {
+      return;
+    }
+    mTemporalInterpolator = true;
+    mAnimationStartTime = System.nanoTime();
+    mTransitionDuration = (mScene.getDuration() / 1000.0F);
+    mStopLogic.config(mTransitionLastPosition, paramFloat1, paramFloat2, mTransitionDuration, mScene.getMaxAcceleration(), mScene.getMaxVelocity());
+    mTransitionGoalPosition = paramFloat1;
+    setProgress(0.0F);
+    mInterpolator = mStopLogic;
+    mTransitionInstantly = false;
+    mAnimationStartTime = System.nanoTime();
+    requestLayout();
+    invalidate();
+  }
+  
+  public void transitionToEnd()
+  {
+    animateTo(1.0F);
+  }
+  
+  public void transitionToStart()
+  {
+    animateTo(0.0F);
+  }
+  
+  public void transitionToState(int paramInt)
+  {
+    if (paramInt == mBeginState)
+    {
+      transitionToStart();
+      return;
+    }
+    if (paramInt == mEndState)
+    {
+      transitionToEnd();
+      return;
+    }
+    transitionToState(paramInt, -1, -1);
+  }
+  
+  public void transitionToState(int paramInt1, int paramInt2, int paramInt3)
+  {
+    mEndState = paramInt1;
+    paramInt2 = mCurrentState;
+    paramInt3 = 0;
+    if (paramInt2 != -1)
+    {
+      setTransition(mCurrentState, paramInt1);
+      animateTo(1.0F);
+      mSetup = false;
+      mTransitionLastPosition = 0.0F;
+      transitionToEnd();
+      return;
+    }
+    mTemporalInterpolator = false;
+    mTransitionGoalPosition = 1.0F;
+    mTransitionPosition = 0.0F;
+    mTransitionLastPosition = 0.0F;
+    mTransitionLastTime = System.nanoTime();
+    mAnimationStartTime = System.nanoTime();
+    mTransitionInstantly = false;
+    mInterpolator = null;
+    mTransitionDuration = (mScene.getDuration() / 1000.0F);
+    mScene.getStartId();
+    int i = getChildCount();
+    mFrameArrayList.clear();
+    paramInt2 = 0;
+    Object localObject;
+    while (paramInt2 < i)
+    {
+      localObject = getChildAt(paramInt2);
+      MotionController localMotionController = new MotionController((View)localObject);
+      mFrameArrayList.put(localObject, localMotionController);
+      paramInt2 += 1;
+    }
+    mInTransition = true;
+    computeCurrentPositions();
+    if (!mEndConstraintSetComputed)
+    {
+      localObject = mScene.getConstraintSet(paramInt1);
+      ((ConstraintSet)localObject).applyTo(this);
+      computeEndPositions((ConstraintSet)localObject);
+    }
+    paramInt2 = getWidth();
+    int j = getHeight();
+    paramInt1 = 0;
+    while (paramInt1 < i)
+    {
+      localObject = (MotionController)mFrameArrayList.get(getChildAt(paramInt1));
+      mScene.getKeyFrames((MotionController)localObject);
+      ((MotionController)localObject).setup(paramInt2, j, mTransitionDuration);
+      paramInt1 += 1;
+    }
+    float f3 = mScene.getStaggered();
+    if (f3 != 0.0F)
+    {
+      paramInt1 = 0;
+      float f2 = Float.MAX_VALUE;
+      float f1 = -3.4028235E38F;
+      float f4;
+      for (;;)
+      {
+        paramInt2 = paramInt3;
+        if (paramInt1 >= i) {
+          break;
+        }
+        localObject = (MotionController)mFrameArrayList.get(getChildAt(paramInt1));
+        f4 = ((MotionController)localObject).getFinalX();
+        f4 = ((MotionController)localObject).getFinalY() + f4;
+        f2 = Math.min(f2, f4);
+        f1 = Math.max(f1, f4);
+        paramInt1 += 1;
+      }
+      while (paramInt2 < i)
+      {
+        localObject = (MotionController)mFrameArrayList.get(getChildAt(paramInt2));
+        f4 = ((MotionController)localObject).getFinalX();
+        float f5 = ((MotionController)localObject).getFinalY();
+        stagger_scale = (1.0F / (1.0F - f3));
+        stagger_offset = (f3 - (f4 + f5 - f2) * f3 / (f1 - f2));
+        paramInt2 += 1;
+      }
+    }
+    requestLayout();
+    mSetup = true;
+    mTransitionPosition = 0.0F;
+    mTransitionLastPosition = 0.0F;
+    mInTransition = true;
+    invalidate();
+  }
+  
+  private class DevModeDraw
+  {
+    private static final int DEBUG_PATH_TICKS_PER_MS = 16;
+    final int DIAMOND_SIZE = 10;
+    final int GRAPH_COLOR = -13391360;
+    final int KEYFRAME_COLOR = -2067046;
+    final int RED_COLOR = 43571;
+    final int SHADOW_COLOR = 1996488704;
+    Rect mBounds = new Rect();
+    DashPathEffect mDashPathEffect;
+    Paint mFillPaint;
+    int mKeyFrameCount;
+    float[] mKeyFramePoints;
+    Paint mPaint = new Paint();
+    Paint mPaintGraph;
+    Paint mPaintKeyframes;
+    Path mPath;
+    int[] mPathMode;
+    float[] mPoints;
+    boolean mPresentationMode = false;
+    private float[] mRectangle;
+    int mShadowTranslate = 1;
+    Paint mTextPaint;
+    
+    public DevModeDraw()
+    {
+      mPaint.setAntiAlias(true);
+      mPaint.setColor(43571);
+      mPaint.setStrokeWidth(2.0F);
+      mPaint.setStyle(Paint.Style.STROKE);
+      mPaintKeyframes = new Paint();
+      mPaintKeyframes.setAntiAlias(true);
+      mPaintKeyframes.setColor(-2067046);
+      mPaintKeyframes.setStrokeWidth(2.0F);
+      mPaintKeyframes.setStyle(Paint.Style.STROKE);
+      mPaintGraph = new Paint();
+      mPaintGraph.setAntiAlias(true);
+      mPaintGraph.setColor(-13391360);
+      mPaintGraph.setStrokeWidth(2.0F);
+      mPaintGraph.setStyle(Paint.Style.STROKE);
+      mTextPaint = new Paint();
+      mTextPaint.setAntiAlias(true);
+      mTextPaint.setColor(-13391360);
+      mTextPaint.setTextSize(getContext().getResources().getDisplayMetrics().density * 12.0F);
+      mRectangle = new float[8];
+      mFillPaint = new Paint();
+      mFillPaint.setAntiAlias(true);
+      mDashPathEffect = new DashPathEffect(new float[] { 4.0F, 8.0F }, 0.0F);
+      mPaintGraph.setPathEffect(mDashPathEffect);
+      mKeyFramePoints = new float[100];
+      mPathMode = new int[50];
+      if (mPresentationMode)
+      {
+        mPaint.setStrokeWidth(8.0F);
+        mFillPaint.setStrokeWidth(8.0F);
+        mPaintKeyframes.setStrokeWidth(8.0F);
+        mShadowTranslate = 4;
+      }
+    }
+    
+    private void drawBasicPath(Canvas paramCanvas)
+    {
+      paramCanvas.drawLines(mPoints, mPaint);
+    }
+    
+    private void drawPathAsConfigured(Canvas paramCanvas)
+    {
+      int i = 0;
+      int k = 0;
+      int j = 0;
+      while (i < mKeyFrameCount)
+      {
+        if (mPathMode[i] == 1) {
+          k = 1;
+        }
+        if (mPathMode[i] == 2) {
+          j = 1;
+        }
+        i += 1;
+      }
+      if (k != 0) {
+        drawPathRelative(paramCanvas);
+      }
+      if (j != 0) {
+        drawPathCartesian(paramCanvas);
+      }
+    }
+    
+    private void drawPathCartesian(Canvas paramCanvas)
+    {
+      float f1 = mPoints[0];
+      float f2 = mPoints[1];
+      float f3 = mPoints[(mPoints.length - 2)];
+      float f4 = mPoints[(mPoints.length - 1)];
+      paramCanvas.drawLine(Math.min(f1, f3), Math.max(f2, f4), Math.max(f1, f3), Math.max(f2, f4), mPaintGraph);
+      paramCanvas.drawLine(Math.min(f1, f3), Math.min(f2, f4), Math.min(f1, f3), Math.max(f2, f4), mPaintGraph);
+    }
+    
+    private void drawPathCartesianTicks(Canvas paramCanvas, float paramFloat1, float paramFloat2)
+    {
+      float f1 = mPoints[0];
+      float f2 = mPoints[1];
+      float f3 = mPoints[(mPoints.length - 2)];
+      float f4 = mPoints[(mPoints.length - 1)];
+      float f5 = Math.min(f1, f3);
+      float f6 = Math.max(f2, f4);
+      float f7 = paramFloat1 - Math.min(f1, f3);
+      float f8 = Math.max(f2, f4) - paramFloat2;
+      Object localObject = new StringBuilder();
+      ((StringBuilder)localObject).append("");
+      double d = f7 * 100.0F / Math.abs(f3 - f1);
+      Double.isNaN(d);
+      ((StringBuilder)localObject).append((int)(d + 0.5D) / 100.0F);
+      localObject = ((StringBuilder)localObject).toString();
+      getTextBounds((String)localObject, mTextPaint);
+      paramCanvas.drawText((String)localObject, f7 / 2.0F - mBounds.width() / 2 + f5, paramFloat2 - 20.0F, mTextPaint);
+      paramCanvas.drawLine(paramFloat1, paramFloat2, Math.min(f1, f3), paramFloat2, mPaintGraph);
+      localObject = new StringBuilder();
+      ((StringBuilder)localObject).append("");
+      d = f8 * 100.0F / Math.abs(f4 - f2);
+      Double.isNaN(d);
+      ((StringBuilder)localObject).append((int)(d + 0.5D) / 100.0F);
+      localObject = ((StringBuilder)localObject).toString();
+      getTextBounds((String)localObject, mTextPaint);
+      paramCanvas.drawText((String)localObject, paramFloat1 + 5.0F, f6 - (f8 / 2.0F - mBounds.height() / 2), mTextPaint);
+      paramCanvas.drawLine(paramFloat1, paramFloat2, paramFloat1, Math.max(f2, f4), mPaintGraph);
+    }
+    
+    private void drawPathRelative(Canvas paramCanvas)
+    {
+      paramCanvas.drawLine(mPoints[0], mPoints[1], mPoints[(mPoints.length - 2)], mPoints[(mPoints.length - 1)], mPaintGraph);
+    }
+    
+    private void drawPathRelativeTicks(Canvas paramCanvas, float paramFloat1, float paramFloat2)
+    {
+      float f3 = mPoints[0];
+      float f2 = mPoints[1];
+      float f4 = mPoints[(mPoints.length - 2)];
+      float f5 = mPoints[(mPoints.length - 1)];
+      float f1 = (float)Math.hypot(f3 - f4, f2 - f5);
+      f4 -= f3;
+      f5 -= f2;
+      float f6 = ((paramFloat1 - f3) * f4 + (paramFloat2 - f2) * f5) / (f1 * f1);
+      f3 = f4 * f6 + f3;
+      f2 += f6 * f5;
+      Path localPath = new Path();
+      localPath.moveTo(paramFloat1, paramFloat2);
+      localPath.lineTo(f3, f2);
+      f4 = (float)Math.hypot(f3 - paramFloat1, f2 - paramFloat2);
+      Object localObject = new StringBuilder();
+      ((StringBuilder)localObject).append("");
+      ((StringBuilder)localObject).append((int)(f4 * 100.0F / f1) / 100.0F);
+      localObject = ((StringBuilder)localObject).toString();
+      getTextBounds((String)localObject, mTextPaint);
+      paramCanvas.drawTextOnPath((String)localObject, localPath, f4 / 2.0F - mBounds.width() / 2, -20.0F, mTextPaint);
+      paramCanvas.drawLine(paramFloat1, paramFloat2, f3, f2, mPaintGraph);
+    }
+    
+    private void drawPathScreenTicks(Canvas paramCanvas, float paramFloat1, float paramFloat2, int paramInt1, int paramInt2)
+    {
+      Object localObject = new StringBuilder();
+      ((StringBuilder)localObject).append("");
+      double d = (paramFloat1 - paramInt1 / 2) * 100.0F / (getWidth() - paramInt1);
+      Double.isNaN(d);
+      ((StringBuilder)localObject).append((int)(d + 0.5D) / 100.0F);
+      localObject = ((StringBuilder)localObject).toString();
+      getTextBounds((String)localObject, mTextPaint);
+      paramCanvas.drawText((String)localObject, paramFloat1 / 2.0F - mBounds.width() / 2 + 0.0F, paramFloat2 - 20.0F, mTextPaint);
+      paramCanvas.drawLine(paramFloat1, paramFloat2, Math.min(0.0F, 1.0F), paramFloat2, mPaintGraph);
+      localObject = new StringBuilder();
+      ((StringBuilder)localObject).append("");
+      d = (paramFloat2 - paramInt2 / 2) * 100.0F / (getHeight() - paramInt2);
+      Double.isNaN(d);
+      ((StringBuilder)localObject).append((int)(d + 0.5D) / 100.0F);
+      localObject = ((StringBuilder)localObject).toString();
+      getTextBounds((String)localObject, mTextPaint);
+      paramCanvas.drawText((String)localObject, paramFloat1 + 5.0F, 0.0F - (paramFloat2 / 2.0F - mBounds.height() / 2), mTextPaint);
+      paramCanvas.drawLine(paramFloat1, paramFloat2, paramFloat1, Math.max(0.0F, 1.0F), mPaintGraph);
+    }
+    
+    private void drawRectangle(Canvas paramCanvas, MotionController paramMotionController)
+    {
+      mPath.reset();
+      int i = 0;
+      while (i <= 50)
+      {
+        paramMotionController.buildRect(i / 50, mRectangle, 0);
+        mPath.moveTo(mRectangle[0], mRectangle[1]);
+        mPath.lineTo(mRectangle[2], mRectangle[3]);
+        mPath.lineTo(mRectangle[4], mRectangle[5]);
+        mPath.lineTo(mRectangle[6], mRectangle[7]);
+        mPath.close();
+        i += 1;
+      }
+      mPaint.setColor(1140850688);
+      paramCanvas.translate(2.0F, 2.0F);
+      paramCanvas.drawPath(mPath, mPaint);
+      paramCanvas.translate(-2.0F, -2.0F);
+      mPaint.setColor(-65536);
+      paramCanvas.drawPath(mPath, mPaint);
+    }
+    
+    private void drawTicks(Canvas paramCanvas, int paramInt1, int paramInt2, MotionController paramMotionController)
+    {
+      int i;
+      int j;
+      if (mView != null)
+      {
+        i = mView.getWidth();
+        j = mView.getHeight();
+      }
+      else
+      {
+        i = 0;
+        j = 0;
+      }
+      int k = 1;
+      while (k < paramInt2 - 1)
+      {
+        if ((paramInt1 != 4) || (mPathMode[(k - 1)] != 0))
+        {
+          float[] arrayOfFloat = mKeyFramePoints;
+          int m = k * 2;
+          float f1 = arrayOfFloat[m];
+          float f2 = mKeyFramePoints[(m + 1)];
+          mPath.reset();
+          mPath.moveTo(f1, f2 + 10.0F);
+          mPath.lineTo(f1 + 10.0F, f2);
+          mPath.lineTo(f1, f2 - 10.0F);
+          mPath.lineTo(f1 - 10.0F, f2);
+          mPath.close();
+          m = k - 1;
+          paramMotionController.getKeyFrame(m);
+          if (paramInt1 == 4)
+          {
+            if (mPathMode[m] == 1) {
+              drawPathRelativeTicks(paramCanvas, f1 - 0.0F, f2 - 0.0F);
+            }
+            for (;;)
+            {
+              break;
+              if (mPathMode[m] == 2) {
+                drawPathCartesianTicks(paramCanvas, f1 - 0.0F, f2 - 0.0F);
+              } else if (mPathMode[m] == 3) {
+                drawPathScreenTicks(paramCanvas, f1 - 0.0F, f2 - 0.0F, i, j);
+              }
+            }
+            paramCanvas.drawPath(mPath, mFillPaint);
+          }
+          if (paramInt1 == 2) {
+            drawPathRelativeTicks(paramCanvas, f1 - 0.0F, f2 - 0.0F);
+          }
+          if (paramInt1 == 3) {
+            drawPathCartesianTicks(paramCanvas, f1 - 0.0F, f2 - 0.0F);
+          }
+          if (paramInt1 == 6) {
+            drawPathScreenTicks(paramCanvas, f1 - 0.0F, f2 - 0.0F, i, j);
+          }
+          paramCanvas.drawPath(mPath, mFillPaint);
+        }
+        k += 1;
+      }
+      paramCanvas.drawCircle(mPoints[0], mPoints[1], 8.0F, mPaintKeyframes);
+      paramCanvas.drawCircle(mPoints[(mPoints.length - 2)], mPoints[(mPoints.length - 1)], 8.0F, mPaintKeyframes);
+    }
+    
+    private void drawTranslation(Canvas paramCanvas, float paramFloat1, float paramFloat2, float paramFloat3, float paramFloat4)
+    {
+      paramCanvas.drawRect(paramFloat1, paramFloat2, paramFloat3, paramFloat4, mPaintGraph);
+      paramCanvas.drawLine(paramFloat1, paramFloat2, paramFloat3, paramFloat4, mPaintGraph);
+    }
+    
+    public void draw(Canvas paramCanvas, HashMap<View, MotionController> paramHashMap, int paramInt1, int paramInt2)
+    {
+      if (paramHashMap != null)
+      {
+        if (paramHashMap.size() == 0) {
+          return;
+        }
+        paramCanvas.save();
+        paramHashMap = paramHashMap.values().iterator();
+        while (paramHashMap.hasNext())
+        {
+          MotionController localMotionController = (MotionController)paramHashMap.next();
+          int j = localMotionController.getDrawPath();
+          int i = j;
+          if (paramInt2 > 0)
+          {
+            i = j;
+            if (j == 0) {
+              i = 1;
+            }
+          }
+          if (i != 0)
+          {
+            mKeyFrameCount = localMotionController.buildKeyFrames(mKeyFramePoints, mPathMode);
+            if (i >= 1)
+            {
+              j = paramInt1 / 16;
+              if ((mPoints == null) || (mPoints.length != j * 2))
+              {
+                mPoints = new float[j * 2];
+                mPath = new Path();
+              }
+              paramCanvas.translate(mShadowTranslate, mShadowTranslate);
+              mPaint.setColor(1996488704);
+              mFillPaint.setColor(1996488704);
+              mPaintKeyframes.setColor(1996488704);
+              mPaintGraph.setColor(1996488704);
+              localMotionController.buildPath(mPoints, j);
+              drawAll(paramCanvas, i, mKeyFrameCount, localMotionController);
+              mPaint.setColor(43571);
+              mPaintKeyframes.setColor(-2067046);
+              mFillPaint.setColor(-2067046);
+              mPaintGraph.setColor(-13391360);
+              paramCanvas.translate(-mShadowTranslate, -mShadowTranslate);
+              drawAll(paramCanvas, i, mKeyFrameCount, localMotionController);
+              if (i == 5) {
+                drawRectangle(paramCanvas, localMotionController);
+              }
+            }
+          }
+        }
+        paramCanvas.restore();
+        return;
+      }
+    }
+    
+    public void drawAll(Canvas paramCanvas, int paramInt1, int paramInt2, MotionController paramMotionController)
+    {
+      if (paramInt1 == 4) {
+        drawPathAsConfigured(paramCanvas);
+      }
+      if (paramInt1 == 2) {
+        drawPathRelative(paramCanvas);
+      }
+      if (paramInt1 == 3) {
+        drawPathCartesian(paramCanvas);
+      }
+      drawBasicPath(paramCanvas);
+      drawTicks(paramCanvas, paramInt1, paramInt2, paramMotionController);
+    }
+    
+    void getTextBounds(String paramString, Paint paramPaint)
+    {
+      paramPaint.getTextBounds(paramString, 0, paramString.length(), mBounds);
+    }
+  }
+  
+  public static abstract interface TransitionListener
+  {
+    public abstract void onTransitionChange(MotionLayout paramMotionLayout, int paramInt1, int paramInt2, float paramFloat);
+    
+    public abstract void onTransitionCompleted(MotionLayout paramMotionLayout, int paramInt);
+  }
+}

@@ -1,0 +1,71 @@
+package com.google.firebase.auth;
+
+import android.support.annotation.Nullable;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.firebase.annotations.PublicApi;
+import java.util.Map;
+
+@PublicApi
+public class GetTokenResult
+{
+  private String zza;
+  private Map<String, Object> zzb;
+  
+  @KeepForSdk
+  public GetTokenResult(String paramString, Map<String, Object> paramMap)
+  {
+    zza = paramString;
+    zzb = paramMap;
+  }
+  
+  private long zza(String paramString)
+  {
+    paramString = (Integer)zzb.get(paramString);
+    if (paramString == null) {
+      return 0L;
+    }
+    return paramString.longValue();
+  }
+  
+  @PublicApi
+  public long getAuthTimestamp()
+  {
+    return zza("auth_time");
+  }
+  
+  @PublicApi
+  public Map<String, Object> getClaims()
+  {
+    return zzb;
+  }
+  
+  @PublicApi
+  public long getExpirationTimestamp()
+  {
+    return zza("exp");
+  }
+  
+  @PublicApi
+  public long getIssuedAtTimestamp()
+  {
+    return zza("iat");
+  }
+  
+  @Nullable
+  @PublicApi
+  public String getSignInProvider()
+  {
+    Map localMap = (Map)zzb.get("firebase");
+    if (localMap != null) {
+      return (String)localMap.get("sign_in_provider");
+    }
+    return null;
+  }
+  
+  @Nullable
+  @PublicApi
+  public String getToken()
+  {
+    return zza;
+  }
+}

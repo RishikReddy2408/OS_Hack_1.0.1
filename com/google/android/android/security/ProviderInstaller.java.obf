@@ -1,0 +1,181 @@
+package com.google.android.gms.security;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import com.google.android.gms.common.GoogleApiAvailabilityLight;
+import com.google.android.gms.common.internal.Preconditions;
+import java.lang.reflect.Method;
+
+public class ProviderInstaller
+{
+  public static final String PROVIDER_NAME = "GmsCore_OpenSSL";
+  private static final Object lock = new Object();
+  private static final GoogleApiAvailabilityLight zziu = ;
+  private static Method zziv = null;
+  
+  public ProviderInstaller() {}
+  
+  /* Error */
+  public static void installIfNeeded(Context paramContext)
+    throws com.google.android.gms.common.GooglePlayServicesRepairableException, com.google.android.gms.common.GooglePlayServicesNotAvailableException
+  {
+    // Byte code:
+    //   0: aload_0
+    //   1: ldc 47
+    //   3: invokestatic 53	com/google/android/gms/common/internal/Preconditions:checkNotNull	(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+    //   6: pop
+    //   7: getstatic 27	com/google/android/gms/security/ProviderInstaller:zziu	Lcom/google/android/gms/common/GoogleApiAvailabilityLight;
+    //   10: aload_0
+    //   11: ldc 54
+    //   13: invokevirtual 58	com/google/android/gms/common/GoogleApiAvailabilityLight:verifyGooglePlayServicesIsAvailable	(Landroid/content/Context;I)V
+    //   16: aload_0
+    //   17: invokestatic 64	com/google/android/gms/common/GooglePlayServicesUtilLight:getRemoteContext	(Landroid/content/Context;)Landroid/content/Context;
+    //   20: astore_0
+    //   21: aload_0
+    //   22: ifnonnull +31 -> 53
+    //   25: ldc 66
+    //   27: bipush 6
+    //   29: invokestatic 72	android/util/Log:isLoggable	(Ljava/lang/String;I)Z
+    //   32: ifeq +11 -> 43
+    //   35: ldc 66
+    //   37: ldc 74
+    //   39: invokestatic 78	android/util/Log:e	(Ljava/lang/String;Ljava/lang/String;)I
+    //   42: pop
+    //   43: new 41	com/google/android/gms/common/GooglePlayServicesNotAvailableException
+    //   46: dup
+    //   47: bipush 8
+    //   49: invokespecial 81	com/google/android/gms/common/GooglePlayServicesNotAvailableException:<init>	(I)V
+    //   52: athrow
+    //   53: getstatic 32	com/google/android/gms/security/ProviderInstaller:lock	Ljava/lang/Object;
+    //   56: astore_1
+    //   57: aload_1
+    //   58: monitorenter
+    //   59: getstatic 34	com/google/android/gms/security/ProviderInstaller:zziv	Ljava/lang/reflect/Method;
+    //   62: ifnonnull +29 -> 91
+    //   65: aload_0
+    //   66: invokevirtual 87	android/content/Context:getClassLoader	()Ljava/lang/ClassLoader;
+    //   69: ldc 89
+    //   71: invokevirtual 95	java/lang/ClassLoader:loadClass	(Ljava/lang/String;)Ljava/lang/Class;
+    //   74: ldc 97
+    //   76: iconst_1
+    //   77: anewarray 99	java/lang/Class
+    //   80: dup
+    //   81: iconst_0
+    //   82: ldc 83
+    //   84: aastore
+    //   85: invokevirtual 103	java/lang/Class:getMethod	(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+    //   88: putstatic 34	com/google/android/gms/security/ProviderInstaller:zziv	Ljava/lang/reflect/Method;
+    //   91: getstatic 34	com/google/android/gms/security/ProviderInstaller:zziv	Ljava/lang/reflect/Method;
+    //   94: aconst_null
+    //   95: iconst_1
+    //   96: anewarray 4	java/lang/Object
+    //   99: dup
+    //   100: iconst_0
+    //   101: aload_0
+    //   102: aastore
+    //   103: invokevirtual 109	java/lang/reflect/Method:invoke	(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;
+    //   106: pop
+    //   107: aload_1
+    //   108: monitorexit
+    //   109: return
+    //   110: astore_0
+    //   111: aload_0
+    //   112: invokevirtual 113	java/lang/Exception:getCause	()Ljava/lang/Throwable;
+    //   115: astore_2
+    //   116: ldc 66
+    //   118: bipush 6
+    //   120: invokestatic 72	android/util/Log:isLoggable	(Ljava/lang/String;I)Z
+    //   123: ifeq +59 -> 182
+    //   126: aload_2
+    //   127: ifnonnull +11 -> 138
+    //   130: aload_0
+    //   131: invokevirtual 117	java/lang/Exception:getMessage	()Ljava/lang/String;
+    //   134: astore_0
+    //   135: goto +8 -> 143
+    //   138: aload_2
+    //   139: invokevirtual 120	java/lang/Throwable:getMessage	()Ljava/lang/String;
+    //   142: astore_0
+    //   143: aload_0
+    //   144: invokestatic 126	java/lang/String:valueOf	(Ljava/lang/Object;)Ljava/lang/String;
+    //   147: astore_0
+    //   148: aload_0
+    //   149: invokevirtual 130	java/lang/String:length	()I
+    //   152: ifeq +13 -> 165
+    //   155: ldc -124
+    //   157: aload_0
+    //   158: invokevirtual 136	java/lang/String:concat	(Ljava/lang/String;)Ljava/lang/String;
+    //   161: astore_0
+    //   162: goto +13 -> 175
+    //   165: new 122	java/lang/String
+    //   168: dup
+    //   169: ldc -124
+    //   171: invokespecial 139	java/lang/String:<init>	(Ljava/lang/String;)V
+    //   174: astore_0
+    //   175: ldc 66
+    //   177: aload_0
+    //   178: invokestatic 78	android/util/Log:e	(Ljava/lang/String;Ljava/lang/String;)I
+    //   181: pop
+    //   182: new 41	com/google/android/gms/common/GooglePlayServicesNotAvailableException
+    //   185: dup
+    //   186: bipush 8
+    //   188: invokespecial 81	com/google/android/gms/common/GooglePlayServicesNotAvailableException:<init>	(I)V
+    //   191: athrow
+    //   192: aload_1
+    //   193: monitorexit
+    //   194: aload_0
+    //   195: athrow
+    //   196: ldc 66
+    //   198: bipush 6
+    //   200: invokestatic 72	android/util/Log:isLoggable	(Ljava/lang/String;I)Z
+    //   203: ifeq +11 -> 214
+    //   206: ldc 66
+    //   208: ldc -115
+    //   210: invokestatic 78	android/util/Log:e	(Ljava/lang/String;Ljava/lang/String;)I
+    //   213: pop
+    //   214: new 41	com/google/android/gms/common/GooglePlayServicesNotAvailableException
+    //   217: dup
+    //   218: bipush 8
+    //   220: invokespecial 81	com/google/android/gms/common/GooglePlayServicesNotAvailableException:<init>	(I)V
+    //   223: athrow
+    //   224: astore_0
+    //   225: goto -29 -> 196
+    //   228: astore_0
+    //   229: goto -37 -> 192
+    // Local variable table:
+    //   start	length	slot	name	signature
+    //   0	232	0	paramContext	Context
+    //   115	24	2	localThrowable	Throwable
+    // Exception table:
+    //   from	to	target	type
+    //   59	91	110	java/lang/Exception
+    //   91	107	110	java/lang/Exception
+    //   16	21	224	android/content/res/Resources$NotFoundException
+    //   59	91	228	finally
+    //   91	107	228	finally
+    //   107	109	228	finally
+    //   111	126	228	finally
+    //   130	135	228	finally
+    //   138	143	228	finally
+    //   143	162	228	finally
+    //   165	175	228	finally
+    //   175	182	228	finally
+    //   182	192	228	finally
+    //   192	194	228	finally
+  }
+  
+  public static void installIfNeededAsync(Context paramContext, ProviderInstallListener paramProviderInstallListener)
+  {
+    Preconditions.checkNotNull(paramContext, "Context must not be null");
+    Preconditions.checkNotNull(paramProviderInstallListener, "Listener must not be null");
+    Preconditions.checkMainThread("Must be called on the UI thread");
+    new zza(paramContext, paramProviderInstallListener).execute(new Void[0]);
+  }
+  
+  public static abstract interface ProviderInstallListener
+  {
+    public abstract void onProviderInstallFailed(int paramInt, Intent paramIntent);
+    
+    public abstract void onProviderInstalled();
+  }
+}

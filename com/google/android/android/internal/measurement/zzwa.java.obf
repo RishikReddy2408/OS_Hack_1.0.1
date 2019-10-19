@@ -1,0 +1,104 @@
+package com.google.android.gms.internal.measurement;
+
+public class zzwa
+{
+  private static final zzuz zzbtt = ;
+  private zzud zzcad;
+  private volatile zzwt zzcae;
+  private volatile zzud zzcaf;
+  
+  public zzwa() {}
+  
+  private final zzwt zzh(zzwt paramZzwt)
+  {
+    if (zzcae == null) {}
+    for (;;)
+    {
+      try
+      {
+        if (zzcae == null) {}
+      }
+      finally {}
+      try
+      {
+        zzcae = paramZzwt;
+        zzcaf = zzud.zzbtz;
+      }
+      catch (zzvt localZzvt) {}
+    }
+    zzcae = paramZzwt;
+    zzcaf = zzud.zzbtz;
+    return zzcae;
+  }
+  
+  public boolean equals(Object paramObject)
+  {
+    if (this == paramObject) {
+      return true;
+    }
+    if (!(paramObject instanceof zzwa)) {
+      return false;
+    }
+    paramObject = (zzwa)paramObject;
+    zzwt localZzwt1 = zzcae;
+    zzwt localZzwt2 = zzcae;
+    if ((localZzwt1 == null) && (localZzwt2 == null)) {
+      return zztt().equals(paramObject.zztt());
+    }
+    if ((localZzwt1 != null) && (localZzwt2 != null)) {
+      return localZzwt1.equals(localZzwt2);
+    }
+    if (localZzwt1 != null) {
+      return localZzwt1.equals(paramObject.zzh(localZzwt1.zzwf()));
+    }
+    return zzh(localZzwt2.zzwf()).equals(localZzwt2);
+  }
+  
+  public int hashCode()
+  {
+    return 1;
+  }
+  
+  public final zzwt zzi(zzwt paramZzwt)
+  {
+    zzwt localZzwt = zzcae;
+    zzcad = null;
+    zzcaf = null;
+    zzcae = paramZzwt;
+    return localZzwt;
+  }
+  
+  public final zzud zztt()
+  {
+    if (zzcaf != null) {
+      return zzcaf;
+    }
+    try
+    {
+      if (zzcaf != null)
+      {
+        localZzud = zzcaf;
+        return localZzud;
+      }
+      if (zzcae == null) {
+        zzcaf = zzud.zzbtz;
+      } else {
+        zzcaf = zzcae.zztt();
+      }
+      zzud localZzud = zzcaf;
+      return localZzud;
+    }
+    finally {}
+  }
+  
+  public final int zzvu()
+  {
+    if (zzcaf != null) {
+      return zzcaf.size();
+    }
+    if (zzcae != null) {
+      return zzcae.zzvu();
+    }
+    return 0;
+  }
+}

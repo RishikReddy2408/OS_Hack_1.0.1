@@ -1,0 +1,1230 @@
+package com.google.android.gms.measurement.internal;
+
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ServiceInfo;
+import android.content.pm.Signature;
+import android.net.Uri;
+import android.os.Build.VERSION;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
+import android.text.TextUtils;
+import com.google.android.gms.common.GoogleApiAvailabilityLight;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.util.Clock;
+import com.google.android.gms.common.util.CollectionUtils;
+import com.google.android.gms.common.util.VisibleForTesting;
+import com.google.android.gms.common.wrappers.PackageManagerWrapper;
+import com.google.android.gms.common.wrappers.Wrappers;
+import com.google.android.gms.measurement.AppMeasurement.Event;
+import com.google.android.gms.measurement.AppMeasurement.UserProperty;
+import java.io.ByteArrayInputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
+import javax.security.auth.x500.X500Principal;
+
+public final class zzfk
+  extends zzcp
+{
+  private static final String[] zzaui = { "firebase_", "google_", "ga_" };
+  private int zzaed;
+  private SecureRandom zzauj;
+  private final AtomicLong zzauk = new AtomicLong(0L);
+  private Integer zzaul = null;
+  
+  zzfk(zzbt paramZzbt)
+  {
+    super(paramZzbt);
+  }
+  
+  static MessageDigest getMessageDigest()
+  {
+    int i = 0;
+    while (i < 2)
+    {
+      try
+      {
+        MessageDigest localMessageDigest = MessageDigest.getInstance("MD5");
+        if (localMessageDigest != null) {
+          return localMessageDigest;
+        }
+      }
+      catch (NoSuchAlgorithmException localNoSuchAlgorithmException)
+      {
+        for (;;) {}
+      }
+      i += 1;
+    }
+    return null;
+  }
+  
+  private static Object zza(int paramInt, Object paramObject, boolean paramBoolean)
+  {
+    if (paramObject == null) {
+      return null;
+    }
+    if (!(paramObject instanceof Long))
+    {
+      if ((paramObject instanceof Double)) {
+        return paramObject;
+      }
+      if ((paramObject instanceof Integer)) {
+        return Long.valueOf(((Integer)paramObject).intValue());
+      }
+      if ((paramObject instanceof Byte)) {
+        return Long.valueOf(((Byte)paramObject).byteValue());
+      }
+      if ((paramObject instanceof Short)) {
+        return Long.valueOf(((Short)paramObject).shortValue());
+      }
+      if ((paramObject instanceof Boolean))
+      {
+        long l;
+        if (((Boolean)paramObject).booleanValue()) {
+          l = 1L;
+        } else {
+          l = 0L;
+        }
+        return Long.valueOf(l);
+      }
+      if ((paramObject instanceof Float)) {
+        return Double.valueOf(((Float)paramObject).doubleValue());
+      }
+      if ((!(paramObject instanceof String)) && (!(paramObject instanceof Character)) && (!(paramObject instanceof CharSequence))) {
+        return null;
+      }
+      return zza(String.valueOf(paramObject), paramInt, paramBoolean);
+    }
+    return paramObject;
+  }
+  
+  public static String zza(String paramString, int paramInt, boolean paramBoolean)
+  {
+    if (paramString.codePointCount(0, paramString.length()) > paramInt)
+    {
+      if (paramBoolean) {
+        return String.valueOf(paramString.substring(0, paramString.offsetByCodePoints(0, paramInt))).concat("...");
+      }
+      return null;
+    }
+    return paramString;
+  }
+  
+  @Nullable
+  public static String zza(String paramString, String[] paramArrayOfString1, String[] paramArrayOfString2)
+  {
+    Preconditions.checkNotNull(paramArrayOfString1);
+    Preconditions.checkNotNull(paramArrayOfString2);
+    int j = Math.min(paramArrayOfString1.length, paramArrayOfString2.length);
+    int i = 0;
+    while (i < j)
+    {
+      if (zzu(paramString, paramArrayOfString1[i])) {
+        return paramArrayOfString2[i];
+      }
+      i += 1;
+    }
+    return null;
+  }
+  
+  private static void zza(Bundle paramBundle, Object paramObject)
+  {
+    Preconditions.checkNotNull(paramBundle);
+    if ((paramObject != null) && (((paramObject instanceof String)) || ((paramObject instanceof CharSequence)))) {
+      paramBundle.putLong("_el", String.valueOf(paramObject).length());
+    }
+  }
+  
+  static boolean zza(Context paramContext, boolean paramBoolean)
+  {
+    Preconditions.checkNotNull(paramContext);
+    if (Build.VERSION.SDK_INT >= 24) {
+      return zzc(paramContext, "com.google.android.gms.measurement.AppMeasurementJobService");
+    }
+    return zzc(paramContext, "com.google.android.gms.measurement.AppMeasurementService");
+  }
+  
+  private static boolean zza(Bundle paramBundle, int paramInt)
+  {
+    if (paramBundle.getLong("_err") == 0L)
+    {
+      paramBundle.putLong("_err", paramInt);
+      return true;
+    }
+    return false;
+  }
+  
+  private final boolean zza(String paramString1, String paramString2, int paramInt, Object paramObject, boolean paramBoolean)
+  {
+    if (paramObject == null) {
+      return true;
+    }
+    if ((!(paramObject instanceof Long)) && (!(paramObject instanceof Float)) && (!(paramObject instanceof Integer)) && (!(paramObject instanceof Byte)) && (!(paramObject instanceof Short)) && (!(paramObject instanceof Boolean)))
+    {
+      if ((paramObject instanceof Double)) {
+        return true;
+      }
+      if ((!(paramObject instanceof String)) && (!(paramObject instanceof Character)) && (!(paramObject instanceof CharSequence)))
+      {
+        if (((paramObject instanceof Bundle)) && (paramBoolean)) {
+          return true;
+        }
+        int i;
+        if (((paramObject instanceof Parcelable[])) && (paramBoolean))
+        {
+          paramString1 = (Parcelable[])paramObject;
+          i = paramString1.length;
+          paramInt = 0;
+          while (paramInt < i)
+          {
+            paramObject = paramString1[paramInt];
+            if (!(paramObject instanceof Bundle))
+            {
+              zzgo().zzjg().zze("All Parcelable[] elements must be of type Bundle. Value type, name", paramObject.getClass(), paramString2);
+              return false;
+            }
+            paramInt += 1;
+          }
+          return true;
+        }
+        if (((paramObject instanceof ArrayList)) && (paramBoolean))
+        {
+          paramString1 = (ArrayList)paramObject;
+          i = paramString1.size();
+          paramInt = 0;
+          while (paramInt < i)
+          {
+            paramObject = paramString1.get(paramInt);
+            paramInt += 1;
+            if (!(paramObject instanceof Bundle))
+            {
+              zzgo().zzjg().zze("All ArrayList elements must be of type Bundle. Value type, name", paramObject.getClass(), paramString2);
+              return false;
+            }
+          }
+          return true;
+        }
+        return false;
+      }
+      paramObject = String.valueOf(paramObject);
+      if (paramObject.codePointCount(0, paramObject.length()) > paramInt)
+      {
+        zzgo().zzjg().zzd("Value is too long; discarded. Value kind, name, value length", paramString1, paramString2, Integer.valueOf(paramObject.length()));
+        return false;
+      }
+      return true;
+    }
+    return true;
+  }
+  
+  static boolean zza(String paramString1, String paramString2, String paramString3, String paramString4)
+  {
+    boolean bool1 = TextUtils.isEmpty(paramString1);
+    boolean bool2 = TextUtils.isEmpty(paramString2);
+    if ((!bool1) && (!bool2)) {
+      return !paramString1.equals(paramString2);
+    }
+    if ((bool1) && (bool2))
+    {
+      if ((!TextUtils.isEmpty(paramString3)) && (!TextUtils.isEmpty(paramString4))) {
+        return !paramString3.equals(paramString4);
+      }
+      return !TextUtils.isEmpty(paramString4);
+    }
+    if ((!bool1) && (bool2))
+    {
+      if (TextUtils.isEmpty(paramString4)) {
+        return false;
+      }
+      if (!TextUtils.isEmpty(paramString3)) {
+        return !paramString3.equals(paramString4);
+      }
+      return true;
+    }
+    if (!TextUtils.isEmpty(paramString3)) {
+      return !paramString3.equals(paramString4);
+    }
+    return true;
+  }
+  
+  static byte[] zza(Parcelable paramParcelable)
+  {
+    if (paramParcelable == null) {
+      return null;
+    }
+    Parcel localParcel = Parcel.obtain();
+    try
+    {
+      paramParcelable.writeToParcel(localParcel, 0);
+      paramParcelable = localParcel.marshall();
+      return paramParcelable;
+    }
+    finally
+    {
+      localParcel.recycle();
+    }
+  }
+  
+  public static long zzc(long paramLong1, long paramLong2)
+  {
+    return (paramLong1 + paramLong2 * 60000L) / 86400000L;
+  }
+  
+  @VisibleForTesting
+  static long zzc(byte[] paramArrayOfByte)
+  {
+    Preconditions.checkNotNull(paramArrayOfByte);
+    int i = paramArrayOfByte.length;
+    int j = 0;
+    boolean bool;
+    if (i > 0) {
+      bool = true;
+    } else {
+      bool = false;
+    }
+    Preconditions.checkState(bool);
+    long l = 0L;
+    i = paramArrayOfByte.length - 1;
+    while ((i >= 0) && (i >= paramArrayOfByte.length - 8))
+    {
+      l += ((paramArrayOfByte[i] & 0xFF) << j);
+      j += 8;
+      i -= 1;
+    }
+    return l;
+  }
+  
+  private static boolean zzc(Context paramContext, String paramString)
+  {
+    try
+    {
+      PackageManager localPackageManager = paramContext.getPackageManager();
+      if (localPackageManager == null) {
+        return false;
+      }
+      paramContext = localPackageManager.getServiceInfo(new ComponentName(paramContext, paramString), 0);
+      if (paramContext != null)
+      {
+        boolean bool = enabled;
+        if (bool) {
+          return true;
+        }
+      }
+      return false;
+    }
+    catch (PackageManager.NameNotFoundException paramContext) {}
+    return false;
+  }
+  
+  static boolean zzcq(String paramString)
+  {
+    Preconditions.checkNotEmpty(paramString);
+    return (paramString.charAt(0) != '_') || (paramString.equals("_ep"));
+  }
+  
+  @VisibleForTesting
+  private static boolean zzct(String paramString)
+  {
+    Preconditions.checkNotNull(paramString);
+    return paramString.matches("^(1:\\d+:android:[a-f0-9]+|ca-app-pub-.*)$");
+  }
+  
+  private static int zzcu(String paramString)
+  {
+    if ("_ldl".equals(paramString)) {
+      return 2048;
+    }
+    if ("_id".equals(paramString)) {
+      return 256;
+    }
+    return 36;
+  }
+  
+  static boolean zzcv(String paramString)
+  {
+    return (!TextUtils.isEmpty(paramString)) && (paramString.startsWith("_"));
+  }
+  
+  static boolean zzd(Intent paramIntent)
+  {
+    paramIntent = paramIntent.getStringExtra("android.intent.extra.REFERRER_NAME");
+    return ("android-app://com.google.android.googlequicksearchbox/https/www.google.com".equals(paramIntent)) || ("https://www.google.com".equals(paramIntent)) || ("android-app://com.google.appcrawler".equals(paramIntent));
+  }
+  
+  @VisibleForTesting
+  private final boolean zze(Context paramContext, String paramString)
+  {
+    X500Principal localX500Principal = new X500Principal("CN=Android Debug,O=Android,C=US");
+    try
+    {
+      paramContext = Wrappers.packageManager(paramContext).getPackageInfo(paramString, 64);
+      if ((paramContext != null) && (signatures != null) && (signatures.length > 0))
+      {
+        paramContext = signatures[0];
+        boolean bool = ((X509Certificate)CertificateFactory.getInstance("X.509").generateCertificate(new ByteArrayInputStream(paramContext.toByteArray()))).getSubjectX500Principal().equals(localX500Principal);
+        return bool;
+      }
+    }
+    catch (PackageManager.NameNotFoundException paramContext)
+    {
+      zzgo().zzjd().zzg("Package name not found", paramContext);
+    }
+    catch (CertificateException paramContext)
+    {
+      zzgo().zzjd().zzg("Error obtaining certificate", paramContext);
+    }
+    return true;
+  }
+  
+  static Bundle[] zze(Object paramObject)
+  {
+    if ((paramObject instanceof Bundle)) {
+      return new Bundle[] { (Bundle)paramObject };
+    }
+    if ((paramObject instanceof Parcelable[]))
+    {
+      paramObject = (Parcelable[])paramObject;
+      return (Bundle[])Arrays.copyOf(paramObject, paramObject.length, [Landroid.os.Bundle.class);
+    }
+    if ((paramObject instanceof ArrayList))
+    {
+      paramObject = (ArrayList)paramObject;
+      return (Bundle[])paramObject.toArray(new Bundle[paramObject.size()]);
+    }
+    return null;
+  }
+  
+  public static Bundle zzf(Bundle paramBundle)
+  {
+    if (paramBundle == null) {
+      return new Bundle();
+    }
+    paramBundle = new Bundle(paramBundle);
+    Iterator localIterator = paramBundle.keySet().iterator();
+    while (localIterator.hasNext())
+    {
+      Object localObject1 = (String)localIterator.next();
+      Object localObject2 = paramBundle.get((String)localObject1);
+      if ((localObject2 instanceof Bundle))
+      {
+        paramBundle.putBundle((String)localObject1, new Bundle((Bundle)localObject2));
+      }
+      else
+      {
+        boolean bool = localObject2 instanceof Parcelable[];
+        int j = 0;
+        int i = 0;
+        if (bool)
+        {
+          localObject1 = (Parcelable[])localObject2;
+          while (i < localObject1.length)
+          {
+            if ((localObject1[i] instanceof Bundle)) {
+              localObject1[i] = new Bundle((Bundle)localObject1[i]);
+            }
+            i += 1;
+          }
+        }
+        else if ((localObject2 instanceof List))
+        {
+          localObject1 = (List)localObject2;
+          i = j;
+          while (i < ((List)localObject1).size())
+          {
+            localObject2 = ((List)localObject1).get(i);
+            if ((localObject2 instanceof Bundle)) {
+              ((List)localObject1).set(i, new Bundle((Bundle)localObject2));
+            }
+            i += 1;
+          }
+        }
+      }
+    }
+    return paramBundle;
+  }
+  
+  /* Error */
+  public static Object zzf(Object paramObject)
+  {
+    // Byte code:
+    //   0: aload_0
+    //   1: ifnonnull +5 -> 6
+    //   4: aconst_null
+    //   5: areturn
+    //   6: new 460	java/io/ByteArrayOutputStream
+    //   9: dup
+    //   10: invokespecial 461	java/io/ByteArrayOutputStream:<init>	()V
+    //   13: astore_1
+    //   14: new 463	java/io/ObjectOutputStream
+    //   17: dup
+    //   18: aload_1
+    //   19: invokespecial 466	java/io/ObjectOutputStream:<init>	(Ljava/io/OutputStream;)V
+    //   22: astore_2
+    //   23: aload_2
+    //   24: aload_0
+    //   25: invokevirtual 470	java/io/ObjectOutputStream:writeObject	(Ljava/lang/Object;)V
+    //   28: aload_2
+    //   29: invokevirtual 473	java/io/ObjectOutputStream:flush	()V
+    //   32: new 475	java/io/ObjectInputStream
+    //   35: dup
+    //   36: new 370	java/io/ByteArrayInputStream
+    //   39: dup
+    //   40: aload_1
+    //   41: invokevirtual 476	java/io/ByteArrayOutputStream:toByteArray	()[B
+    //   44: invokespecial 378	java/io/ByteArrayInputStream:<init>	([B)V
+    //   47: invokespecial 479	java/io/ObjectInputStream:<init>	(Ljava/io/InputStream;)V
+    //   50: astore_1
+    //   51: aload_1
+    //   52: invokevirtual 482	java/io/ObjectInputStream:readObject	()Ljava/lang/Object;
+    //   55: astore_0
+    //   56: aload_2
+    //   57: invokevirtual 485	java/io/ObjectOutputStream:close	()V
+    //   60: aload_1
+    //   61: invokevirtual 486	java/io/ObjectInputStream:close	()V
+    //   64: aload_0
+    //   65: areturn
+    //   66: aload_2
+    //   67: ifnull +7 -> 74
+    //   70: aload_2
+    //   71: invokevirtual 485	java/io/ObjectOutputStream:close	()V
+    //   74: aload_1
+    //   75: ifnull +7 -> 82
+    //   78: aload_1
+    //   79: invokevirtual 486	java/io/ObjectInputStream:close	()V
+    //   82: aload_0
+    //   83: athrow
+    //   84: astore_0
+    //   85: aconst_null
+    //   86: areturn
+    //   87: astore_0
+    //   88: goto -22 -> 66
+    //   91: astore_0
+    //   92: aconst_null
+    //   93: astore_1
+    //   94: goto -28 -> 66
+    //   97: astore_0
+    //   98: aconst_null
+    //   99: astore_1
+    //   100: aload_1
+    //   101: astore_2
+    //   102: goto -36 -> 66
+    // Local variable table:
+    //   start	length	slot	name	signature
+    //   0	105	0	paramObject	Object
+    //   13	88	1	localObject1	Object
+    //   22	80	2	localObject2	Object
+    // Exception table:
+    //   from	to	target	type
+    //   56	64	84	java/io/IOException
+    //   56	64	84	java/lang/ClassNotFoundException
+    //   70	74	84	java/io/IOException
+    //   70	74	84	java/lang/ClassNotFoundException
+    //   78	82	84	java/io/IOException
+    //   78	82	84	java/lang/ClassNotFoundException
+    //   82	84	84	java/io/IOException
+    //   82	84	84	java/lang/ClassNotFoundException
+    //   51	56	87	finally
+    //   23	51	91	finally
+    //   6	23	97	finally
+  }
+  
+  private final boolean zzs(String paramString1, String paramString2)
+  {
+    if (paramString2 == null)
+    {
+      zzgo().zzjd().zzg("Name is required and can't be null. Type", paramString1);
+      return false;
+    }
+    if (paramString2.length() == 0)
+    {
+      zzgo().zzjd().zzg("Name is required and can't be empty. Type", paramString1);
+      return false;
+    }
+    int i = paramString2.codePointAt(0);
+    if ((!Character.isLetter(i)) && (i != 95))
+    {
+      zzgo().zzjd().zze("Name must start with a letter or _ (underscore). Type, name", paramString1, paramString2);
+      return false;
+    }
+    int j = paramString2.length();
+    i = Character.charCount(i);
+    while (i < j)
+    {
+      int k = paramString2.codePointAt(i);
+      if ((k != 95) && (!Character.isLetterOrDigit(k)))
+      {
+        zzgo().zzjd().zze("Name must consist of letters, digits or _ (underscores). Type, name", paramString1, paramString2);
+        return false;
+      }
+      i += Character.charCount(k);
+    }
+    return true;
+  }
+  
+  static boolean zzu(String paramString1, String paramString2)
+  {
+    if ((paramString1 == null) && (paramString2 == null)) {
+      return true;
+    }
+    if (paramString1 == null) {
+      return false;
+    }
+    return paramString1.equals(paramString2);
+  }
+  
+  final Bundle zza(@NonNull Uri paramUri)
+  {
+    if (paramUri == null) {
+      return null;
+    }
+    try
+    {
+      Object localObject2;
+      Object localObject3;
+      Object localObject4;
+      if (paramUri.isHierarchical())
+      {
+        localObject1 = paramUri.getQueryParameter("utm_campaign");
+        localObject2 = paramUri.getQueryParameter("utm_source");
+        localObject3 = paramUri.getQueryParameter("utm_medium");
+        localObject4 = paramUri.getQueryParameter("gclid");
+      }
+      else
+      {
+        localBundle = null;
+        localObject1 = localBundle;
+        localObject2 = localObject1;
+        localObject4 = localObject2;
+        localObject3 = localObject2;
+        localObject2 = localObject1;
+        localObject1 = localBundle;
+      }
+      if ((TextUtils.isEmpty((CharSequence)localObject1)) && (TextUtils.isEmpty((CharSequence)localObject2)) && (TextUtils.isEmpty((CharSequence)localObject3)) && (TextUtils.isEmpty((CharSequence)localObject4))) {
+        return null;
+      }
+      Bundle localBundle = new Bundle();
+      if (!TextUtils.isEmpty((CharSequence)localObject1)) {
+        localBundle.putString("campaign", (String)localObject1);
+      }
+      if (!TextUtils.isEmpty((CharSequence)localObject2)) {
+        localBundle.putString("source", (String)localObject2);
+      }
+      if (!TextUtils.isEmpty((CharSequence)localObject3)) {
+        localBundle.putString("medium", (String)localObject3);
+      }
+      if (!TextUtils.isEmpty((CharSequence)localObject4)) {
+        localBundle.putString("gclid", (String)localObject4);
+      }
+      Object localObject1 = paramUri.getQueryParameter("utm_term");
+      if (!TextUtils.isEmpty((CharSequence)localObject1)) {
+        localBundle.putString("term", (String)localObject1);
+      }
+      localObject1 = paramUri.getQueryParameter("utm_content");
+      if (!TextUtils.isEmpty((CharSequence)localObject1)) {
+        localBundle.putString("content", (String)localObject1);
+      }
+      localObject1 = paramUri.getQueryParameter("aclid");
+      if (!TextUtils.isEmpty((CharSequence)localObject1)) {
+        localBundle.putString("aclid", (String)localObject1);
+      }
+      localObject1 = paramUri.getQueryParameter("cp1");
+      if (!TextUtils.isEmpty((CharSequence)localObject1)) {
+        localBundle.putString("cp1", (String)localObject1);
+      }
+      paramUri = paramUri.getQueryParameter("anid");
+      if (!TextUtils.isEmpty(paramUri)) {
+        localBundle.putString("anid", paramUri);
+      }
+      return localBundle;
+    }
+    catch (UnsupportedOperationException paramUri)
+    {
+      zzgo().zzjg().zzg("Install referrer url isn't a hierarchical URI", paramUri);
+    }
+    return null;
+  }
+  
+  final Bundle zza(String paramString1, String paramString2, Bundle paramBundle, @Nullable List<String> paramList, boolean paramBoolean1, boolean paramBoolean2)
+  {
+    Object localObject1;
+    if (paramBundle != null)
+    {
+      Bundle localBundle = new Bundle(paramBundle);
+      Iterator localIterator = paramBundle.keySet().iterator();
+      int j = 0;
+      localObject1 = localBundle;
+      if (localIterator.hasNext())
+      {
+        localObject1 = (String)localIterator.next();
+        int i;
+        if ((paramList != null) && (paramList.contains(localObject1)))
+        {
+          i = 0;
+        }
+        else
+        {
+          int k = 14;
+          if (paramBoolean1)
+          {
+            if (!zzr("event param", (String)localObject1)) {}
+            do
+            {
+              i = 3;
+              break;
+              if (!zza("event param", null, (String)localObject1))
+              {
+                i = 14;
+                break;
+              }
+            } while (!zza("event param", 40, (String)localObject1));
+          }
+          i = 0;
+          if (i == 0)
+          {
+            if (!zzs("event param", (String)localObject1)) {}
+            for (;;)
+            {
+              i = 3;
+              break label207;
+              if (!zza("event param", null, (String)localObject1))
+              {
+                i = k;
+                break label207;
+              }
+              if (zza("event param", 40, (String)localObject1)) {
+                break;
+              }
+            }
+          }
+        }
+        label207:
+        Object localObject2;
+        if (i != 0)
+        {
+          if (zza(localBundle, i))
+          {
+            localBundle.putString("_ev", zza((String)localObject1, 40, true));
+            if (i == 3) {
+              zza(localBundle, localObject1);
+            }
+          }
+          localBundle.remove((String)localObject1);
+          i = j;
+        }
+        else
+        {
+          localObject2 = paramBundle.get((String)localObject1);
+          zzaf();
+          if (paramBoolean2)
+          {
+            if ((localObject2 instanceof Parcelable[]))
+            {
+              i = ((Parcelable[])localObject2).length;
+            }
+            else
+            {
+              if (!(localObject2 instanceof ArrayList)) {
+                break label356;
+              }
+              i = ((ArrayList)localObject2).size();
+            }
+            if (i > 1000)
+            {
+              zzgo().zzjg().zzd("Parameter array is too long; discarded. Value kind, name, array length", "param", localObject1, Integer.valueOf(i));
+              i = 0;
+            }
+            else
+            {
+              label356:
+              i = 1;
+            }
+            if (i == 0)
+            {
+              i = 17;
+              break label449;
+            }
+          }
+          boolean bool;
+          if (((zzgq().zzay(paramString1)) && (zzcv(paramString2))) || (zzcv((String)localObject1))) {
+            bool = zza("param", (String)localObject1, 256, localObject2, paramBoolean2);
+          } else {
+            bool = zza("param", (String)localObject1, 100, localObject2, paramBoolean2);
+          }
+          if (bool) {
+            i = 0;
+          } else {
+            i = 4;
+          }
+          label449:
+          if ((i == 0) || ("_ev".equals(localObject1))) {
+            break label520;
+          }
+          if (zza(localBundle, i))
+          {
+            localBundle.putString("_ev", zza((String)localObject1, 40, true));
+            zza(localBundle, paramBundle.get((String)localObject1));
+          }
+          localBundle.remove((String)localObject1);
+          i = j;
+        }
+        for (;;)
+        {
+          j = i;
+          break;
+          label520:
+          i = j;
+          if (zzcq((String)localObject1))
+          {
+            j += 1;
+            i = j;
+            if (j > 25)
+            {
+              localObject2 = new StringBuilder(48);
+              ((StringBuilder)localObject2).append("Event can't contain more than 25 params");
+              localObject2 = ((StringBuilder)localObject2).toString();
+              zzgo().zzjd().zze((String)localObject2, zzgl().zzbs(paramString2), zzgl().zzd(paramBundle));
+              zza(localBundle, 5);
+              localBundle.remove((String)localObject1);
+              i = j;
+            }
+          }
+        }
+      }
+    }
+    else
+    {
+      localObject1 = null;
+    }
+    return localObject1;
+  }
+  
+  final zzad zza(String paramString1, String paramString2, Bundle paramBundle, String paramString3, long paramLong, boolean paramBoolean1, boolean paramBoolean2)
+  {
+    if (TextUtils.isEmpty(paramString2)) {
+      return null;
+    }
+    if (zzcr(paramString2) == 0)
+    {
+      if (paramBundle != null) {}
+      for (paramBundle = new Bundle(paramBundle);; paramBundle = new Bundle()) {
+        break;
+      }
+      paramBundle.putString("_o", paramString3);
+      return new zzad(paramString2, new zzaa(zze(zza(paramString1, paramString2, paramBundle, CollectionUtils.listOf("_o"), false, false))), paramString3, paramLong);
+    }
+    zzgo().zzjd().zzg("Invalid conditional property event name", zzgl().zzbu(paramString2));
+    throw new IllegalArgumentException();
+  }
+  
+  public final void zza(int paramInt1, String paramString1, String paramString2, int paramInt2)
+  {
+    zza(null, paramInt1, paramString1, paramString2, paramInt2);
+  }
+  
+  final void zza(Bundle paramBundle, String paramString, Object paramObject)
+  {
+    if (paramBundle == null) {
+      return;
+    }
+    if ((paramObject instanceof Long))
+    {
+      paramBundle.putLong(paramString, ((Long)paramObject).longValue());
+      return;
+    }
+    if ((paramObject instanceof String))
+    {
+      paramBundle.putString(paramString, String.valueOf(paramObject));
+      return;
+    }
+    if ((paramObject instanceof Double))
+    {
+      paramBundle.putDouble(paramString, ((Double)paramObject).doubleValue());
+      return;
+    }
+    if (paramString != null)
+    {
+      if (paramObject != null) {
+        paramBundle = paramObject.getClass().getSimpleName();
+      } else {
+        paramBundle = null;
+      }
+      zzgo().zzji().zze("Not putting event parameter. Invalid value type. name, type", zzgl().zzbt(paramString), paramBundle);
+    }
+  }
+  
+  final void zza(String paramString1, int paramInt1, String paramString2, String paramString3, int paramInt2)
+  {
+    paramString1 = new Bundle();
+    zza(paramString1, paramInt1);
+    if (!TextUtils.isEmpty(paramString2)) {
+      paramString1.putString(paramString2, paramString3);
+    }
+    if ((paramInt1 == 6) || (paramInt1 == 7) || (paramInt1 == 2)) {
+      paramString1.putLong("_el", paramInt2);
+    }
+    zzadj.zzgr();
+    zzadj.zzge().logEvent("auto", "_err", paramString1);
+  }
+  
+  final boolean zza(String paramString1, int paramInt, String paramString2)
+  {
+    if (paramString2 == null)
+    {
+      zzgo().zzjd().zzg("Name is required and can't be null. Type", paramString1);
+      return false;
+    }
+    if (paramString2.codePointCount(0, paramString2.length()) > paramInt)
+    {
+      zzgo().zzjd().zzd("Name is too long. Type, maximum supported length, name", paramString1, Integer.valueOf(paramInt), paramString2);
+      return false;
+    }
+    return true;
+  }
+  
+  final boolean zza(String paramString1, String[] paramArrayOfString, String paramString2)
+  {
+    if (paramString2 == null)
+    {
+      zzgo().zzjd().zzg("Name is required and can't be null. Type", paramString1);
+      return false;
+    }
+    Preconditions.checkNotNull(paramString2);
+    String[] arrayOfString = zzaui;
+    int j = arrayOfString.length;
+    int i = 0;
+    while (i < j)
+    {
+      if (paramString2.startsWith(arrayOfString[i]))
+      {
+        i = 1;
+        break label75;
+      }
+      i += 1;
+    }
+    i = 0;
+    label75:
+    if (i != 0)
+    {
+      zzgo().zzjd().zze("Name starts with reserved prefix. Type, name", paramString1, paramString2);
+      return false;
+    }
+    if (paramArrayOfString != null)
+    {
+      Preconditions.checkNotNull(paramArrayOfString);
+      j = paramArrayOfString.length;
+      i = 0;
+      while (i < j)
+      {
+        if (zzu(paramString2, paramArrayOfString[i]))
+        {
+          i = 1;
+          break label149;
+        }
+        i += 1;
+      }
+      i = 0;
+      label149:
+      if (i != 0)
+      {
+        zzgo().zzjd().zze("Name is reserved. Type, name", paramString1, paramString2);
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  final int zzcr(String paramString)
+  {
+    if (!zzs("event", paramString)) {
+      return 2;
+    }
+    if (!zza("event", AppMeasurement.Event.zzadk, paramString)) {
+      return 13;
+    }
+    if (!zza("event", 40, paramString)) {
+      return 2;
+    }
+    return 0;
+  }
+  
+  final int zzcs(String paramString)
+  {
+    if (!zzs("user property", paramString)) {
+      return 6;
+    }
+    if (!zza("user property", AppMeasurement.UserProperty.zzado, paramString)) {
+      return 15;
+    }
+    if (!zza("user property", 24, paramString)) {
+      return 6;
+    }
+    return 0;
+  }
+  
+  final boolean zzcw(String paramString)
+  {
+    if (TextUtils.isEmpty(paramString)) {
+      return false;
+    }
+    String str = zzgq().zzhy();
+    zzgr();
+    return str.equals(paramString);
+  }
+  
+  @WorkerThread
+  final long zzd(Context paramContext, String paramString)
+  {
+    zzaf();
+    Preconditions.checkNotNull(paramContext);
+    Preconditions.checkNotEmpty(paramString);
+    PackageManager localPackageManager = paramContext.getPackageManager();
+    MessageDigest localMessageDigest = getMessageDigest();
+    if (localMessageDigest == null)
+    {
+      zzgo().zzjd().zzbx("Could not get MD5 instance");
+      return -1L;
+    }
+    if (localPackageManager != null) {
+      try
+      {
+        if (!zze(paramContext, paramString))
+        {
+          paramContext = Wrappers.packageManager(paramContext).getPackageInfo(getContext().getPackageName(), 64);
+          if ((signatures != null) && (signatures.length > 0)) {
+            return zzc(localMessageDigest.digest(signatures[0].toByteArray()));
+          }
+          zzgo().zzjg().zzbx("Could not get signatures");
+          return -1L;
+        }
+      }
+      catch (PackageManager.NameNotFoundException paramContext)
+      {
+        zzgo().zzjd().zzg("Package name not found", paramContext);
+      }
+    }
+    return 0L;
+  }
+  
+  final Bundle zze(Bundle paramBundle)
+  {
+    Bundle localBundle = new Bundle();
+    if (paramBundle != null)
+    {
+      Iterator localIterator = paramBundle.keySet().iterator();
+      while (localIterator.hasNext())
+      {
+        String str = (String)localIterator.next();
+        Object localObject = zzh(str, paramBundle.get(str));
+        if (localObject == null) {
+          zzgo().zzjg().zzg("Param value can't be null", zzgl().zzbt(str));
+        } else {
+          zza(localBundle, str, localObject);
+        }
+      }
+    }
+    return localBundle;
+  }
+  
+  protected final boolean zzgt()
+  {
+    return true;
+  }
+  
+  @WorkerThread
+  protected final void zzgu()
+  {
+    zzaf();
+    SecureRandom localSecureRandom = new SecureRandom();
+    long l2 = localSecureRandom.nextLong();
+    long l1 = l2;
+    if (l2 == 0L)
+    {
+      l2 = localSecureRandom.nextLong();
+      l1 = l2;
+      if (l2 == 0L)
+      {
+        zzgo().zzjg().zzbx("Utils falling back to Random for random id");
+        l1 = l2;
+      }
+    }
+    zzauk.set(l1);
+  }
+  
+  final Object zzh(String paramString, Object paramObject)
+  {
+    boolean bool = "_ev".equals(paramString);
+    int i = 256;
+    if (bool) {
+      return zza(256, paramObject, true);
+    }
+    if (!zzcv(paramString)) {
+      i = 100;
+    }
+    return zza(i, paramObject, false);
+  }
+  
+  final int zzi(String paramString, Object paramObject)
+  {
+    boolean bool;
+    if ("_ldl".equals(paramString)) {
+      bool = zza("user property referrer", paramString, zzcu(paramString), paramObject, false);
+    } else {
+      bool = zza("user property", paramString, zzcu(paramString), paramObject, false);
+    }
+    if (bool) {
+      return 0;
+    }
+    return 7;
+  }
+  
+  final Object zzj(String paramString, Object paramObject)
+  {
+    if ("_ldl".equals(paramString)) {
+      return zza(zzcu(paramString), paramObject, true);
+    }
+    return zza(zzcu(paramString), paramObject, false);
+  }
+  
+  public final long zzmc()
+  {
+    long l1;
+    if (zzauk.get() == 0L) {
+      synchronized (zzauk)
+      {
+        l1 = new Random(System.nanoTime() ^ zzbx().currentTimeMillis()).nextLong();
+        int i = zzaed + 1;
+        zzaed = i;
+        long l2 = i;
+        return l1 + l2;
+      }
+    }
+    synchronized (zzauk)
+    {
+      zzauk.compareAndSet(-1L, 1L);
+      l1 = zzauk.getAndIncrement();
+      return l1;
+    }
+  }
+  
+  @WorkerThread
+  final SecureRandom zzmd()
+  {
+    zzaf();
+    if (zzauj == null) {
+      zzauj = new SecureRandom();
+    }
+    return zzauj;
+  }
+  
+  public final int zzme()
+  {
+    if (zzaul == null) {
+      zzaul = Integer.valueOf(GoogleApiAvailabilityLight.getInstance().getApkVersion(getContext()) / 1000);
+    }
+    return zzaul.intValue();
+  }
+  
+  @WorkerThread
+  final String zzmf()
+  {
+    byte[] arrayOfByte = new byte[16];
+    zzmd().nextBytes(arrayOfByte);
+    return String.format(Locale.US, "%032x", new Object[] { new BigInteger(1, arrayOfByte) });
+  }
+  
+  final boolean zzr(String paramString1, String paramString2)
+  {
+    if (paramString2 == null)
+    {
+      zzgo().zzjd().zzg("Name is required and can't be null. Type", paramString1);
+      return false;
+    }
+    if (paramString2.length() == 0)
+    {
+      zzgo().zzjd().zzg("Name is required and can't be empty. Type", paramString1);
+      return false;
+    }
+    int i = paramString2.codePointAt(0);
+    if (!Character.isLetter(i))
+    {
+      zzgo().zzjd().zze("Name must start with a letter. Type, name", paramString1, paramString2);
+      return false;
+    }
+    int j = paramString2.length();
+    i = Character.charCount(i);
+    while (i < j)
+    {
+      int k = paramString2.codePointAt(i);
+      if ((k != 95) && (!Character.isLetterOrDigit(k)))
+      {
+        zzgo().zzjd().zze("Name must consist of letters, digits or _ (underscores). Type, name", paramString1, paramString2);
+        return false;
+      }
+      i += Character.charCount(k);
+    }
+    return true;
+  }
+  
+  final boolean zzt(String paramString1, String paramString2)
+  {
+    if (!TextUtils.isEmpty(paramString1))
+    {
+      if (!zzct(paramString1))
+      {
+        if (zzadj.zzkj()) {
+          zzgo().zzjd().zzg("Invalid google_app_id. Firebase Analytics disabled. See https://goo.gl/NAOOOI. provided id", zzap.zzbv(paramString1));
+        }
+        return false;
+      }
+    }
+    else
+    {
+      if (TextUtils.isEmpty(paramString2)) {
+        break label78;
+      }
+      if (!zzct(paramString2))
+      {
+        zzgo().zzjd().zzg("Invalid gma_app_id. Analytics disabled.", zzap.zzbv(paramString2));
+        return false;
+      }
+    }
+    return true;
+    label78:
+    if (zzadj.zzkj()) {
+      zzgo().zzjd().zzbx("Missing google_app_id. Firebase Analytics disabled. See https://goo.gl/NAOOOI");
+    }
+    return false;
+  }
+  
+  @WorkerThread
+  final boolean zzx(String paramString)
+  {
+    zzaf();
+    if (Wrappers.packageManager(getContext()).checkCallingOrSelfPermission(paramString) == 0) {
+      return true;
+    }
+    zzgo().zzjk().zzg("Permission not granted", paramString);
+    return false;
+  }
+}

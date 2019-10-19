@@ -1,0 +1,120 @@
+package com.google.android.gms.measurement.internal;
+
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.Application.ActivityLifecycleCallbacks;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.MainThread;
+import android.text.TextUtils;
+import com.google.android.gms.common.util.Clock;
+
+@TargetApi(14)
+@MainThread
+final class zzdm
+  implements Application.ActivityLifecycleCallbacks
+{
+  private zzdm(zzcs paramZzcs) {}
+  
+  public final void onActivityCreated(Activity paramActivity, Bundle paramBundle)
+  {
+    for (;;)
+    {
+      try
+      {
+        zzarc.zzgo().zzjl().zzbx("onActivityCreated");
+        localObject = paramActivity.getIntent();
+        if (localObject == null) {
+          break label267;
+        }
+        Uri localUri = ((Intent)localObject).getData();
+        if ((localUri == null) || (!localUri.isHierarchical())) {
+          break label267;
+        }
+        if (paramBundle == null)
+        {
+          Bundle localBundle = zzarc.zzgm().zza(localUri);
+          zzarc.zzgm();
+          if (!zzfk.zzd((Intent)localObject)) {
+            break label280;
+          }
+          localObject = "gs";
+          if (localBundle != null) {
+            zzarc.logEvent((String)localObject, "_cmp", localBundle);
+          }
+        }
+        localObject = localUri.getQueryParameter("referrer");
+        if (TextUtils.isEmpty((CharSequence)localObject)) {
+          return;
+        }
+        if (!((String)localObject).contains("gclid")) {
+          break label292;
+        }
+        if ((((String)localObject).contains("utm_campaign")) || (((String)localObject).contains("utm_source")) || (((String)localObject).contains("utm_medium")) || (((String)localObject).contains("utm_term"))) {
+          break label287;
+        }
+        if (!((String)localObject).contains("utm_content")) {
+          break label292;
+        }
+      }
+      catch (Exception localException)
+      {
+        Object localObject;
+        zzarc.zzgo().zzjd().zzg("Throwable caught in onActivityCreated", localException);
+      }
+      if (i == 0)
+      {
+        zzarc.zzgo().zzjk().zzbx("Activity created with data 'referrer' param without gclid and at least one utm field");
+        return;
+      }
+      zzarc.zzgo().zzjk().zzg("Activity created with referrer", localObject);
+      if (!TextUtils.isEmpty((CharSequence)localObject)) {
+        zzarc.zzb("auto", "_ldl", localObject, true);
+      }
+      label267:
+      zzarc.zzgh().onActivityCreated(paramActivity, paramBundle);
+      return;
+      label280:
+      String str = "auto";
+      continue;
+      label287:
+      int i = 1;
+      continue;
+      label292:
+      i = 0;
+    }
+  }
+  
+  public final void onActivityDestroyed(Activity paramActivity)
+  {
+    zzarc.zzgh().onActivityDestroyed(paramActivity);
+  }
+  
+  @MainThread
+  public final void onActivityPaused(Activity paramActivity)
+  {
+    zzarc.zzgh().onActivityPaused(paramActivity);
+    paramActivity = zzarc.zzgj();
+    long l = paramActivity.zzbx().elapsedRealtime();
+    paramActivity.zzgn().zzc(new zzeu(paramActivity, l));
+  }
+  
+  @MainThread
+  public final void onActivityResumed(Activity paramActivity)
+  {
+    zzarc.zzgh().onActivityResumed(paramActivity);
+    paramActivity = zzarc.zzgj();
+    long l = paramActivity.zzbx().elapsedRealtime();
+    paramActivity.zzgn().zzc(new zzet(paramActivity, l));
+  }
+  
+  public final void onActivitySaveInstanceState(Activity paramActivity, Bundle paramBundle)
+  {
+    zzarc.zzgh().onActivitySaveInstanceState(paramActivity, paramBundle);
+  }
+  
+  public final void onActivityStarted(Activity paramActivity) {}
+  
+  public final void onActivityStopped(Activity paramActivity) {}
+}

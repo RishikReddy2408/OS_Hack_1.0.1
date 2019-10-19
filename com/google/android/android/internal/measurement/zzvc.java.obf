@@ -1,0 +1,36 @@
+package com.google.android.gms.internal.measurement;
+
+import java.lang.reflect.Constructor;
+
+final class zzvc
+{
+  private static final zzva<?> zzbvo = new zzvb();
+  private static final zzva<?> zzbvp = zzvq();
+  
+  private static zzva<?> zzvq()
+  {
+    try
+    {
+      zzva localZzva = (zzva)Class.forName("com.google.protobuf.ExtensionSchemaFull").getDeclaredConstructor(new Class[0]).newInstance(new Object[0]);
+      return localZzva;
+    }
+    catch (Exception localException)
+    {
+      for (;;) {}
+    }
+    return null;
+  }
+  
+  static zzva<?> zzvr()
+  {
+    return zzbvo;
+  }
+  
+  static zzva<?> zzvs()
+  {
+    if (zzbvp != null) {
+      return zzbvp;
+    }
+    throw new IllegalStateException("Protobuf runtime is not correctly loaded.");
+  }
+}

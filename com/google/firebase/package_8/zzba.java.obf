@@ -1,0 +1,444 @@
+package com.google.firebase.iid;
+
+import android.support.annotation.GuardedBy;
+import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
+import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
+import android.util.Log;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import java.io.IOException;
+import java.util.Map;
+
+final class zzba
+{
+  @GuardedBy("itself")
+  private final zzaw zzaj;
+  @GuardedBy("this")
+  private int zzdl = 0;
+  @GuardedBy("this")
+  private final Map<Integer, TaskCompletionSource<Void>> zzdm = new ArrayMap();
+  
+  zzba(zzaw paramZzaw)
+  {
+    zzaj = paramZzaw;
+  }
+  
+  @WorkerThread
+  private static boolean zza(FirebaseInstanceId paramFirebaseInstanceId, String paramString)
+  {
+    Object localObject = paramString.split("!");
+    int i;
+    if (localObject.length == 2)
+    {
+      paramString = localObject[0];
+      localObject = localObject[1];
+      i = -1;
+      try
+      {
+        int j = paramString.hashCode();
+        if (j != 83)
+        {
+          if ((j == 85) && (paramString.equals("U"))) {
+            i = 1;
+          }
+        }
+        else if (paramString.equals("S")) {
+          i = 0;
+        }
+      }
+      catch (IOException paramFirebaseInstanceId)
+      {
+        paramFirebaseInstanceId = String.valueOf(paramFirebaseInstanceId.getMessage());
+        if (paramFirebaseInstanceId.length() == 0) {
+          break label146;
+        }
+        paramFirebaseInstanceId = "Topic sync failed: ".concat(paramFirebaseInstanceId);
+        break label156;
+        paramFirebaseInstanceId = new String("Topic sync failed: ");
+        Log.e("FirebaseInstanceId", paramFirebaseInstanceId);
+        return false;
+      }
+      paramFirebaseInstanceId.zzc((String)localObject);
+      if (FirebaseInstanceId.zzl())
+      {
+        Log.d("FirebaseInstanceId", "unsubscribe operation succeeded");
+        return true;
+        paramFirebaseInstanceId.zzb((String)localObject);
+        if (FirebaseInstanceId.zzl())
+        {
+          Log.d("FirebaseInstanceId", "subscribe operation succeeded");
+          return true;
+        }
+      }
+    }
+    label146:
+    label156:
+    return true;
+    switch (i)
+    {
+    }
+    return true;
+  }
+  
+  @GuardedBy("this")
+  @Nullable
+  private final String zzar()
+  {
+    synchronized (zzaj)
+    {
+      String str = zzaj.zzak();
+      if (!TextUtils.isEmpty(str))
+      {
+        ??? = str.split(",");
+        if ((???.length > 1) && (!TextUtils.isEmpty(???[1]))) {
+          return ???[1];
+        }
+      }
+      return null;
+    }
+  }
+  
+  /* Error */
+  private final boolean zzk(String paramString)
+  {
+    // Byte code:
+    //   0: aload_0
+    //   1: monitorenter
+    //   2: aload_0
+    //   3: getfield 29	com/google/firebase/iid/zzba:zzaj	Lcom/google/firebase/iid/zzaw;
+    //   6: astore_3
+    //   7: aload_3
+    //   8: monitorenter
+    //   9: aload_0
+    //   10: getfield 29	com/google/firebase/iid/zzba:zzaj	Lcom/google/firebase/iid/zzaw;
+    //   13: invokevirtual 110	com/google/firebase/iid/zzaw:zzak	()Ljava/lang/String;
+    //   16: astore 4
+    //   18: ldc 118
+    //   20: invokestatic 88	java/lang/String:valueOf	(Ljava/lang/Object;)Ljava/lang/String;
+    //   23: astore_2
+    //   24: aload_1
+    //   25: invokestatic 88	java/lang/String:valueOf	(Ljava/lang/Object;)Ljava/lang/String;
+    //   28: astore 5
+    //   30: aload 5
+    //   32: invokevirtual 91	java/lang/String:length	()I
+    //   35: ifeq +13 -> 48
+    //   38: aload_2
+    //   39: aload 5
+    //   41: invokevirtual 97	java/lang/String:concat	(Ljava/lang/String;)Ljava/lang/String;
+    //   44: astore_2
+    //   45: goto +12 -> 57
+    //   48: new 39	java/lang/String
+    //   51: dup
+    //   52: aload_2
+    //   53: invokespecial 99	java/lang/String:<init>	(Ljava/lang/String;)V
+    //   56: astore_2
+    //   57: aload 4
+    //   59: aload_2
+    //   60: invokevirtual 123	java/lang/String:startsWith	(Ljava/lang/String;)Z
+    //   63: ifeq +63 -> 126
+    //   66: ldc 118
+    //   68: invokestatic 88	java/lang/String:valueOf	(Ljava/lang/Object;)Ljava/lang/String;
+    //   71: astore_2
+    //   72: aload_1
+    //   73: invokestatic 88	java/lang/String:valueOf	(Ljava/lang/Object;)Ljava/lang/String;
+    //   76: astore_1
+    //   77: aload_1
+    //   78: invokevirtual 91	java/lang/String:length	()I
+    //   81: ifeq +12 -> 93
+    //   84: aload_2
+    //   85: aload_1
+    //   86: invokevirtual 97	java/lang/String:concat	(Ljava/lang/String;)Ljava/lang/String;
+    //   89: astore_1
+    //   90: goto +12 -> 102
+    //   93: new 39	java/lang/String
+    //   96: dup
+    //   97: aload_2
+    //   98: invokespecial 99	java/lang/String:<init>	(Ljava/lang/String;)V
+    //   101: astore_1
+    //   102: aload 4
+    //   104: aload_1
+    //   105: invokevirtual 91	java/lang/String:length	()I
+    //   108: invokevirtual 127	java/lang/String:substring	(I)Ljava/lang/String;
+    //   111: astore_1
+    //   112: aload_0
+    //   113: getfield 29	com/google/firebase/iid/zzba:zzaj	Lcom/google/firebase/iid/zzaw;
+    //   116: aload_1
+    //   117: invokevirtual 130	com/google/firebase/iid/zzaw:zzf	(Ljava/lang/String;)V
+    //   120: aload_3
+    //   121: monitorexit
+    //   122: aload_0
+    //   123: monitorexit
+    //   124: iconst_1
+    //   125: ireturn
+    //   126: aload_3
+    //   127: monitorexit
+    //   128: aload_0
+    //   129: monitorexit
+    //   130: iconst_0
+    //   131: ireturn
+    //   132: astore_1
+    //   133: aload_3
+    //   134: monitorexit
+    //   135: aload_1
+    //   136: athrow
+    //   137: astore_1
+    //   138: aload_0
+    //   139: monitorexit
+    //   140: aload_1
+    //   141: athrow
+    // Local variable table:
+    //   start	length	slot	name	signature
+    //   0	142	0	this	zzba
+    //   0	142	1	paramString	String
+    //   23	75	2	str1	String
+    //   16	87	4	str2	String
+    //   28	12	5	str3	String
+    // Exception table:
+    //   from	to	target	type
+    //   9	45	132	finally
+    //   48	57	132	finally
+    //   57	90	132	finally
+    //   93	102	132	finally
+    //   102	122	132	finally
+    //   126	128	132	finally
+    //   133	135	132	finally
+    //   2	9	137	finally
+    //   135	137	137	finally
+  }
+  
+  /* Error */
+  final com.google.android.gms.tasks.Task<Void> zza(String paramString)
+  {
+    // Byte code:
+    //   0: aload_0
+    //   1: monitorenter
+    //   2: aload_0
+    //   3: getfield 29	com/google/firebase/iid/zzba:zzaj	Lcom/google/firebase/iid/zzaw;
+    //   6: astore 4
+    //   8: aload 4
+    //   10: monitorenter
+    //   11: aload_0
+    //   12: getfield 29	com/google/firebase/iid/zzba:zzaj	Lcom/google/firebase/iid/zzaw;
+    //   15: invokevirtual 110	com/google/firebase/iid/zzaw:zzak	()Ljava/lang/String;
+    //   18: astore_3
+    //   19: aload_0
+    //   20: getfield 29	com/google/firebase/iid/zzba:zzaj	Lcom/google/firebase/iid/zzaw;
+    //   23: astore 5
+    //   25: new 133	java/lang/StringBuilder
+    //   28: dup
+    //   29: aload_3
+    //   30: invokestatic 88	java/lang/String:valueOf	(Ljava/lang/Object;)Ljava/lang/String;
+    //   33: invokevirtual 91	java/lang/String:length	()I
+    //   36: iconst_1
+    //   37: iadd
+    //   38: aload_1
+    //   39: invokestatic 88	java/lang/String:valueOf	(Ljava/lang/Object;)Ljava/lang/String;
+    //   42: invokevirtual 91	java/lang/String:length	()I
+    //   45: iadd
+    //   46: invokespecial 136	java/lang/StringBuilder:<init>	(I)V
+    //   49: astore 6
+    //   51: aload 6
+    //   53: aload_3
+    //   54: invokevirtual 140	java/lang/StringBuilder:append	(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    //   57: pop
+    //   58: aload 6
+    //   60: ldc 118
+    //   62: invokevirtual 140	java/lang/StringBuilder:append	(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    //   65: pop
+    //   66: aload 6
+    //   68: aload_1
+    //   69: invokevirtual 140	java/lang/StringBuilder:append	(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    //   72: pop
+    //   73: aload 5
+    //   75: aload 6
+    //   77: invokevirtual 143	java/lang/StringBuilder:toString	()Ljava/lang/String;
+    //   80: invokevirtual 130	com/google/firebase/iid/zzaw:zzf	(Ljava/lang/String;)V
+    //   83: aload 4
+    //   85: monitorexit
+    //   86: new 145	com/google/android/gms/tasks/TaskCompletionSource
+    //   89: dup
+    //   90: invokespecial 146	com/google/android/gms/tasks/TaskCompletionSource:<init>	()V
+    //   93: astore_1
+    //   94: aload_0
+    //   95: getfield 27	com/google/firebase/iid/zzba:zzdm	Ljava/util/Map;
+    //   98: astore 4
+    //   100: aload_3
+    //   101: invokestatic 116	android/text/TextUtils:isEmpty	(Ljava/lang/CharSequence;)Z
+    //   104: ifeq +8 -> 112
+    //   107: iconst_0
+    //   108: istore_2
+    //   109: goto +13 -> 122
+    //   112: aload_3
+    //   113: ldc 118
+    //   115: invokevirtual 43	java/lang/String:split	(Ljava/lang/String;)[Ljava/lang/String;
+    //   118: arraylength
+    //   119: iconst_1
+    //   120: isub
+    //   121: istore_2
+    //   122: aload 4
+    //   124: aload_0
+    //   125: getfield 22	com/google/firebase/iid/zzba:zzdl	I
+    //   128: iload_2
+    //   129: iadd
+    //   130: invokestatic 151	java/lang/Integer:valueOf	(I)Ljava/lang/Integer;
+    //   133: aload_1
+    //   134: invokeinterface 157 3 0
+    //   139: pop
+    //   140: aload_1
+    //   141: invokevirtual 161	com/google/android/gms/tasks/TaskCompletionSource:getTask	()Lcom/google/android/gms/tasks/Task;
+    //   144: astore_1
+    //   145: aload_0
+    //   146: monitorexit
+    //   147: aload_1
+    //   148: areturn
+    //   149: astore_1
+    //   150: aload 4
+    //   152: monitorexit
+    //   153: aload_1
+    //   154: athrow
+    //   155: astore_1
+    //   156: aload_0
+    //   157: monitorexit
+    //   158: aload_1
+    //   159: athrow
+    // Local variable table:
+    //   start	length	slot	name	signature
+    //   0	160	0	this	zzba
+    //   0	160	1	paramString	String
+    //   108	22	2	i	int
+    //   18	95	3	str	String
+    //   23	51	5	localZzaw	zzaw
+    //   49	27	6	localStringBuilder	StringBuilder
+    // Exception table:
+    //   from	to	target	type
+    //   11	86	149	finally
+    //   150	153	149	finally
+    //   2	11	155	finally
+    //   86	107	155	finally
+    //   112	122	155	finally
+    //   122	145	155	finally
+    //   153	155	155	finally
+  }
+  
+  /* Error */
+  final boolean zzaq()
+  {
+    // Byte code:
+    //   0: aload_0
+    //   1: monitorenter
+    //   2: aload_0
+    //   3: invokespecial 166	com/google/firebase/iid/zzba:zzar	()Ljava/lang/String;
+    //   6: astore_2
+    //   7: aload_2
+    //   8: ifnull +9 -> 17
+    //   11: iconst_1
+    //   12: istore_1
+    //   13: aload_0
+    //   14: monitorexit
+    //   15: iload_1
+    //   16: ireturn
+    //   17: iconst_0
+    //   18: istore_1
+    //   19: goto -6 -> 13
+    //   22: astore_2
+    //   23: aload_0
+    //   24: monitorexit
+    //   25: aload_2
+    //   26: athrow
+    // Local variable table:
+    //   start	length	slot	name	signature
+    //   0	27	0	this	zzba
+    //   12	7	1	bool	boolean
+    //   6	2	2	str	String
+    //   22	4	2	localObject	Object
+    // Exception table:
+    //   from	to	target	type
+    //   2	7	22	finally
+  }
+  
+  /* Error */
+  @WorkerThread
+  final boolean zzc(FirebaseInstanceId paramFirebaseInstanceId)
+  {
+    // Byte code:
+    //   0: aload_0
+    //   1: monitorenter
+    //   2: aload_0
+    //   3: invokespecial 166	com/google/firebase/iid/zzba:zzar	()Ljava/lang/String;
+    //   6: astore_2
+    //   7: aload_2
+    //   8: ifnonnull +21 -> 29
+    //   11: invokestatic 65	com/google/firebase/iid/FirebaseInstanceId:zzl	()Z
+    //   14: ifeq +11 -> 25
+    //   17: ldc 67
+    //   19: ldc -87
+    //   21: invokestatic 75	android/util/Log:d	(Ljava/lang/String;Ljava/lang/String;)I
+    //   24: pop
+    //   25: aload_0
+    //   26: monitorexit
+    //   27: iconst_1
+    //   28: ireturn
+    //   29: aload_0
+    //   30: monitorexit
+    //   31: aload_1
+    //   32: aload_2
+    //   33: invokestatic 171	com/google/firebase/iid/zzba:zza	(Lcom/google/firebase/iid/FirebaseInstanceId;Ljava/lang/String;)Z
+    //   36: ifne +5 -> 41
+    //   39: iconst_0
+    //   40: ireturn
+    //   41: aload_0
+    //   42: monitorenter
+    //   43: aload_0
+    //   44: getfield 27	com/google/firebase/iid/zzba:zzdm	Ljava/util/Map;
+    //   47: aload_0
+    //   48: getfield 22	com/google/firebase/iid/zzba:zzdl	I
+    //   51: invokestatic 151	java/lang/Integer:valueOf	(I)Ljava/lang/Integer;
+    //   54: invokeinterface 175 2 0
+    //   59: checkcast 145	com/google/android/gms/tasks/TaskCompletionSource
+    //   62: astore_3
+    //   63: aload_0
+    //   64: aload_2
+    //   65: invokespecial 177	com/google/firebase/iid/zzba:zzk	(Ljava/lang/String;)Z
+    //   68: pop
+    //   69: aload_0
+    //   70: aload_0
+    //   71: getfield 22	com/google/firebase/iid/zzba:zzdl	I
+    //   74: iconst_1
+    //   75: iadd
+    //   76: putfield 22	com/google/firebase/iid/zzba:zzdl	I
+    //   79: aload_0
+    //   80: monitorexit
+    //   81: aload_3
+    //   82: ifnull -82 -> 0
+    //   85: aload_3
+    //   86: aconst_null
+    //   87: invokevirtual 181	com/google/android/gms/tasks/TaskCompletionSource:setResult	(Ljava/lang/Object;)V
+    //   90: goto -90 -> 0
+    //   93: astore_1
+    //   94: aload_0
+    //   95: monitorexit
+    //   96: aload_1
+    //   97: athrow
+    //   98: astore_1
+    //   99: aload_0
+    //   100: monitorexit
+    //   101: aload_1
+    //   102: athrow
+    // Local variable table:
+    //   start	length	slot	name	signature
+    //   0	103	0	this	zzba
+    //   0	103	1	paramFirebaseInstanceId	FirebaseInstanceId
+    //   6	59	2	str	String
+    //   62	24	3	localTaskCompletionSource	TaskCompletionSource
+    // Exception table:
+    //   from	to	target	type
+    //   43	81	93	finally
+    //   94	96	93	finally
+    //   2	7	98	finally
+    //   11	25	98	finally
+    //   25	27	98	finally
+    //   29	31	98	finally
+    //   99	101	98	finally
+  }
+}

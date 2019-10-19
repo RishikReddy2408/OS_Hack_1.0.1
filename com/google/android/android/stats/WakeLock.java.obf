@@ -1,0 +1,264 @@
+package com.google.android.gms.stats;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
+import android.os.WorkSource;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.internal.ShowFirstParty;
+import com.google.android.gms.common.providers.PooledExecutorsProvider;
+import com.google.android.gms.common.providers.PooledExecutorsProvider.PooledExecutorFactory;
+import com.google.android.gms.common.stats.StatsUtils;
+import com.google.android.gms.common.stats.WakeLockTracker;
+import com.google.android.gms.common.util.Strings;
+import com.google.android.gms.common.util.WorkSourceUtil;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.annotation.concurrent.ThreadSafe;
+
+@KeepForSdk
+@ShowFirstParty
+@ThreadSafe
+public class WakeLock
+{
+  private static ScheduledExecutorService zzn;
+  private static volatile zza zzo = new zza();
+  private final Object zza = this;
+  private final PowerManager.WakeLock zzb;
+  private WorkSource zzc;
+  private final int zzd;
+  private final String zze;
+  private final String zzf;
+  private final String zzg;
+  private final Context zzh;
+  private boolean zzi = true;
+  private final Map<String, Integer[]> zzj = new HashMap();
+  private final Set<Future<?>> zzk = Collections.synchronizedSet(new HashSet());
+  private int zzl;
+  private AtomicInteger zzm = new AtomicInteger(0);
+  
+  @KeepForSdk
+  public WakeLock(@NonNull Context paramContext, int paramInt, @NonNull String paramString)
+  {
+    this(paramContext, paramInt, paramString, null, str);
+  }
+  
+  private WakeLock(@NonNull Context paramContext, int paramInt, @NonNull String paramString1, @Nullable String paramString2, @NonNull String paramString3)
+  {
+    this(paramContext, paramInt, paramString1, null, paramString3, null);
+  }
+  
+  @SuppressLint({"UnwrappedWakeLock"})
+  private WakeLock(@NonNull Context paramContext, int paramInt, @NonNull String paramString1, @Nullable String paramString2, @NonNull String paramString3, @Nullable String paramString4)
+  {
+    Preconditions.checkNotNull(paramContext, "WakeLock: context must not be null");
+    Preconditions.checkNotEmpty(paramString1, "WakeLock: wakeLockName must not be empty");
+    zzd = paramInt;
+    zzf = null;
+    zzg = null;
+    zzh = paramContext.getApplicationContext();
+    if (!"com.google.android.gms".equals(paramContext.getPackageName()))
+    {
+      paramString2 = String.valueOf("*gcore*:");
+      paramString4 = String.valueOf(paramString1);
+      if (paramString4.length() != 0) {
+        paramString2 = paramString2.concat(paramString4);
+      } else {
+        paramString2 = new String(paramString2);
+      }
+      zze = paramString2;
+    }
+    else
+    {
+      zze = paramString1;
+    }
+    zzb = ((PowerManager)paramContext.getSystemService("power")).newWakeLock(paramInt, paramString1);
+    if (WorkSourceUtil.hasWorkSourcePermission(paramContext))
+    {
+      paramString1 = paramString3;
+      if (Strings.isEmptyOrWhitespace(paramString3)) {
+        paramString1 = paramContext.getPackageName();
+      }
+      zzc = WorkSourceUtil.fromPackage(paramContext, paramString1);
+      paramContext = zzc;
+      if ((paramContext != null) && (WorkSourceUtil.hasWorkSourcePermission(zzh)))
+      {
+        if (zzc != null) {
+          zzc.add(paramContext);
+        } else {
+          zzc = paramContext;
+        }
+        paramContext = zzc;
+        try
+        {
+          zzb.setWorkSource(paramContext);
+        }
+        catch (IllegalArgumentException|ArrayIndexOutOfBoundsException paramContext)
+        {
+          Log.wtf("WakeLock", paramContext.toString());
+        }
+      }
+    }
+    if (zzn == null) {
+      zzn = PooledExecutorsProvider.getInstance().newSingleThreadScheduledExecutor();
+    }
+  }
+  
+  private final String zza(String paramString)
+  {
+    if (zzi)
+    {
+      if (!TextUtils.isEmpty(paramString)) {
+        return paramString;
+      }
+      return zzf;
+    }
+    return zzf;
+  }
+  
+  private final List<String> zza()
+  {
+    return WorkSourceUtil.getNames(zzc);
+  }
+  
+  private final void zza(int paramInt)
+  {
+    if (zzb.isHeld())
+    {
+      try
+      {
+        zzb.release();
+      }
+      catch (RuntimeException localRuntimeException)
+      {
+        if (!localRuntimeException.getClass().equals(RuntimeException.class)) {
+          break label61;
+        }
+      }
+      Log.e("WakeLock", String.valueOf(zze).concat(" was already released!"), localRuntimeException);
+      zzb.isHeld();
+      return;
+      label61:
+      throw localRuntimeException;
+    }
+  }
+  
+  @KeepForSdk
+  public void acquire(long paramLong)
+  {
+    zzm.incrementAndGet();
+    String str = zza(null);
+    for (;;)
+    {
+      int i;
+      synchronized (zza)
+      {
+        boolean bool = zzj.isEmpty();
+        i = 0;
+        if (((!bool) || (zzl > 0)) && (!zzb.isHeld()))
+        {
+          zzj.clear();
+          zzl = 0;
+        }
+        if (zzi)
+        {
+          Integer[] arrayOfInteger = (Integer[])zzj.get(str);
+          if (arrayOfInteger == null)
+          {
+            zzj.put(str, new Integer[] { Integer.valueOf(1) });
+            i = 1;
+          }
+          else
+          {
+            arrayOfInteger[0] = Integer.valueOf(arrayOfInteger[0].intValue() + 1);
+          }
+        }
+        else
+        {
+          if ((!zzi) && (zzl == 0))
+          {
+            WakeLockTracker.getInstance().registerEvent(zzh, StatsUtils.getEventKey(zzb, str), 7, zze, str, null, zzd, zza(), paramLong);
+            zzl += 1;
+          }
+          zzb.acquire();
+          if (paramLong > 0L) {
+            zzn.schedule(new zzb(this), paramLong, TimeUnit.MILLISECONDS);
+          }
+          return;
+        }
+      }
+      if (i != 0) {}
+    }
+  }
+  
+  @KeepForSdk
+  public boolean isHeld()
+  {
+    return zzb.isHeld();
+  }
+  
+  @KeepForSdk
+  public void release()
+  {
+    if (zzm.decrementAndGet() < 0) {
+      Log.e("WakeLock", String.valueOf(zze).concat(" release without a matched acquire!"));
+    }
+    String str = zza(null);
+    for (;;)
+    {
+      synchronized (zza)
+      {
+        if (zzi)
+        {
+          Integer[] arrayOfInteger = (Integer[])zzj.get(str);
+          if (arrayOfInteger != null)
+          {
+            if (arrayOfInteger[0].intValue() == 1)
+            {
+              zzj.remove(str);
+              i = 1;
+              break label192;
+            }
+            arrayOfInteger[0] = Integer.valueOf(arrayOfInteger[0].intValue() - 1);
+          }
+        }
+        else
+        {
+          if ((!zzi) && (zzl == 1))
+          {
+            WakeLockTracker.getInstance().registerEvent(zzh, StatsUtils.getEventKey(zzb, str), 8, zze, str, null, zzd, zza());
+            zzl -= 1;
+          }
+          zza(0);
+          return;
+        }
+      }
+      int i = 0;
+      label192:
+      if (i != 0) {}
+    }
+  }
+  
+  @KeepForSdk
+  public void setReferenceCounted(boolean paramBoolean)
+  {
+    zzb.setReferenceCounted(paramBoolean);
+    zzi = paramBoolean;
+  }
+  
+  public static abstract interface zza {}
+}

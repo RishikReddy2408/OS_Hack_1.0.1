@@ -1,0 +1,33 @@
+package com.google.android.gms.common.api.internal;
+
+import android.support.annotation.WorkerThread;
+import com.google.android.gms.common.api.Api.Client;
+import java.util.ArrayList;
+
+final class zaaq
+  extends zaau
+{
+  private final ArrayList<Api.Client> zago;
+  
+  public zaaq(ArrayList<Api.Client> paramArrayList)
+  {
+    super(paramArrayList, null);
+    Object localObject;
+    zago = localObject;
+  }
+  
+  @WorkerThread
+  public final void zaan()
+  {
+    zadzagi).zaed.zagz = zaak.zag(zagi);
+    ArrayList localArrayList = (ArrayList)zago;
+    int j = localArrayList.size();
+    int i = 0;
+    while (i < j)
+    {
+      Object localObject = localArrayList.get(i);
+      i += 1;
+      ((Api.Client)localObject).getRemoteService(zaak.zah(zagi), zadzagi).zaed.zagz);
+    }
+  }
+}

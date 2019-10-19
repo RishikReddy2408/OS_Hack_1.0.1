@@ -1,0 +1,237 @@
+package com.google.gson;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public final class JsonArray
+  extends JsonElement
+  implements Iterable<JsonElement>
+{
+  private final List<JsonElement> elements;
+  
+  public JsonArray()
+  {
+    elements = new ArrayList();
+  }
+  
+  public JsonArray(int paramInt)
+  {
+    elements = new ArrayList(paramInt);
+  }
+  
+  public void add(JsonElement paramJsonElement)
+  {
+    Object localObject = paramJsonElement;
+    if (paramJsonElement == null) {
+      localObject = JsonNull.INSTANCE;
+    }
+    elements.add(localObject);
+  }
+  
+  public void add(Boolean paramBoolean)
+  {
+    List localList = elements;
+    if (paramBoolean == null) {
+      paramBoolean = JsonNull.INSTANCE;
+    } else {
+      paramBoolean = new JsonPrimitive(paramBoolean);
+    }
+    localList.add(paramBoolean);
+  }
+  
+  public void add(Character paramCharacter)
+  {
+    List localList = elements;
+    if (paramCharacter == null) {
+      paramCharacter = JsonNull.INSTANCE;
+    } else {
+      paramCharacter = new JsonPrimitive(paramCharacter);
+    }
+    localList.add(paramCharacter);
+  }
+  
+  public void add(Number paramNumber)
+  {
+    List localList = elements;
+    if (paramNumber == null) {
+      paramNumber = JsonNull.INSTANCE;
+    } else {
+      paramNumber = new JsonPrimitive(paramNumber);
+    }
+    localList.add(paramNumber);
+  }
+  
+  public void add(String paramString)
+  {
+    List localList = elements;
+    if (paramString == null) {
+      paramString = JsonNull.INSTANCE;
+    } else {
+      paramString = new JsonPrimitive(paramString);
+    }
+    localList.add(paramString);
+  }
+  
+  public void addAll(JsonArray paramJsonArray)
+  {
+    elements.addAll(elements);
+  }
+  
+  public boolean contains(JsonElement paramJsonElement)
+  {
+    return elements.contains(paramJsonElement);
+  }
+  
+  public JsonArray deepCopy()
+  {
+    if (!elements.isEmpty())
+    {
+      JsonArray localJsonArray = new JsonArray(elements.size());
+      Iterator localIterator = elements.iterator();
+      while (localIterator.hasNext()) {
+        localJsonArray.add(((JsonElement)localIterator.next()).deepCopy());
+      }
+      return localJsonArray;
+    }
+    return new JsonArray();
+  }
+  
+  public boolean equals(Object paramObject)
+  {
+    return (paramObject == this) || (((paramObject instanceof JsonArray)) && (elements.equals(elements)));
+  }
+  
+  public JsonElement get(int paramInt)
+  {
+    return (JsonElement)elements.get(paramInt);
+  }
+  
+  public BigDecimal getAsBigDecimal()
+  {
+    if (elements.size() == 1) {
+      return ((JsonElement)elements.get(0)).getAsBigDecimal();
+    }
+    throw new IllegalStateException();
+  }
+  
+  public BigInteger getAsBigInteger()
+  {
+    if (elements.size() == 1) {
+      return ((JsonElement)elements.get(0)).getAsBigInteger();
+    }
+    throw new IllegalStateException();
+  }
+  
+  public boolean getAsBoolean()
+  {
+    if (elements.size() == 1) {
+      return ((JsonElement)elements.get(0)).getAsBoolean();
+    }
+    throw new IllegalStateException();
+  }
+  
+  public byte getAsByte()
+  {
+    if (elements.size() == 1) {
+      return ((JsonElement)elements.get(0)).getAsByte();
+    }
+    throw new IllegalStateException();
+  }
+  
+  public char getAsCharacter()
+  {
+    if (elements.size() == 1) {
+      return ((JsonElement)elements.get(0)).getAsCharacter();
+    }
+    throw new IllegalStateException();
+  }
+  
+  public double getAsDouble()
+  {
+    if (elements.size() == 1) {
+      return ((JsonElement)elements.get(0)).getAsDouble();
+    }
+    throw new IllegalStateException();
+  }
+  
+  public float getAsFloat()
+  {
+    if (elements.size() == 1) {
+      return ((JsonElement)elements.get(0)).getAsFloat();
+    }
+    throw new IllegalStateException();
+  }
+  
+  public int getAsInt()
+  {
+    if (elements.size() == 1) {
+      return ((JsonElement)elements.get(0)).getAsInt();
+    }
+    throw new IllegalStateException();
+  }
+  
+  public long getAsLong()
+  {
+    if (elements.size() == 1) {
+      return ((JsonElement)elements.get(0)).getAsLong();
+    }
+    throw new IllegalStateException();
+  }
+  
+  public Number getAsNumber()
+  {
+    if (elements.size() == 1) {
+      return ((JsonElement)elements.get(0)).getAsNumber();
+    }
+    throw new IllegalStateException();
+  }
+  
+  public short getAsShort()
+  {
+    if (elements.size() == 1) {
+      return ((JsonElement)elements.get(0)).getAsShort();
+    }
+    throw new IllegalStateException();
+  }
+  
+  public String getAsString()
+  {
+    if (elements.size() == 1) {
+      return ((JsonElement)elements.get(0)).getAsString();
+    }
+    throw new IllegalStateException();
+  }
+  
+  public int hashCode()
+  {
+    return elements.hashCode();
+  }
+  
+  public Iterator<JsonElement> iterator()
+  {
+    return elements.iterator();
+  }
+  
+  public JsonElement remove(int paramInt)
+  {
+    return (JsonElement)elements.remove(paramInt);
+  }
+  
+  public boolean remove(JsonElement paramJsonElement)
+  {
+    return elements.remove(paramJsonElement);
+  }
+  
+  public JsonElement set(int paramInt, JsonElement paramJsonElement)
+  {
+    return (JsonElement)elements.set(paramInt, paramJsonElement);
+  }
+  
+  public int size()
+  {
+    return elements.size();
+  }
+}

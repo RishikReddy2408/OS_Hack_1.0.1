@@ -1,0 +1,11 @@
+package com.google.android.gms.measurement.internal;
+
+import com.google.android.gms.internal.measurement.zzgf;
+import com.google.android.gms.internal.measurement.zzgi;
+
+abstract interface zzs
+{
+  public abstract boolean zza(long paramLong, zzgf paramZzgf);
+  
+  public abstract void zzb(zzgi paramZzgi);
+}

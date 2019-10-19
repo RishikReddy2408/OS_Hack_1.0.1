@@ -1,0 +1,13 @@
+package com.google.android.gms.measurement.internal;
+
+final class zzdl
+  implements Runnable
+{
+  zzdl(zzcs paramZzcs, long paramLong) {}
+  
+  public final void run()
+  {
+    zzarc.zzgp().zzanq.set(zzark);
+    zzarc.zzgo().zzjk().zzg("Session timeout duration set", Long.valueOf(zzark));
+  }
+}

@@ -1,0 +1,40 @@
+package com.google.android.gms.measurement.internal;
+
+import android.os.RemoteException;
+import java.util.concurrent.atomic.AtomicReference;
+
+final class zzee
+  implements Runnable
+{
+  zzee(zzdr paramZzdr, AtomicReference paramAtomicReference, zzh paramZzh, boolean paramBoolean) {}
+  
+  public final void run()
+  {
+    try
+    {
+      synchronized (zzash)
+      {
+        zzag localZzag = zzdr.zzd(zzasg);
+        if (localZzag == null) {
+          zzasg.zzgo().zzjd().zzbx("Failed to get user properties");
+        }
+        try
+        {
+          zzash.notify();
+          return;
+        }
+        finally {}
+        zzash.set(localZzag.zza(zzaqn, zzaev));
+        zzdr.zze(zzasg);
+        zzash.notify();
+      }
+      zzash.notify();
+    }
+    catch (RemoteException localRemoteException)
+    {
+      zzasg.zzgo().zzjd().zzg("Failed to get user properties", localRemoteException);
+      zzash.notify();
+      return;
+    }
+  }
+}

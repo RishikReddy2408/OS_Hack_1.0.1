@@ -1,0 +1,187 @@
+package com.google.android.gms.measurement.internal;
+
+import android.os.IBinder;
+import android.os.Parcel;
+import android.os.RemoteException;
+import com.google.android.gms.internal.measurement.zzq;
+import com.google.android.gms.internal.measurement.zzs;
+import java.util.List;
+
+public final class zzai
+  extends zzq
+  implements zzag
+{
+  zzai(IBinder paramIBinder)
+  {
+    super(paramIBinder, "com.google.android.gms.measurement.internal.IMeasurementService");
+  }
+  
+  public final List<zzfh> zza(zzh paramZzh, boolean paramBoolean)
+    throws RemoteException
+  {
+    Object localObject = obtainAndWriteInterfaceToken();
+    zzs.zza((Parcel)localObject, paramZzh);
+    zzs.writeBoolean((Parcel)localObject, paramBoolean);
+    paramZzh = transactAndReadException(7, (Parcel)localObject);
+    localObject = paramZzh.createTypedArrayList(zzfh.CREATOR);
+    paramZzh.recycle();
+    return localObject;
+  }
+  
+  public final List<zzl> zza(String paramString1, String paramString2, zzh paramZzh)
+    throws RemoteException
+  {
+    Parcel localParcel = obtainAndWriteInterfaceToken();
+    localParcel.writeString(paramString1);
+    localParcel.writeString(paramString2);
+    zzs.zza(localParcel, paramZzh);
+    paramString1 = transactAndReadException(16, localParcel);
+    paramString2 = paramString1.createTypedArrayList(zzl.CREATOR);
+    paramString1.recycle();
+    return paramString2;
+  }
+  
+  public final List<zzfh> zza(String paramString1, String paramString2, String paramString3, boolean paramBoolean)
+    throws RemoteException
+  {
+    Parcel localParcel = obtainAndWriteInterfaceToken();
+    localParcel.writeString(paramString1);
+    localParcel.writeString(paramString2);
+    localParcel.writeString(paramString3);
+    zzs.writeBoolean(localParcel, paramBoolean);
+    paramString1 = transactAndReadException(15, localParcel);
+    paramString2 = paramString1.createTypedArrayList(zzfh.CREATOR);
+    paramString1.recycle();
+    return paramString2;
+  }
+  
+  public final List<zzfh> zza(String paramString1, String paramString2, boolean paramBoolean, zzh paramZzh)
+    throws RemoteException
+  {
+    Parcel localParcel = obtainAndWriteInterfaceToken();
+    localParcel.writeString(paramString1);
+    localParcel.writeString(paramString2);
+    zzs.writeBoolean(localParcel, paramBoolean);
+    zzs.zza(localParcel, paramZzh);
+    paramString1 = transactAndReadException(14, localParcel);
+    paramString2 = paramString1.createTypedArrayList(zzfh.CREATOR);
+    paramString1.recycle();
+    return paramString2;
+  }
+  
+  public final void zza(long paramLong, String paramString1, String paramString2, String paramString3)
+    throws RemoteException
+  {
+    Parcel localParcel = obtainAndWriteInterfaceToken();
+    localParcel.writeLong(paramLong);
+    localParcel.writeString(paramString1);
+    localParcel.writeString(paramString2);
+    localParcel.writeString(paramString3);
+    transactAndReadExceptionReturnVoid(10, localParcel);
+  }
+  
+  public final void zza(zzad paramZzad, zzh paramZzh)
+    throws RemoteException
+  {
+    Parcel localParcel = obtainAndWriteInterfaceToken();
+    zzs.zza(localParcel, paramZzad);
+    zzs.zza(localParcel, paramZzh);
+    transactAndReadExceptionReturnVoid(1, localParcel);
+  }
+  
+  public final void zza(zzad paramZzad, String paramString1, String paramString2)
+    throws RemoteException
+  {
+    Parcel localParcel = obtainAndWriteInterfaceToken();
+    zzs.zza(localParcel, paramZzad);
+    localParcel.writeString(paramString1);
+    localParcel.writeString(paramString2);
+    transactAndReadExceptionReturnVoid(5, localParcel);
+  }
+  
+  public final void zza(zzfh paramZzfh, zzh paramZzh)
+    throws RemoteException
+  {
+    Parcel localParcel = obtainAndWriteInterfaceToken();
+    zzs.zza(localParcel, paramZzfh);
+    zzs.zza(localParcel, paramZzh);
+    transactAndReadExceptionReturnVoid(2, localParcel);
+  }
+  
+  public final void zza(zzh paramZzh)
+    throws RemoteException
+  {
+    Parcel localParcel = obtainAndWriteInterfaceToken();
+    zzs.zza(localParcel, paramZzh);
+    transactAndReadExceptionReturnVoid(4, localParcel);
+  }
+  
+  public final void zza(zzl paramZzl, zzh paramZzh)
+    throws RemoteException
+  {
+    Parcel localParcel = obtainAndWriteInterfaceToken();
+    zzs.zza(localParcel, paramZzl);
+    zzs.zza(localParcel, paramZzh);
+    transactAndReadExceptionReturnVoid(12, localParcel);
+  }
+  
+  public final byte[] zza(zzad paramZzad, String paramString)
+    throws RemoteException
+  {
+    Parcel localParcel = obtainAndWriteInterfaceToken();
+    zzs.zza(localParcel, paramZzad);
+    localParcel.writeString(paramString);
+    paramZzad = transactAndReadException(9, localParcel);
+    paramString = paramZzad.createByteArray();
+    paramZzad.recycle();
+    return paramString;
+  }
+  
+  public final void zzb(zzh paramZzh)
+    throws RemoteException
+  {
+    Parcel localParcel = obtainAndWriteInterfaceToken();
+    zzs.zza(localParcel, paramZzh);
+    transactAndReadExceptionReturnVoid(6, localParcel);
+  }
+  
+  public final void zzb(zzl paramZzl)
+    throws RemoteException
+  {
+    Parcel localParcel = obtainAndWriteInterfaceToken();
+    zzs.zza(localParcel, paramZzl);
+    transactAndReadExceptionReturnVoid(13, localParcel);
+  }
+  
+  public final String zzc(zzh paramZzh)
+    throws RemoteException
+  {
+    Object localObject = obtainAndWriteInterfaceToken();
+    zzs.zza((Parcel)localObject, paramZzh);
+    paramZzh = transactAndReadException(11, (Parcel)localObject);
+    localObject = paramZzh.readString();
+    paramZzh.recycle();
+    return localObject;
+  }
+  
+  public final void zzd(zzh paramZzh)
+    throws RemoteException
+  {
+    Parcel localParcel = obtainAndWriteInterfaceToken();
+    zzs.zza(localParcel, paramZzh);
+    transactAndReadExceptionReturnVoid(18, localParcel);
+  }
+  
+  public final List<zzl> zze(String paramString1, String paramString2, String paramString3)
+    throws RemoteException
+  {
+    Parcel localParcel = obtainAndWriteInterfaceToken();
+    localParcel.writeString(paramString1);
+    localParcel.writeString(paramString2);
+    localParcel.writeString(paramString3);
+    paramString1 = transactAndReadException(17, localParcel);
+    paramString2 = paramString1.createTypedArrayList(zzl.CREATOR);
+    paramString1.recycle();
+    return paramString2;
+  }
+}

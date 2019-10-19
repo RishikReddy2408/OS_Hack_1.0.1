@@ -1,0 +1,13 @@
+package com.google.android.gms.measurement.internal;
+
+final class zzek
+  implements Runnable
+{
+  zzek(zzef paramZzef) {}
+  
+  public final void run()
+  {
+    zzdr.zza(zzasp.zzasg, null);
+    zzdr.zzb(zzasp.zzasg);
+  }
+}

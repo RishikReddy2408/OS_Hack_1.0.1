@@ -1,0 +1,48 @@
+package com.google.android.gms.internal.measurement;
+
+final class zzvl
+  implements zzws
+{
+  private static final zzvl zzbyl = new zzvl();
+  
+  private zzvl() {}
+  
+  public static zzvl zzwb()
+  {
+    return zzbyl;
+  }
+  
+  public final boolean zze(Class<?> paramClass)
+  {
+    return zzvm.class.isAssignableFrom(paramClass);
+  }
+  
+  public final zzwr zzf(Class<?> paramClass)
+  {
+    if (!zzvm.class.isAssignableFrom(paramClass))
+    {
+      paramClass = String.valueOf(paramClass.getName());
+      if (paramClass.length() != 0) {
+        paramClass = "Unsupported message type: ".concat(paramClass);
+      } else {
+        paramClass = new String("Unsupported message type: ");
+      }
+      throw new IllegalArgumentException(paramClass);
+    }
+    try
+    {
+      zzwr localZzwr = (zzwr)zzvm.zzg(paramClass.asSubclass(zzvm.class)).zza(zzvm.zze.zzbyv, null, null);
+      return localZzwr;
+    }
+    catch (Exception localException)
+    {
+      paramClass = String.valueOf(paramClass.getName());
+      if (paramClass.length() != 0) {
+        paramClass = "Unable to get message info for ".concat(paramClass);
+      } else {
+        paramClass = new String("Unable to get message info for ");
+      }
+      throw new RuntimeException(paramClass, localException);
+    }
+  }
+}

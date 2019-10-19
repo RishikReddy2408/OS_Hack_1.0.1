@@ -1,0 +1,27 @@
+package com.google.android.gms.internal.measurement;
+
+import java.util.List;
+
+abstract class zzwd
+{
+  private static final zzwd zzcaj = new zzwf(null);
+  private static final zzwd zzcak = new zzwg(null);
+  
+  private zzwd() {}
+  
+  static zzwd zzwx()
+  {
+    return zzcaj;
+  }
+  
+  static zzwd zzwy()
+  {
+    return zzcak;
+  }
+  
+  abstract <L> List<L> zza(Object paramObject, long paramLong);
+  
+  abstract <L> void zza(Object paramObject1, Object paramObject2, long paramLong);
+  
+  abstract void zzb(Object paramObject, long paramLong);
+}

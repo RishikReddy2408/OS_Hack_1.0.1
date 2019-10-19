@@ -1,0 +1,99 @@
+package com.google.android.gms.internal.measurement;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+public class zzuz
+{
+  private static volatile boolean zzbvj = false;
+  private static final Class<?> zzbvk = ;
+  private static volatile zzuz zzbvl;
+  static final zzuz zzbvm = new zzuz(true);
+  private final Map<zza, zzvm.zzd<?, ?>> zzbvn;
+  
+  zzuz()
+  {
+    zzbvn = new HashMap();
+  }
+  
+  private zzuz(boolean paramBoolean)
+  {
+    zzbvn = Collections.emptyMap();
+  }
+  
+  static zzuz zzvm()
+  {
+    return zzvk.zzd(zzuz.class);
+  }
+  
+  private static Class<?> zzvn()
+  {
+    try
+    {
+      Class localClass = Class.forName("com.google.protobuf.Extension");
+      return localClass;
+    }
+    catch (ClassNotFoundException localClassNotFoundException)
+    {
+      for (;;) {}
+    }
+    return null;
+  }
+  
+  public static zzuz zzvo()
+  {
+    return zzuy.zzvl();
+  }
+  
+  public static zzuz zzvp()
+  {
+    Object localObject = zzbvl;
+    if (localObject == null) {
+      try
+      {
+        zzuz localZzuz2 = zzbvl;
+        localObject = localZzuz2;
+        if (localZzuz2 == null)
+        {
+          localObject = zzuy.zzvm();
+          zzbvl = (zzuz)localObject;
+        }
+        return localObject;
+      }
+      finally {}
+    }
+    return localZzuz1;
+  }
+  
+  public final <ContainingType extends zzwt> zzvm.zzd<ContainingType, ?> zza(ContainingType paramContainingType, int paramInt)
+  {
+    return (zzvm.zzd)zzbvn.get(new zza(paramContainingType, paramInt));
+  }
+  
+  static final class zza
+  {
+    private final int number;
+    private final Object object;
+    
+    zza(Object paramObject, int paramInt)
+    {
+      object = paramObject;
+      number = paramInt;
+    }
+    
+    public final boolean equals(Object paramObject)
+    {
+      if (!(paramObject instanceof zza)) {
+        return false;
+      }
+      paramObject = (zza)paramObject;
+      return (object == object) && (number == number);
+    }
+    
+    public final int hashCode()
+    {
+      return System.identityHashCode(object) * 65535 + number;
+    }
+  }
+}

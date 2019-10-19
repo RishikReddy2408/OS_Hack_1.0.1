@@ -1,0 +1,6 @@
+package com.google.android.gms.internal.measurement;
+
+abstract interface zzxk
+{
+  public abstract <T> zzxj<T> zzh(Class<T> paramClass);
+}

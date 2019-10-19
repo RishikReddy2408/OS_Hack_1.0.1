@@ -1,0 +1,636 @@
+package com.google.android.gms.common.data;
+
+import android.content.ContentValues;
+import android.database.CharArrayBuffer;
+import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
+import android.database.CursorWindow;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable.Creator;
+import android.util.Log;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.annotation.KeepName;
+import com.google.android.gms.common.internal.Asserts;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.internal.safeparcel.AbstractSafeParcelable;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelWriter;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Class;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Constructor;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Field;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.Param;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable.VersionField;
+import com.google.android.gms.common.sqlite.CursorWrapper;
+import java.io.Closeable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+@KeepForSdk
+@KeepName
+@SafeParcelable.Class(creator="DataHolderCreator", validate=true)
+public final class DataHolder
+  extends AbstractSafeParcelable
+  implements Closeable
+{
+  @KeepForSdk
+  public static final Parcelable.Creator<DataHolder> CREATOR = new zac();
+  private static final Builder zalx = new zab(new String[0], null);
+  private boolean mClosed = false;
+  @SafeParcelable.VersionField(id=1000)
+  private final int zale;
+  @SafeParcelable.Field(getter="getColumns", id=1)
+  private final String[] zalp;
+  private Bundle zalq;
+  @SafeParcelable.Field(getter="getWindows", id=2)
+  private final CursorWindow[] zalr;
+  @SafeParcelable.Field(getter="getStatusCode", id=3)
+  private final int zals;
+  @SafeParcelable.Field(getter="getMetadata", id=4)
+  private final Bundle zalt;
+  private int[] zalu;
+  private int zalv;
+  private boolean zalw = true;
+  
+  @SafeParcelable.Constructor
+  DataHolder(@SafeParcelable.Param(id=1000) int paramInt1, @SafeParcelable.Param(id=1) String[] paramArrayOfString, @SafeParcelable.Param(id=2) CursorWindow[] paramArrayOfCursorWindow, @SafeParcelable.Param(id=3) int paramInt2, @SafeParcelable.Param(id=4) Bundle paramBundle)
+  {
+    zale = paramInt1;
+    zalp = paramArrayOfString;
+    zalr = paramArrayOfCursorWindow;
+    zals = paramInt2;
+    zalt = paramBundle;
+  }
+  
+  @KeepForSdk
+  public DataHolder(Cursor paramCursor, int paramInt, Bundle paramBundle)
+  {
+    this(new CursorWrapper(paramCursor), paramInt, paramBundle);
+  }
+  
+  private DataHolder(Builder paramBuilder, int paramInt, Bundle paramBundle)
+  {
+    this(Builder.zaa(paramBuilder), zaa(paramBuilder, -1), paramInt, null);
+  }
+  
+  private DataHolder(Builder paramBuilder, int paramInt1, Bundle paramBundle, int paramInt2)
+  {
+    this(Builder.zaa(paramBuilder), zaa(paramBuilder, -1), paramInt1, paramBundle);
+  }
+  
+  private DataHolder(CursorWrapper paramCursorWrapper, int paramInt, Bundle paramBundle)
+  {
+    this(paramCursorWrapper.getColumnNames(), zaa(paramCursorWrapper), paramInt, paramBundle);
+  }
+  
+  @KeepForSdk
+  public DataHolder(String[] paramArrayOfString, CursorWindow[] paramArrayOfCursorWindow, int paramInt, Bundle paramBundle)
+  {
+    zale = 1;
+    zalp = ((String[])Preconditions.checkNotNull(paramArrayOfString));
+    zalr = ((CursorWindow[])Preconditions.checkNotNull(paramArrayOfCursorWindow));
+    zals = paramInt;
+    zalt = paramBundle;
+    zaca();
+  }
+  
+  @KeepForSdk
+  public static Builder builder(String[] paramArrayOfString)
+  {
+    return new Builder(paramArrayOfString, null, null);
+  }
+  
+  @KeepForSdk
+  public static DataHolder empty(int paramInt)
+  {
+    return new DataHolder(zalx, paramInt, null);
+  }
+  
+  private final void zaa(String paramString, int paramInt)
+  {
+    if ((zalq != null) && (zalq.containsKey(paramString)))
+    {
+      if (!isClosed())
+      {
+        if ((paramInt >= 0) && (paramInt < zalv)) {
+          return;
+        }
+        throw new CursorIndexOutOfBoundsException(paramInt, zalv);
+      }
+      throw new IllegalArgumentException("Buffer is closed.");
+    }
+    paramString = String.valueOf(paramString);
+    if (paramString.length() != 0) {
+      paramString = "No such column: ".concat(paramString);
+    } else {
+      paramString = new String("No such column: ");
+    }
+    throw new IllegalArgumentException(paramString);
+  }
+  
+  private static CursorWindow[] zaa(Builder paramBuilder, int paramInt)
+  {
+    int i = Builder.zaa(paramBuilder).length;
+    int k = 0;
+    if (i == 0) {
+      return new CursorWindow[0];
+    }
+    Object localObject3;
+    if ((paramInt >= 0) && (paramInt < Builder.zab(paramBuilder).size())) {
+      localObject3 = Builder.zab(paramBuilder).subList(0, paramInt);
+    } else {
+      localObject3 = Builder.zab(paramBuilder);
+    }
+    int m = ((List)localObject3).size();
+    Object localObject2 = new CursorWindow(false);
+    ArrayList localArrayList = new ArrayList();
+    localArrayList.add(localObject2);
+    ((CursorWindow)localObject2).setNumColumns(Builder.zaa(paramBuilder).length);
+    paramInt = 0;
+    i = 0;
+    Object localObject1;
+    if (paramInt < m) {
+      localObject1 = localObject2;
+    }
+    for (;;)
+    {
+      int j;
+      try
+      {
+        if (!((CursorWindow)localObject2).allocRow())
+        {
+          localObject1 = new StringBuilder(72);
+          ((StringBuilder)localObject1).append("Allocating additional cursor window for large data set (row ");
+          ((StringBuilder)localObject1).append(paramInt);
+          ((StringBuilder)localObject1).append(")");
+          Log.d("DataHolder", ((StringBuilder)localObject1).toString());
+          localObject2 = new CursorWindow(false);
+          ((CursorWindow)localObject2).setStartPosition(paramInt);
+          ((CursorWindow)localObject2).setNumColumns(Builder.zaa(paramBuilder).length);
+          localArrayList.add(localObject2);
+          localObject1 = localObject2;
+          if (!((CursorWindow)localObject2).allocRow())
+          {
+            Log.e("DataHolder", "Unable to allocate row to hold data.");
+            localArrayList.remove(localObject2);
+            return (CursorWindow[])localArrayList.toArray(new CursorWindow[localArrayList.size()]);
+          }
+        }
+        Map localMap = (Map)((List)localObject3).get(paramInt);
+        j = 0;
+        boolean bool = true;
+        if ((j < Builder.zaa(paramBuilder).length) && (bool))
+        {
+          localObject2 = Builder.zaa(paramBuilder)[j];
+          Object localObject4 = localMap.get(localObject2);
+          if (localObject4 == null)
+          {
+            bool = ((CursorWindow)localObject1).putNull(paramInt, j);
+            break label789;
+          }
+          if ((localObject4 instanceof String))
+          {
+            bool = ((CursorWindow)localObject1).putString((String)localObject4, paramInt, j);
+            break label789;
+          }
+          if ((localObject4 instanceof Long))
+          {
+            bool = ((CursorWindow)localObject1).putLong(((Long)localObject4).longValue(), paramInt, j);
+            break label789;
+          }
+          if ((localObject4 instanceof Integer))
+          {
+            bool = ((CursorWindow)localObject1).putLong(((Integer)localObject4).intValue(), paramInt, j);
+            break label789;
+          }
+          if ((localObject4 instanceof Boolean))
+          {
+            if (!((Boolean)localObject4).booleanValue()) {
+              break label783;
+            }
+            l = 1L;
+            bool = ((CursorWindow)localObject1).putLong(l, paramInt, j);
+            break label789;
+          }
+          if ((localObject4 instanceof byte[]))
+          {
+            bool = ((CursorWindow)localObject1).putBlob((byte[])localObject4, paramInt, j);
+            break label789;
+          }
+          if ((localObject4 instanceof Double))
+          {
+            bool = ((CursorWindow)localObject1).putDouble(((Double)localObject4).doubleValue(), paramInt, j);
+            break label789;
+          }
+          if ((localObject4 instanceof Float))
+          {
+            bool = ((CursorWindow)localObject1).putDouble(((Float)localObject4).floatValue(), paramInt, j);
+            break label789;
+          }
+          paramBuilder = String.valueOf(localObject4);
+          localObject1 = new StringBuilder(String.valueOf(localObject2).length() + 32 + String.valueOf(paramBuilder).length());
+          ((StringBuilder)localObject1).append("Unsupported object for column ");
+          ((StringBuilder)localObject1).append((String)localObject2);
+          ((StringBuilder)localObject1).append(": ");
+          ((StringBuilder)localObject1).append(paramBuilder);
+          throw new IllegalArgumentException(((StringBuilder)localObject1).toString());
+        }
+        if (!bool)
+        {
+          if (i == 0)
+          {
+            localObject2 = new StringBuilder(74);
+            ((StringBuilder)localObject2).append("Couldn't populate window data for row ");
+            ((StringBuilder)localObject2).append(paramInt);
+            ((StringBuilder)localObject2).append(" - allocating new window.");
+            Log.d("DataHolder", ((StringBuilder)localObject2).toString());
+            ((CursorWindow)localObject1).freeLastRow();
+            localObject1 = new CursorWindow(false);
+            ((CursorWindow)localObject1).setStartPosition(paramInt);
+            ((CursorWindow)localObject1).setNumColumns(Builder.zaa(paramBuilder).length);
+            localArrayList.add(localObject1);
+            paramInt -= 1;
+            i = 1;
+          }
+          else
+          {
+            throw new zaa("Could not add the value to a new CursorWindow. The size of value may be larger than what a CursorWindow can handle.");
+          }
+        }
+        else {
+          i = 0;
+        }
+        paramInt += 1;
+        localObject2 = localObject1;
+      }
+      catch (RuntimeException paramBuilder)
+      {
+        i = localArrayList.size();
+        paramInt = k;
+        if (paramInt < i)
+        {
+          ((CursorWindow)localArrayList.get(paramInt)).close();
+          paramInt += 1;
+          continue;
+        }
+        throw paramBuilder;
+      }
+      return (CursorWindow[])localArrayList.toArray(new CursorWindow[localArrayList.size()]);
+      label783:
+      long l = 0L;
+      continue;
+      label789:
+      j += 1;
+    }
+  }
+  
+  private static CursorWindow[] zaa(CursorWrapper paramCursorWrapper)
+  {
+    ArrayList localArrayList = new ArrayList();
+    for (;;)
+    {
+      try
+      {
+        int j = paramCursorWrapper.getCount();
+        CursorWindow localCursorWindow = paramCursorWrapper.getWindow();
+        if ((localCursorWindow != null) && (localCursorWindow.getStartPosition() == 0))
+        {
+          localCursorWindow.acquireReference();
+          paramCursorWrapper.setWindow(null);
+          localArrayList.add(localCursorWindow);
+          i = localCursorWindow.getNumRows();
+          if ((i < j) && (paramCursorWrapper.moveToPosition(i)))
+          {
+            localCursorWindow = paramCursorWrapper.getWindow();
+            if (localCursorWindow != null)
+            {
+              localCursorWindow.acquireReference();
+              paramCursorWrapper.setWindow(null);
+            }
+            else
+            {
+              localCursorWindow = new CursorWindow(false);
+              localCursorWindow.setStartPosition(i);
+              paramCursorWrapper.fillWindow(i, localCursorWindow);
+            }
+            if (localCursorWindow.getNumRows() != 0)
+            {
+              localArrayList.add(localCursorWindow);
+              i = localCursorWindow.getStartPosition();
+              int k = localCursorWindow.getNumRows();
+              i += k;
+              continue;
+            }
+          }
+          return (CursorWindow[])localArrayList.toArray(new CursorWindow[localArrayList.size()]);
+        }
+      }
+      finally
+      {
+        paramCursorWrapper.close();
+      }
+      int i = 0;
+    }
+  }
+  
+  @KeepForSdk
+  public final void close()
+  {
+    try
+    {
+      if (!mClosed)
+      {
+        mClosed = true;
+        int i = 0;
+        while (i < zalr.length)
+        {
+          zalr[i].close();
+          i += 1;
+        }
+      }
+      return;
+    }
+    finally {}
+  }
+  
+  protected final void finalize()
+    throws Throwable
+  {
+    try
+    {
+      if ((zalw) && (zalr.length > 0) && (!isClosed()))
+      {
+        close();
+        String str = toString();
+        StringBuilder localStringBuilder = new StringBuilder(String.valueOf(str).length() + 178);
+        localStringBuilder.append("Internal data leak within a DataBuffer object detected!  Be sure to explicitly call release() on all DataBuffer extending objects when you are done with them. (internal object: ");
+        localStringBuilder.append(str);
+        localStringBuilder.append(")");
+        Log.e("DataBuffer", localStringBuilder.toString());
+      }
+      return;
+    }
+    finally
+    {
+      super.finalize();
+    }
+  }
+  
+  @KeepForSdk
+  public final boolean getBoolean(String paramString, int paramInt1, int paramInt2)
+  {
+    zaa(paramString, paramInt1);
+    return Long.valueOf(zalr[paramInt2].getLong(paramInt1, zalq.getInt(paramString))).longValue() == 1L;
+  }
+  
+  @KeepForSdk
+  public final byte[] getByteArray(String paramString, int paramInt1, int paramInt2)
+  {
+    zaa(paramString, paramInt1);
+    return zalr[paramInt2].getBlob(paramInt1, zalq.getInt(paramString));
+  }
+  
+  @KeepForSdk
+  public final int getCount()
+  {
+    return zalv;
+  }
+  
+  @KeepForSdk
+  public final int getInteger(String paramString, int paramInt1, int paramInt2)
+  {
+    zaa(paramString, paramInt1);
+    return zalr[paramInt2].getInt(paramInt1, zalq.getInt(paramString));
+  }
+  
+  @KeepForSdk
+  public final long getLong(String paramString, int paramInt1, int paramInt2)
+  {
+    zaa(paramString, paramInt1);
+    return zalr[paramInt2].getLong(paramInt1, zalq.getInt(paramString));
+  }
+  
+  @KeepForSdk
+  public final Bundle getMetadata()
+  {
+    return zalt;
+  }
+  
+  @KeepForSdk
+  public final int getStatusCode()
+  {
+    return zals;
+  }
+  
+  @KeepForSdk
+  public final String getString(String paramString, int paramInt1, int paramInt2)
+  {
+    zaa(paramString, paramInt1);
+    return zalr[paramInt2].getString(paramInt1, zalq.getInt(paramString));
+  }
+  
+  @KeepForSdk
+  public final int getWindowIndex(int paramInt)
+  {
+    int j = 0;
+    boolean bool;
+    if ((paramInt >= 0) && (paramInt < zalv)) {
+      bool = true;
+    } else {
+      bool = false;
+    }
+    Preconditions.checkState(bool);
+    int i;
+    for (;;)
+    {
+      i = j;
+      if (j >= zalu.length) {
+        break;
+      }
+      if (paramInt < zalu[j])
+      {
+        i = j - 1;
+        break;
+      }
+      j += 1;
+    }
+    paramInt = i;
+    if (i == zalu.length) {
+      paramInt = i - 1;
+    }
+    return paramInt;
+  }
+  
+  @KeepForSdk
+  public final boolean hasColumn(String paramString)
+  {
+    return zalq.containsKey(paramString);
+  }
+  
+  @KeepForSdk
+  public final boolean hasNull(String paramString, int paramInt1, int paramInt2)
+  {
+    zaa(paramString, paramInt1);
+    return zalr[paramInt2].isNull(paramInt1, zalq.getInt(paramString));
+  }
+  
+  @KeepForSdk
+  public final boolean isClosed()
+  {
+    try
+    {
+      boolean bool = mClosed;
+      return bool;
+    }
+    finally {}
+  }
+  
+  public final void writeToParcel(Parcel paramParcel, int paramInt)
+  {
+    int i = SafeParcelWriter.beginObjectHeader(paramParcel);
+    SafeParcelWriter.writeStringArray(paramParcel, 1, zalp, false);
+    SafeParcelWriter.writeTypedArray(paramParcel, 2, zalr, paramInt, false);
+    SafeParcelWriter.writeInt(paramParcel, 3, getStatusCode());
+    SafeParcelWriter.writeBundle(paramParcel, 4, getMetadata(), false);
+    SafeParcelWriter.writeInt(paramParcel, 1000, zale);
+    SafeParcelWriter.finishObjectHeader(paramParcel, i);
+    if ((paramInt & 0x1) != 0) {
+      close();
+    }
+  }
+  
+  public final float zaa(String paramString, int paramInt1, int paramInt2)
+  {
+    zaa(paramString, paramInt1);
+    return zalr[paramInt2].getFloat(paramInt1, zalq.getInt(paramString));
+  }
+  
+  public final void zaa(String paramString, int paramInt1, int paramInt2, CharArrayBuffer paramCharArrayBuffer)
+  {
+    zaa(paramString, paramInt1);
+    zalr[paramInt2].copyStringToBuffer(paramInt1, zalq.getInt(paramString), paramCharArrayBuffer);
+  }
+  
+  public final double zab(String paramString, int paramInt1, int paramInt2)
+  {
+    zaa(paramString, paramInt1);
+    return zalr[paramInt2].getDouble(paramInt1, zalq.getInt(paramString));
+  }
+  
+  public final void zaca()
+  {
+    zalq = new Bundle();
+    int k = 0;
+    int i = 0;
+    while (i < zalp.length)
+    {
+      zalq.putInt(zalp[i], i);
+      i += 1;
+    }
+    zalu = new int[zalr.length];
+    int j = 0;
+    i = k;
+    while (i < zalr.length)
+    {
+      zalu[i] = j;
+      k = zalr[i].getStartPosition();
+      j += zalr[i].getNumRows() - (j - k);
+      i += 1;
+    }
+    zalv = j;
+  }
+  
+  @KeepForSdk
+  public static class Builder
+  {
+    private final String[] zalp;
+    private final ArrayList<HashMap<String, Object>> zaly;
+    private final String zalz;
+    private final HashMap<Object, Integer> zama;
+    private boolean zamb;
+    private String zamc;
+    
+    private Builder(String[] paramArrayOfString, String paramString)
+    {
+      zalp = ((String[])Preconditions.checkNotNull(paramArrayOfString));
+      zaly = new ArrayList();
+      zalz = paramString;
+      zama = new HashMap();
+      zamb = false;
+      zamc = null;
+    }
+    
+    @KeepForSdk
+    public DataHolder build(int paramInt)
+    {
+      return new DataHolder(this, paramInt, null, null);
+    }
+    
+    @KeepForSdk
+    public DataHolder build(int paramInt, Bundle paramBundle)
+    {
+      return new DataHolder(this, paramInt, paramBundle, -1, null);
+    }
+    
+    @KeepForSdk
+    public Builder withRow(ContentValues paramContentValues)
+    {
+      Asserts.checkNotNull(paramContentValues);
+      HashMap localHashMap = new HashMap(paramContentValues.size());
+      paramContentValues = paramContentValues.valueSet().iterator();
+      while (paramContentValues.hasNext())
+      {
+        Map.Entry localEntry = (Map.Entry)paramContentValues.next();
+        localHashMap.put((String)localEntry.getKey(), localEntry.getValue());
+      }
+      return zaa(localHashMap);
+    }
+    
+    public Builder zaa(HashMap<String, Object> paramHashMap)
+    {
+      Asserts.checkNotNull(paramHashMap);
+      if (zalz == null) {}
+      Integer localInteger;
+      for (;;)
+      {
+        i = -1;
+        break label78;
+        Object localObject = paramHashMap.get(zalz);
+        if (localObject != null)
+        {
+          localInteger = (Integer)zama.get(localObject);
+          if (localInteger != null) {
+            break;
+          }
+          zama.put(localObject, Integer.valueOf(zaly.size()));
+        }
+      }
+      int i = localInteger.intValue();
+      label78:
+      if (i == -1)
+      {
+        zaly.add(paramHashMap);
+      }
+      else
+      {
+        zaly.remove(i);
+        zaly.add(i, paramHashMap);
+      }
+      zamb = false;
+      return this;
+    }
+  }
+  
+  public static final class zaa
+    extends RuntimeException
+  {
+    public zaa(String paramString)
+    {
+      super();
+    }
+  }
+}

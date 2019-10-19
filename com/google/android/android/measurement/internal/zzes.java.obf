@@ -1,0 +1,18 @@
+package com.google.android.gms.measurement.internal;
+
+import android.support.annotation.WorkerThread;
+
+final class zzes
+  extends zzv
+{
+  zzes(zzeq paramZzeq, zzcq paramZzcq)
+  {
+    super(paramZzcq);
+  }
+  
+  @WorkerThread
+  public final void run()
+  {
+    zzeq.zza(zzasz);
+  }
+}

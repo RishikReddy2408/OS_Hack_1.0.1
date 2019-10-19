@@ -1,0 +1,51 @@
+package com.google.android.gms.tasks;
+
+import android.support.annotation.NonNull;
+import java.util.ArrayDeque;
+import java.util.Queue;
+import javax.annotation.concurrent.GuardedBy;
+
+final class zzr<TResult>
+{
+  private final Object mLock = new Object();
+  @GuardedBy("mLock")
+  private Queue<zzq<TResult>> zzt;
+  @GuardedBy("mLock")
+  private boolean zzu;
+  
+  zzr() {}
+  
+  public final void zza(@NonNull Task<TResult> paramTask)
+  {
+    synchronized (mLock)
+    {
+      if ((zzt != null) && (!zzu))
+      {
+        zzu = true;
+        synchronized (mLock)
+        {
+          zzq localZzq = (zzq)zzt.poll();
+          if (localZzq == null)
+          {
+            zzu = false;
+            return;
+          }
+          localZzq.onComplete(paramTask);
+        }
+      }
+      return;
+    }
+  }
+  
+  public final void zza(@NonNull zzq<TResult> paramZzq)
+  {
+    synchronized (mLock)
+    {
+      if (zzt == null) {
+        zzt = new ArrayDeque();
+      }
+      zzt.add(paramZzq);
+      return;
+    }
+  }
+}

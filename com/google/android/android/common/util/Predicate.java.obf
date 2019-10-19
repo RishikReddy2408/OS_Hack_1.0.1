@@ -1,0 +1,10 @@
+package com.google.android.gms.common.util;
+
+import com.google.android.gms.common.annotation.KeepForSdk;
+
+@KeepForSdk
+public abstract interface Predicate<T>
+{
+  @KeepForSdk
+  public abstract boolean apply(T paramT);
+}

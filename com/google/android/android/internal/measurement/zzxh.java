@@ -1,0 +1,66 @@
+package com.google.android.android.internal.measurement;
+
+final class zzxh
+  implements zzwr
+{
+  private final int flags;
+  private final String info;
+  private final Object[] zzcba;
+  private final zzwt zzcbd;
+  
+  zzxh(zzwt paramZzwt, String paramString, Object[] paramArrayOfObject)
+  {
+    zzcbd = paramZzwt;
+    info = paramString;
+    zzcba = paramArrayOfObject;
+    int i = paramString.charAt(0);
+    if (i < 55296)
+    {
+      flags = i;
+      return;
+    }
+    int k = i & 0x1FFF;
+    int j = 13;
+    i = 1;
+    int m;
+    for (;;)
+    {
+      m = paramString.charAt(i);
+      if (m < 55296) {
+        break;
+      }
+      k |= (m & 0x1FFF) << j;
+      j += 13;
+      i += 1;
+    }
+    flags = (k | m << j);
+  }
+  
+  public final int zzxg()
+  {
+    if ((flags & 0x1) == 1) {
+      return zzvm.zze.zzbzb;
+    }
+    return zzvm.zze.zzbzc;
+  }
+  
+  public final boolean zzxh()
+  {
+    return (flags & 0x2) == 2;
+  }
+  
+  public final zzwt zzxi()
+  {
+    return zzcbd;
+  }
+  
+  final String zzxp()
+  {
+    return info;
+  }
+  
+  final Object[] zzxq()
+  {
+    return zzcba;
+  }
+}

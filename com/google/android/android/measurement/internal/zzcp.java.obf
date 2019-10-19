@@ -1,0 +1,56 @@
+package com.google.android.gms.measurement.internal;
+
+abstract class zzcp
+  extends zzco
+{
+  private boolean zzvz;
+  
+  zzcp(zzbt paramZzbt)
+  {
+    super(paramZzbt);
+    zzadj.zzb(this);
+  }
+  
+  final boolean isInitialized()
+  {
+    return zzvz;
+  }
+  
+  protected final void zzcl()
+  {
+    if (isInitialized()) {
+      return;
+    }
+    throw new IllegalStateException("Not initialized");
+  }
+  
+  public final void zzgs()
+  {
+    if (!zzvz)
+    {
+      zzgu();
+      zzadj.zzkq();
+      zzvz = true;
+      return;
+    }
+    throw new IllegalStateException("Can't initialize twice");
+  }
+  
+  protected abstract boolean zzgt();
+  
+  protected void zzgu() {}
+  
+  public final void zzq()
+  {
+    if (!zzvz)
+    {
+      if (!zzgt())
+      {
+        zzadj.zzkq();
+        zzvz = true;
+      }
+      return;
+    }
+    throw new IllegalStateException("Can't initialize twice");
+  }
+}

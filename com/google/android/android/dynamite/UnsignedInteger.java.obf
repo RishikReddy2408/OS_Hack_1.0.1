@@ -1,0 +1,29 @@
+package com.google.android.gms.dynamite;
+
+import android.content.Context;
+
+final class zzf
+  implements DynamiteModule.VersionPolicy
+{
+  zzf() {}
+  
+  public final DynamiteModule.VersionPolicy.zzb zza(Context paramContext, String paramString, DynamiteModule.VersionPolicy.zza paramZza)
+    throws DynamiteModule.LoadingException
+  {
+    DynamiteModule.VersionPolicy.zzb localZzb = new DynamiteModule.VersionPolicy.zzb();
+    zziq = paramZza.getLocalVersion(paramContext, paramString);
+    zzir = paramZza.zza(paramContext, paramString, true);
+    if ((zziq == 0) && (zzir == 0))
+    {
+      zzis = 0;
+      return localZzb;
+    }
+    if (zzir >= zziq)
+    {
+      zzis = 1;
+      return localZzb;
+    }
+    zzis = -1;
+    return localZzb;
+  }
+}

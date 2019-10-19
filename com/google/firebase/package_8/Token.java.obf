@@ -1,0 +1,24 @@
+package com.google.firebase.iid;
+
+final class zzx
+  implements InstanceIdResult
+{
+  private final String zzbp;
+  private final String zzbq;
+  
+  zzx(String paramString1, String paramString2)
+  {
+    zzbp = paramString1;
+    zzbq = paramString2;
+  }
+  
+  public final String getId()
+  {
+    return zzbp;
+  }
+  
+  public final String getToken()
+  {
+    return zzbq;
+  }
+}

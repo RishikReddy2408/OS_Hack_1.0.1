@@ -1,0 +1,125 @@
+package com.google.android.gms.common.util;
+
+import android.os.Process;
+import android.os.StrictMode;
+import android.os.StrictMode.ThreadPolicy;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import javax.annotation.Nullable;
+
+@KeepForSdk
+public class ProcessUtils
+{
+  private static String zzhd;
+  private static int zzhe;
+  
+  private ProcessUtils() {}
+  
+  @Nullable
+  @KeepForSdk
+  public static String getMyProcessName()
+  {
+    if (zzhd == null)
+    {
+      if (zzhe == 0) {
+        zzhe = Process.myPid();
+      }
+      zzhd = zzd(zzhe);
+    }
+    return zzhd;
+  }
+  
+  /* Error */
+  @Nullable
+  private static String zzd(int paramInt)
+  {
+    // Byte code:
+    //   0: aconst_null
+    //   1: astore_3
+    //   2: iload_0
+    //   3: ifgt +5 -> 8
+    //   6: aconst_null
+    //   7: areturn
+    //   8: new 38	java/lang/StringBuilder
+    //   11: dup
+    //   12: bipush 25
+    //   14: invokespecial 41	java/lang/StringBuilder:<init>	(I)V
+    //   17: astore_1
+    //   18: aload_1
+    //   19: ldc 43
+    //   21: invokevirtual 47	java/lang/StringBuilder:append	(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    //   24: pop
+    //   25: aload_1
+    //   26: iload_0
+    //   27: invokevirtual 50	java/lang/StringBuilder:append	(I)Ljava/lang/StringBuilder;
+    //   30: pop
+    //   31: aload_1
+    //   32: ldc 52
+    //   34: invokevirtual 47	java/lang/StringBuilder:append	(Ljava/lang/String;)Ljava/lang/StringBuilder;
+    //   37: pop
+    //   38: aload_1
+    //   39: invokevirtual 55	java/lang/StringBuilder:toString	()Ljava/lang/String;
+    //   42: invokestatic 59	com/google/android/gms/common/util/ProcessUtils:zzj	(Ljava/lang/String;)Ljava/io/BufferedReader;
+    //   45: astore_1
+    //   46: aload_1
+    //   47: invokevirtual 64	java/io/BufferedReader:readLine	()Ljava/lang/String;
+    //   50: invokevirtual 69	java/lang/String:trim	()Ljava/lang/String;
+    //   53: astore_2
+    //   54: aload_1
+    //   55: invokestatic 75	com/google/android/gms/common/util/IOUtils:closeQuietly	(Ljava/io/Closeable;)V
+    //   58: aload_2
+    //   59: areturn
+    //   60: astore_2
+    //   61: goto +6 -> 67
+    //   64: astore_2
+    //   65: aload_3
+    //   66: astore_1
+    //   67: aload_1
+    //   68: invokestatic 75	com/google/android/gms/common/util/IOUtils:closeQuietly	(Ljava/io/Closeable;)V
+    //   71: aload_2
+    //   72: athrow
+    //   73: aconst_null
+    //   74: astore_1
+    //   75: aload_1
+    //   76: invokestatic 75	com/google/android/gms/common/util/IOUtils:closeQuietly	(Ljava/io/Closeable;)V
+    //   79: aconst_null
+    //   80: areturn
+    //   81: astore_1
+    //   82: goto -9 -> 73
+    //   85: astore_2
+    //   86: goto -11 -> 75
+    // Local variable table:
+    //   start	length	slot	name	signature
+    //   0	89	0	paramInt	int
+    //   17	59	1	localObject1	Object
+    //   81	1	1	localIOException1	IOException
+    //   53	6	2	str	String
+    //   60	1	2	localObject2	Object
+    //   64	8	2	localObject3	Object
+    //   85	1	2	localIOException2	IOException
+    //   1	65	3	localObject4	Object
+    // Exception table:
+    //   from	to	target	type
+    //   46	54	60	finally
+    //   8	46	64	finally
+    //   8	46	81	java/io/IOException
+    //   46	54	85	java/io/IOException
+  }
+  
+  private static BufferedReader zzj(String paramString)
+    throws IOException
+  {
+    StrictMode.ThreadPolicy localThreadPolicy = StrictMode.allowThreadDiskReads();
+    try
+    {
+      paramString = new BufferedReader(new FileReader(paramString));
+      return paramString;
+    }
+    finally
+    {
+      StrictMode.setThreadPolicy(localThreadPolicy);
+    }
+  }
+}

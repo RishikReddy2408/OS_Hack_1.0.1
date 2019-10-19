@@ -1,0 +1,8 @@
+package com.google.android.gms.internal.measurement;
+
+abstract interface zzxz
+{
+  public abstract int size();
+  
+  public abstract byte zzal(int paramInt);
+}

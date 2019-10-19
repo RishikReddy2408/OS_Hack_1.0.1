@@ -1,0 +1,63 @@
+package com.google.android.gms.internal.measurement;
+
+import java.lang.reflect.Method;
+
+final class zzwi
+  implements zzxk
+{
+  private static final zzws zzcap = new zzwj();
+  private final zzws zzcao;
+  
+  public zzwi()
+  {
+    this(new zzwk(new zzws[] { zzvl.zzwb(), zzwz() }));
+  }
+  
+  private zzwi(zzws paramZzws)
+  {
+    zzcao = ((zzws)zzvo.zza(paramZzws, "messageInfoFactory"));
+  }
+  
+  private static boolean zza(zzwr paramZzwr)
+  {
+    return paramZzwr.zzxg() == zzvm.zze.zzbzb;
+  }
+  
+  private static zzws zzwz()
+  {
+    try
+    {
+      zzws localZzws = (zzws)Class.forName("com.google.protobuf.DescriptorMessageInfoFactory").getDeclaredMethod("getInstance", new Class[0]).invoke(null, new Object[0]);
+      return localZzws;
+    }
+    catch (Exception localException)
+    {
+      for (;;) {}
+    }
+    return zzcap;
+  }
+  
+  public final <T> zzxj<T> zzh(Class<T> paramClass)
+  {
+    zzxl.zzj(paramClass);
+    zzwr localZzwr = zzcao.zzf(paramClass);
+    if (localZzwr.zzxh())
+    {
+      if (zzvm.class.isAssignableFrom(paramClass)) {
+        return zzwy.zza(zzxl.zzxt(), zzvc.zzvr(), localZzwr.zzxi());
+      }
+      return zzwy.zza(zzxl.zzxr(), zzvc.zzvs(), localZzwr.zzxi());
+    }
+    if (zzvm.class.isAssignableFrom(paramClass))
+    {
+      if (zza(localZzwr)) {
+        return zzwx.zza(paramClass, localZzwr, zzxc.zzxl(), zzwd.zzwy(), zzxl.zzxt(), zzvc.zzvr(), zzwq.zzxe());
+      }
+      return zzwx.zza(paramClass, localZzwr, zzxc.zzxl(), zzwd.zzwy(), zzxl.zzxt(), null, zzwq.zzxe());
+    }
+    if (zza(localZzwr)) {
+      return zzwx.zza(paramClass, localZzwr, zzxc.zzxk(), zzwd.zzwx(), zzxl.zzxr(), zzvc.zzvs(), zzwq.zzxd());
+    }
+    return zzwx.zza(paramClass, localZzwr, zzxc.zzxk(), zzwd.zzwx(), zzxl.zzxs(), null, zzwq.zzxd());
+  }
+}

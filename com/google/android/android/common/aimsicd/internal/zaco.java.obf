@@ -1,0 +1,61 @@
+package com.google.android.gms.common.api.internal;
+
+import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.internal.base.zal;
+
+final class zaco
+  extends zal
+{
+  public zaco(zacm paramZacm, Looper paramLooper)
+  {
+    super(paramLooper);
+  }
+  
+  public final void handleMessage(Message paramMessage)
+  {
+    switch (what)
+    {
+    default: 
+      int i = what;
+      paramMessage = new StringBuilder(70);
+      paramMessage.append("TransformationResultHandler received unknown message type: ");
+      paramMessage.append(i);
+      Log.e("TransformedResultImpl", paramMessage.toString());
+      return;
+    case 1: 
+      localObject1 = (RuntimeException)obj;
+      paramMessage = String.valueOf(((RuntimeException)localObject1).getMessage());
+      if (paramMessage.length() != 0) {
+        paramMessage = "Runtime exception on the transformation worker thread: ".concat(paramMessage);
+      } else {
+        paramMessage = new String("Runtime exception on the transformation worker thread: ");
+      }
+      Log.e("TransformedResultImpl", paramMessage);
+      throw ((Throwable)localObject1);
+    }
+    Object localObject1 = (PendingResult)obj;
+    paramMessage = zacm.zaf(zakv);
+    if (localObject1 == null) {}
+    try
+    {
+      zacm.zaa(zacm.zag(zakv), new Status(13, "Transform returned null"));
+      break label203;
+      if ((localObject1 instanceof zacd)) {
+        zacm.zaa(zacm.zag(zakv), ((zacd)localObject1).getStatus());
+      } else {
+        zacm.zag(zakv).zaa((PendingResult)localObject1);
+      }
+      label203:
+      return;
+    }
+    finally
+    {
+      for (;;) {}
+    }
+    throw ((Throwable)localObject1);
+  }
+}

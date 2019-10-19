@@ -1,0 +1,13 @@
+package com.google.android.gms.common.api.internal;
+
+import android.os.Bundle;
+import com.google.android.gms.common.ConnectionResult;
+
+public abstract interface zabt
+{
+  public abstract void zab(int paramInt, boolean paramBoolean);
+  
+  public abstract void zab(Bundle paramBundle);
+  
+  public abstract void zac(ConnectionResult paramConnectionResult);
+}

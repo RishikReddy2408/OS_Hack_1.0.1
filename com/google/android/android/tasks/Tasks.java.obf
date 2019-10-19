@@ -1,0 +1,276 @@
+package com.google.android.gms.tasks;
+
+import android.support.annotation.NonNull;
+import com.google.android.gms.common.internal.Preconditions;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import javax.annotation.concurrent.GuardedBy;
+
+public final class Tasks
+{
+  private Tasks() {}
+  
+  public static <TResult> TResult await(@NonNull Task<TResult> paramTask)
+    throws ExecutionException, InterruptedException
+  {
+    Preconditions.checkNotMainThread();
+    Preconditions.checkNotNull(paramTask, "Task must not be null");
+    if (paramTask.isComplete()) {
+      return zzb(paramTask);
+    }
+    zza localZza = new zza(null);
+    zza(paramTask, localZza);
+    localZza.await();
+    return zzb(paramTask);
+  }
+  
+  public static <TResult> TResult await(@NonNull Task<TResult> paramTask, long paramLong, @NonNull TimeUnit paramTimeUnit)
+    throws ExecutionException, InterruptedException, TimeoutException
+  {
+    Preconditions.checkNotMainThread();
+    Preconditions.checkNotNull(paramTask, "Task must not be null");
+    Preconditions.checkNotNull(paramTimeUnit, "TimeUnit must not be null");
+    if (paramTask.isComplete()) {
+      return zzb(paramTask);
+    }
+    zza localZza = new zza(null);
+    zza(paramTask, localZza);
+    if (localZza.await(paramLong, paramTimeUnit)) {
+      return zzb(paramTask);
+    }
+    throw new TimeoutException("Timed out waiting for Task");
+  }
+  
+  public static <TResult> Task<TResult> call(@NonNull Callable<TResult> paramCallable)
+  {
+    return call(TaskExecutors.MAIN_THREAD, paramCallable);
+  }
+  
+  public static <TResult> Task<TResult> call(@NonNull Executor paramExecutor, @NonNull Callable<TResult> paramCallable)
+  {
+    Preconditions.checkNotNull(paramExecutor, "Executor must not be null");
+    Preconditions.checkNotNull(paramCallable, "Callback must not be null");
+    zzu localZzu = new zzu();
+    paramExecutor.execute(new zzv(localZzu, paramCallable));
+    return localZzu;
+  }
+  
+  public static <TResult> Task<TResult> forCanceled()
+  {
+    zzu localZzu = new zzu();
+    localZzu.zza();
+    return localZzu;
+  }
+  
+  public static <TResult> Task<TResult> forException(@NonNull Exception paramException)
+  {
+    zzu localZzu = new zzu();
+    localZzu.setException(paramException);
+    return localZzu;
+  }
+  
+  public static <TResult> Task<TResult> forResult(TResult paramTResult)
+  {
+    zzu localZzu = new zzu();
+    localZzu.setResult(paramTResult);
+    return localZzu;
+  }
+  
+  public static Task<Void> whenAll(Collection<? extends Task<?>> paramCollection)
+  {
+    if (paramCollection.isEmpty()) {
+      return forResult(null);
+    }
+    Object localObject = paramCollection.iterator();
+    while (((Iterator)localObject).hasNext()) {
+      if ((Task)((Iterator)localObject).next() == null) {
+        throw new NullPointerException("null tasks are not accepted");
+      }
+    }
+    localObject = new zzu();
+    zzc localZzc = new zzc(paramCollection.size(), (zzu)localObject);
+    paramCollection = paramCollection.iterator();
+    while (paramCollection.hasNext()) {
+      zza((Task)paramCollection.next(), localZzc);
+    }
+    return localObject;
+  }
+  
+  public static Task<Void> whenAll(Task<?>... paramVarArgs)
+  {
+    if (paramVarArgs.length == 0) {
+      return forResult(null);
+    }
+    return whenAll(Arrays.asList(paramVarArgs));
+  }
+  
+  public static Task<List<Task<?>>> whenAllComplete(Collection<? extends Task<?>> paramCollection)
+  {
+    return whenAll(paramCollection).continueWithTask(new zzx(paramCollection));
+  }
+  
+  public static Task<List<Task<?>>> whenAllComplete(Task<?>... paramVarArgs)
+  {
+    return whenAllComplete(Arrays.asList(paramVarArgs));
+  }
+  
+  public static <TResult> Task<List<TResult>> whenAllSuccess(Collection<? extends Task<?>> paramCollection)
+  {
+    return whenAll(paramCollection).continueWith(new zzw(paramCollection));
+  }
+  
+  public static <TResult> Task<List<TResult>> whenAllSuccess(Task<?>... paramVarArgs)
+  {
+    return whenAllSuccess(Arrays.asList(paramVarArgs));
+  }
+  
+  private static void zza(Task<?> paramTask, zzb paramZzb)
+  {
+    paramTask.addOnSuccessListener(TaskExecutors.zzw, paramZzb);
+    paramTask.addOnFailureListener(TaskExecutors.zzw, paramZzb);
+    paramTask.addOnCanceledListener(TaskExecutors.zzw, paramZzb);
+  }
+  
+  private static <TResult> TResult zzb(Task<TResult> paramTask)
+    throws ExecutionException
+  {
+    if (paramTask.isSuccessful()) {
+      return paramTask.getResult();
+    }
+    if (paramTask.isCanceled()) {
+      throw new CancellationException("Task is already canceled");
+    }
+    throw new ExecutionException(paramTask.getException());
+  }
+  
+  private static final class zza
+    implements Tasks.zzb
+  {
+    private final CountDownLatch zzaf = new CountDownLatch(1);
+    
+    private zza() {}
+    
+    public final void await()
+      throws InterruptedException
+    {
+      zzaf.await();
+    }
+    
+    public final boolean await(long paramLong, TimeUnit paramTimeUnit)
+      throws InterruptedException
+    {
+      return zzaf.await(paramLong, paramTimeUnit);
+    }
+    
+    public final void onCanceled()
+    {
+      zzaf.countDown();
+    }
+    
+    public final void onFailure(@NonNull Exception paramException)
+    {
+      zzaf.countDown();
+    }
+    
+    public final void onSuccess(Object paramObject)
+    {
+      zzaf.countDown();
+    }
+  }
+  
+  static abstract interface zzb
+    extends OnCanceledListener, OnFailureListener, OnSuccessListener<Object>
+  {}
+  
+  private static final class zzc
+    implements Tasks.zzb
+  {
+    private final Object mLock = new Object();
+    private final zzu<Void> zza;
+    @GuardedBy("mLock")
+    private Exception zzab;
+    private final int zzag;
+    @GuardedBy("mLock")
+    private int zzah;
+    @GuardedBy("mLock")
+    private int zzai;
+    @GuardedBy("mLock")
+    private int zzaj;
+    @GuardedBy("mLock")
+    private boolean zzak;
+    
+    public zzc(int paramInt, zzu<Void> paramZzu)
+    {
+      zzag = paramInt;
+      zza = paramZzu;
+    }
+    
+    @GuardedBy("mLock")
+    private final void zzf()
+    {
+      if (zzah + zzai + zzaj == zzag)
+      {
+        if (zzab != null)
+        {
+          zzu localZzu = zza;
+          int i = zzai;
+          int j = zzag;
+          StringBuilder localStringBuilder = new StringBuilder(54);
+          localStringBuilder.append(i);
+          localStringBuilder.append(" out of ");
+          localStringBuilder.append(j);
+          localStringBuilder.append(" underlying tasks failed");
+          localZzu.setException(new ExecutionException(localStringBuilder.toString(), zzab));
+          return;
+        }
+        if (zzak)
+        {
+          zza.zza();
+          return;
+        }
+        zza.setResult(null);
+      }
+    }
+    
+    public final void onCanceled()
+    {
+      synchronized (mLock)
+      {
+        zzaj += 1;
+        zzak = true;
+        zzf();
+        return;
+      }
+    }
+    
+    public final void onFailure(@NonNull Exception paramException)
+    {
+      synchronized (mLock)
+      {
+        zzai += 1;
+        zzab = paramException;
+        zzf();
+        return;
+      }
+    }
+    
+    public final void onSuccess(Object arg1)
+    {
+      synchronized (mLock)
+      {
+        zzah += 1;
+        zzf();
+        return;
+      }
+    }
+  }
+}

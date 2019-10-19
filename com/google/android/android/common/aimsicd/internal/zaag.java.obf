@@ -1,0 +1,116 @@
+package com.google.android.gms.common.api.internal;
+
+import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.Api;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Status;
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
+import java.util.concurrent.TimeUnit;
+
+public class zaag
+  extends GoogleApiClient
+{
+  private final String zafr;
+  
+  public zaag(String paramString)
+  {
+    zafr = paramString;
+  }
+  
+  public ConnectionResult blockingConnect()
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public ConnectionResult blockingConnect(long paramLong, @NonNull TimeUnit paramTimeUnit)
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public PendingResult<Status> clearDefaultAccountAndReconnect()
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public void connect()
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public void disconnect()
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public void dump(String paramString, FileDescriptor paramFileDescriptor, PrintWriter paramPrintWriter, String[] paramArrayOfString)
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  @NonNull
+  public ConnectionResult getConnectionResult(@NonNull Api<?> paramApi)
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public boolean hasConnectedApi(@NonNull Api<?> paramApi)
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public boolean isConnected()
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public boolean isConnecting()
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public boolean isConnectionCallbacksRegistered(@NonNull GoogleApiClient.ConnectionCallbacks paramConnectionCallbacks)
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public boolean isConnectionFailedListenerRegistered(@NonNull GoogleApiClient.OnConnectionFailedListener paramOnConnectionFailedListener)
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public void reconnect()
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public void registerConnectionCallbacks(@NonNull GoogleApiClient.ConnectionCallbacks paramConnectionCallbacks)
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public void registerConnectionFailedListener(@NonNull GoogleApiClient.OnConnectionFailedListener paramOnConnectionFailedListener)
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public void stopAutoManage(@NonNull FragmentActivity paramFragmentActivity)
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public void unregisterConnectionCallbacks(@NonNull GoogleApiClient.ConnectionCallbacks paramConnectionCallbacks)
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+  
+  public void unregisterConnectionFailedListener(@NonNull GoogleApiClient.OnConnectionFailedListener paramOnConnectionFailedListener)
+  {
+    throw new UnsupportedOperationException(zafr);
+  }
+}

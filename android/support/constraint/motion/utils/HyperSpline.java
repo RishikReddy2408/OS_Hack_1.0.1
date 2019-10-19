@@ -1,0 +1,277 @@
+package android.support.constraint.motion.utils;
+
+import D;
+import java.lang.reflect.Array;
+
+public class HyperSpline
+{
+  double[][] mCtl;
+  Cubic[][] mCurve;
+  double[] mCurveLength;
+  int mDimensionality;
+  int mPoints;
+  double mTotalLength;
+  
+  public HyperSpline() {}
+  
+  public HyperSpline(double[][] paramArrayOfDouble)
+  {
+    setup(paramArrayOfDouble);
+  }
+  
+  static Cubic[] calcNaturalCubic(int paramInt, double[] paramArrayOfDouble)
+  {
+    Object localObject = new double[paramInt];
+    double[] arrayOfDouble2 = new double[paramInt];
+    double[] arrayOfDouble1 = new double[paramInt];
+    int m = paramInt - 1;
+    int i = 0;
+    localObject[0] = 4602678819172646912L;
+    int k = 1;
+    paramInt = 1;
+    while (paramInt < m)
+    {
+      localObject[paramInt] = (1.0D / (4.0D - localObject[(paramInt - 1)]));
+      paramInt += 1;
+    }
+    int j = m - 1;
+    localObject[m] = (1.0D / (2.0D - localObject[j]));
+    arrayOfDouble2[0] = ((paramArrayOfDouble[1] - paramArrayOfDouble[0]) * 3.0D * localObject[0]);
+    double d1;
+    for (paramInt = k; paramInt < m; paramInt = k)
+    {
+      k = paramInt + 1;
+      d1 = paramArrayOfDouble[k];
+      int n = paramInt - 1;
+      arrayOfDouble2[paramInt] = (((d1 - paramArrayOfDouble[n]) * 3.0D - arrayOfDouble2[n]) * localObject[paramInt]);
+    }
+    arrayOfDouble2[m] = (((paramArrayOfDouble[m] - paramArrayOfDouble[j]) * 3.0D - arrayOfDouble2[j]) * localObject[m]);
+    arrayOfDouble1[m] = arrayOfDouble2[m];
+    paramInt = j;
+    while (paramInt >= 0)
+    {
+      arrayOfDouble2[paramInt] -= localObject[paramInt] * arrayOfDouble1[(paramInt + 1)];
+      paramInt -= 1;
+    }
+    localObject = new Cubic[m];
+    for (paramInt = i; paramInt < m; paramInt = i)
+    {
+      d1 = (float)paramArrayOfDouble[paramInt];
+      double d2 = arrayOfDouble1[paramInt];
+      i = paramInt + 1;
+      localObject[paramInt] = new Cubic(d1, d2, (paramArrayOfDouble[i] - paramArrayOfDouble[paramInt]) * 3.0D - arrayOfDouble1[paramInt] * 2.0D - arrayOfDouble1[i], (paramArrayOfDouble[paramInt] - paramArrayOfDouble[i]) * 2.0D + arrayOfDouble1[paramInt] + arrayOfDouble1[i]);
+    }
+    return localObject;
+  }
+  
+  public double approxLength(Cubic[] paramArrayOfCubic)
+  {
+    double[] arrayOfDouble = new double[paramArrayOfCubic.length];
+    double d5 = 0.0D;
+    double d2 = 0.0D;
+    int i;
+    double d3;
+    double d4;
+    for (double d1 = 0.0D;; d1 = d4)
+    {
+      i = 0;
+      int j = 0;
+      d3 = d5;
+      if (d2 >= 1.0D) {
+        break;
+      }
+      d3 = 0.0D;
+      i = j;
+      while (i < paramArrayOfCubic.length)
+      {
+        d4 = arrayOfDouble[i];
+        double d6 = paramArrayOfCubic[i].eval(d2);
+        arrayOfDouble[i] = d6;
+        d4 -= d6;
+        d3 += d4 * d4;
+        i += 1;
+      }
+      d4 = d1;
+      if (d2 > 0.0D) {
+        d4 = d1 + Math.sqrt(d3);
+      }
+      d2 += 0.1D;
+    }
+    while (i < paramArrayOfCubic.length)
+    {
+      d2 = arrayOfDouble[i];
+      d4 = paramArrayOfCubic[i].eval(1.0D);
+      arrayOfDouble[i] = d4;
+      d2 -= d4;
+      d3 += d2 * d2;
+      i += 1;
+    }
+    return d1 + Math.sqrt(d3);
+  }
+  
+  public double getPos(double paramDouble, int paramInt)
+  {
+    paramDouble *= mTotalLength;
+    int i = 0;
+    while ((i < mCurveLength.length - 1) && (mCurveLength[i] < paramDouble))
+    {
+      paramDouble -= mCurveLength[i];
+      i += 1;
+    }
+    return mCurve[paramInt][i].eval(paramDouble / mCurveLength[i]);
+  }
+  
+  public void getPos(double paramDouble, double[] paramArrayOfDouble)
+  {
+    double d = mTotalLength;
+    int k = 0;
+    paramDouble *= d;
+    int i = 0;
+    int j;
+    for (;;)
+    {
+      j = k;
+      if (i >= mCurveLength.length - 1) {
+        break;
+      }
+      j = k;
+      if (mCurveLength[i] >= paramDouble) {
+        break;
+      }
+      paramDouble -= mCurveLength[i];
+      i += 1;
+    }
+    while (j < paramArrayOfDouble.length)
+    {
+      paramArrayOfDouble[j] = mCurve[j][i].eval(paramDouble / mCurveLength[i]);
+      j += 1;
+    }
+  }
+  
+  public void getPos(double paramDouble, float[] paramArrayOfFloat)
+  {
+    double d = mTotalLength;
+    int k = 0;
+    paramDouble *= d;
+    int i = 0;
+    int j;
+    for (;;)
+    {
+      j = k;
+      if (i >= mCurveLength.length - 1) {
+        break;
+      }
+      j = k;
+      if (mCurveLength[i] >= paramDouble) {
+        break;
+      }
+      paramDouble -= mCurveLength[i];
+      i += 1;
+    }
+    while (j < paramArrayOfFloat.length)
+    {
+      paramArrayOfFloat[j] = ((float)mCurve[j][i].eval(paramDouble / mCurveLength[i]));
+      j += 1;
+    }
+  }
+  
+  public void getVelocity(double paramDouble, double[] paramArrayOfDouble)
+  {
+    double d = mTotalLength;
+    int k = 0;
+    paramDouble *= d;
+    int i = 0;
+    int j;
+    for (;;)
+    {
+      j = k;
+      if (i >= mCurveLength.length - 1) {
+        break;
+      }
+      j = k;
+      if (mCurveLength[i] >= paramDouble) {
+        break;
+      }
+      paramDouble -= mCurveLength[i];
+      i += 1;
+    }
+    while (j < paramArrayOfDouble.length)
+    {
+      paramArrayOfDouble[j] = mCurve[j][i].sqrt(paramDouble / mCurveLength[i]);
+      j += 1;
+    }
+  }
+  
+  public void setup(double[][] paramArrayOfDouble)
+  {
+    mDimensionality = paramArrayOfDouble[0].length;
+    mPoints = paramArrayOfDouble.length;
+    mCtl = ((double[][])Array.newInstance(D.class, new int[] { mDimensionality, mPoints }));
+    mCurve = new Cubic[mDimensionality][];
+    int i = 0;
+    int j;
+    while (i < mDimensionality)
+    {
+      j = 0;
+      while (j < mPoints)
+      {
+        mCtl[i][j] = paramArrayOfDouble[j][i];
+        j += 1;
+      }
+      i += 1;
+    }
+    i = 0;
+    while (i < mDimensionality)
+    {
+      mCurve[i] = calcNaturalCubic(mCtl[i].length, mCtl[i]);
+      i += 1;
+    }
+    mCurveLength = new double[mPoints - 1];
+    mTotalLength = 0.0D;
+    paramArrayOfDouble = new Cubic[mDimensionality];
+    i = 0;
+    while (i < mCurveLength.length)
+    {
+      j = 0;
+      while (j < mDimensionality)
+      {
+        paramArrayOfDouble[j] = mCurve[j][i];
+        j += 1;
+      }
+      double d1 = mTotalLength;
+      double[] arrayOfDouble = mCurveLength;
+      double d2 = approxLength(paramArrayOfDouble);
+      arrayOfDouble[i] = d2;
+      mTotalLength = (d1 + d2);
+      i += 1;
+    }
+  }
+  
+  public static class Cubic
+  {
+    public static final double HALF = 0.5D;
+    public static final double THIRD = 0.3333333333333333D;
+    double f;
+    double hi;
+    double lo;
+    double m;
+    
+    public Cubic(double paramDouble1, double paramDouble2, double paramDouble3, double paramDouble4)
+    {
+      f = paramDouble1;
+      m = paramDouble2;
+      lo = paramDouble3;
+      hi = paramDouble4;
+    }
+    
+    public double eval(double paramDouble)
+    {
+      return ((hi * paramDouble + lo) * paramDouble + m) * paramDouble + f;
+    }
+    
+    public double sqrt(double paramDouble)
+    {
+      return (hi * 0.3333333333333333D * paramDouble + lo * 0.5D) * paramDouble + m;
+    }
+  }
+}

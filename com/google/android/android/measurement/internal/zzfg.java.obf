@@ -1,0 +1,733 @@
+package com.google.android.gms.measurement.internal;
+
+import android.support.annotation.WorkerThread;
+import android.text.TextUtils;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.util.Clock;
+import com.google.android.gms.internal.measurement.zzfv;
+import com.google.android.gms.internal.measurement.zzfw;
+import com.google.android.gms.internal.measurement.zzfx;
+import com.google.android.gms.internal.measurement.zzfy;
+import com.google.android.gms.internal.measurement.zzfz;
+import com.google.android.gms.internal.measurement.zzgd;
+import com.google.android.gms.internal.measurement.zzgf;
+import com.google.android.gms.internal.measurement.zzgg;
+import com.google.android.gms.internal.measurement.zzgh;
+import com.google.android.gms.internal.measurement.zzgi;
+import com.google.android.gms.internal.measurement.zzgj;
+import com.google.android.gms.internal.measurement.zzgl;
+import com.google.android.gms.internal.measurement.zzyy;
+import com.google.android.gms.internal.measurement.zzzg;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.BitSet;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+
+public final class zzfg
+  extends zzez
+{
+  zzfg(zzfa paramZzfa)
+  {
+    super(paramZzfa);
+  }
+  
+  static zzgg zza(zzgf paramZzgf, String paramString)
+  {
+    paramZzgf = zzawt;
+    int j = paramZzgf.length;
+    int i = 0;
+    while (i < j)
+    {
+      zzgg localZzgg = paramZzgf[i];
+      if (name.equals(paramString)) {
+        return localZzgg;
+      }
+      i += 1;
+    }
+    return null;
+  }
+  
+  private static void zza(StringBuilder paramStringBuilder, int paramInt)
+  {
+    int i = 0;
+    while (i < paramInt)
+    {
+      paramStringBuilder.append("  ");
+      i += 1;
+    }
+  }
+  
+  private final void zza(StringBuilder paramStringBuilder, int paramInt, zzfw paramZzfw)
+  {
+    if (paramZzfw == null) {
+      return;
+    }
+    zza(paramStringBuilder, paramInt);
+    paramStringBuilder.append("filter {\n");
+    zza(paramStringBuilder, paramInt, "complement", zzavm);
+    zza(paramStringBuilder, paramInt, "param_name", zzgl().zzbt(zzavn));
+    int j = paramInt + 1;
+    zzfz localZzfz = zzavk;
+    if (localZzfz != null)
+    {
+      zza(paramStringBuilder, j);
+      paramStringBuilder.append("string_filter");
+      paramStringBuilder.append(" {\n");
+      Object localObject;
+      if (zzavw != null)
+      {
+        localObject = "UNKNOWN_MATCH_TYPE";
+        switch (zzavw.intValue())
+        {
+        default: 
+          break;
+        case 6: 
+          localObject = "IN_LIST";
+          break;
+        case 5: 
+          localObject = "EXACT";
+          break;
+        case 4: 
+          localObject = "PARTIAL";
+          break;
+        case 3: 
+          localObject = "ENDS_WITH";
+          break;
+        case 2: 
+          localObject = "BEGINS_WITH";
+          break;
+        case 1: 
+          localObject = "REGEXP";
+        }
+        zza(paramStringBuilder, j, "match_type", localObject);
+      }
+      zza(paramStringBuilder, j, "expression", zzavx);
+      zza(paramStringBuilder, j, "case_sensitive", zzavy);
+      if (zzavz.length > 0)
+      {
+        zza(paramStringBuilder, j + 1);
+        paramStringBuilder.append("expression_list {\n");
+        localObject = zzavz;
+        int k = localObject.length;
+        int i = 0;
+        while (i < k)
+        {
+          localZzfz = localObject[i];
+          zza(paramStringBuilder, j + 2);
+          paramStringBuilder.append(localZzfz);
+          paramStringBuilder.append("\n");
+          i += 1;
+        }
+        paramStringBuilder.append("}\n");
+      }
+      zza(paramStringBuilder, j);
+      paramStringBuilder.append("}\n");
+    }
+    zza(paramStringBuilder, j, "number_filter", zzavl);
+    zza(paramStringBuilder, paramInt);
+    paramStringBuilder.append("}\n");
+  }
+  
+  private final void zza(StringBuilder paramStringBuilder, int paramInt, String paramString, zzfx paramZzfx)
+  {
+    if (paramZzfx == null) {
+      return;
+    }
+    zza(paramStringBuilder, paramInt);
+    paramStringBuilder.append(paramString);
+    paramStringBuilder.append(" {\n");
+    if (zzavo != null)
+    {
+      paramString = "UNKNOWN_COMPARISON_TYPE";
+      switch (zzavo.intValue())
+      {
+      default: 
+        break;
+      case 4: 
+        paramString = "BETWEEN";
+        break;
+      case 3: 
+        paramString = "EQUAL";
+        break;
+      case 2: 
+        paramString = "GREATER_THAN";
+        break;
+      case 1: 
+        paramString = "LESS_THAN";
+      }
+      zza(paramStringBuilder, paramInt, "comparison_type", paramString);
+    }
+    zza(paramStringBuilder, paramInt, "match_as_float", zzavp);
+    zza(paramStringBuilder, paramInt, "comparison_value", zzavq);
+    zza(paramStringBuilder, paramInt, "min_comparison_value", zzavr);
+    zza(paramStringBuilder, paramInt, "max_comparison_value", zzavs);
+    zza(paramStringBuilder, paramInt);
+    paramStringBuilder.append("}\n");
+  }
+  
+  private static void zza(StringBuilder paramStringBuilder, int paramInt, String paramString, zzgj paramZzgj)
+  {
+    if (paramZzgj == null) {
+      return;
+    }
+    zza(paramStringBuilder, 3);
+    paramStringBuilder.append(paramString);
+    paramStringBuilder.append(" {\n");
+    paramString = zzayf;
+    int j = 0;
+    int k;
+    int i;
+    long l;
+    if (paramString != null)
+    {
+      zza(paramStringBuilder, 4);
+      paramStringBuilder.append("results: ");
+      paramString = zzayf;
+      k = paramString.length;
+      i = 0;
+      paramInt = 0;
+      while (i < k)
+      {
+        l = paramString[i];
+        if (paramInt != 0) {
+          paramStringBuilder.append(", ");
+        }
+        paramStringBuilder.append(Long.valueOf(l));
+        i += 1;
+        paramInt += 1;
+      }
+      paramStringBuilder.append('\n');
+    }
+    if (zzaye != null)
+    {
+      zza(paramStringBuilder, 4);
+      paramStringBuilder.append("status: ");
+      paramString = zzaye;
+      k = paramString.length;
+      paramInt = 0;
+      i = j;
+      while (i < k)
+      {
+        l = paramString[i];
+        if (paramInt != 0) {
+          paramStringBuilder.append(", ");
+        }
+        paramStringBuilder.append(Long.valueOf(l));
+        i += 1;
+        paramInt += 1;
+      }
+      paramStringBuilder.append('\n');
+    }
+    zza(paramStringBuilder, 3);
+    paramStringBuilder.append("}\n");
+  }
+  
+  private static void zza(StringBuilder paramStringBuilder, int paramInt, String paramString, Object paramObject)
+  {
+    if (paramObject == null) {
+      return;
+    }
+    zza(paramStringBuilder, paramInt + 1);
+    paramStringBuilder.append(paramString);
+    paramStringBuilder.append(": ");
+    paramStringBuilder.append(paramObject);
+    paramStringBuilder.append('\n');
+  }
+  
+  static boolean zza(long[] paramArrayOfLong, int paramInt)
+  {
+    if (paramInt >= paramArrayOfLong.length << 6) {
+      return false;
+    }
+    return (1L << paramInt % 64 & paramArrayOfLong[(paramInt / 64)]) != 0L;
+  }
+  
+  static long[] zza(BitSet paramBitSet)
+  {
+    int k = (paramBitSet.length() + 63) / 64;
+    long[] arrayOfLong = new long[k];
+    int i = 0;
+    while (i < k)
+    {
+      arrayOfLong[i] = 0L;
+      int j = 0;
+      while (j < 64)
+      {
+        int m = (i << 6) + j;
+        if (m >= paramBitSet.length()) {
+          break;
+        }
+        if (paramBitSet.get(m)) {
+          arrayOfLong[i] |= 1L << j;
+        }
+        j += 1;
+      }
+      i += 1;
+    }
+    return arrayOfLong;
+  }
+  
+  static zzgg[] zza(zzgg[] paramArrayOfZzgg, String paramString, Object paramObject)
+  {
+    int j = paramArrayOfZzgg.length;
+    int i = 0;
+    while (i < j)
+    {
+      localObject = paramArrayOfZzgg[i];
+      if (paramString.equals(name))
+      {
+        zzawx = null;
+        zzamp = null;
+        zzauh = null;
+        if ((paramObject instanceof Long))
+        {
+          zzawx = ((Long)paramObject);
+          return paramArrayOfZzgg;
+        }
+        if ((paramObject instanceof String))
+        {
+          zzamp = ((String)paramObject);
+          return paramArrayOfZzgg;
+        }
+        if ((paramObject instanceof Double)) {
+          zzauh = ((Double)paramObject);
+        }
+        return paramArrayOfZzgg;
+      }
+      i += 1;
+    }
+    Object localObject = new zzgg[paramArrayOfZzgg.length + 1];
+    System.arraycopy(paramArrayOfZzgg, 0, localObject, 0, paramArrayOfZzgg.length);
+    zzgg localZzgg = new zzgg();
+    name = paramString;
+    if ((paramObject instanceof Long)) {
+      zzawx = ((Long)paramObject);
+    } else if ((paramObject instanceof String)) {
+      zzamp = ((String)paramObject);
+    } else if ((paramObject instanceof Double)) {
+      zzauh = ((Double)paramObject);
+    }
+    localObject[paramArrayOfZzgg.length] = localZzgg;
+    return localObject;
+  }
+  
+  static Object zzb(zzgf paramZzgf, String paramString)
+  {
+    paramZzgf = zza(paramZzgf, paramString);
+    if (paramZzgf != null)
+    {
+      if (zzamp != null) {
+        return zzamp;
+      }
+      if (zzawx != null) {
+        return zzawx;
+      }
+      if (zzauh != null) {
+        return zzauh;
+      }
+    }
+    return null;
+  }
+  
+  static boolean zzcp(String paramString)
+  {
+    return (paramString != null) && (paramString.matches("([+-])?([0-9]+\\.?[0-9]*|[0-9]*\\.?[0-9]+)")) && (paramString.length() <= 310);
+  }
+  
+  /* Error */
+  final <T extends android.os.Parcelable> T zza(byte[] paramArrayOfByte, android.os.Parcelable.Creator<T> paramCreator)
+  {
+    // Byte code:
+    //   0: aload_1
+    //   1: ifnonnull +5 -> 6
+    //   4: aconst_null
+    //   5: areturn
+    //   6: invokestatic 262	android/os/Parcel:obtain	()Landroid/os/Parcel;
+    //   9: astore_3
+    //   10: aload_3
+    //   11: aload_1
+    //   12: iconst_0
+    //   13: aload_1
+    //   14: arraylength
+    //   15: invokevirtual 266	android/os/Parcel:unmarshall	([BII)V
+    //   18: aload_3
+    //   19: iconst_0
+    //   20: invokevirtual 270	android/os/Parcel:setDataPosition	(I)V
+    //   23: aload_2
+    //   24: aload_3
+    //   25: invokeinterface 276 2 0
+    //   30: checkcast 278	android/os/Parcelable
+    //   33: astore_1
+    //   34: aload_3
+    //   35: invokevirtual 281	android/os/Parcel:recycle	()V
+    //   38: aload_1
+    //   39: areturn
+    //   40: astore_1
+    //   41: goto +22 -> 63
+    //   44: aload_0
+    //   45: invokevirtual 285	com/google/android/gms/measurement/internal/zzco:zzgo	()Lcom/google/android/gms/measurement/internal/zzap;
+    //   48: invokevirtual 291	com/google/android/gms/measurement/internal/zzap:zzjd	()Lcom/google/android/gms/measurement/internal/zzar;
+    //   51: ldc_w 293
+    //   54: invokevirtual 299	com/google/android/gms/measurement/internal/zzar:zzbx	(Ljava/lang/String;)V
+    //   57: aload_3
+    //   58: invokevirtual 281	android/os/Parcel:recycle	()V
+    //   61: aconst_null
+    //   62: areturn
+    //   63: aload_3
+    //   64: invokevirtual 281	android/os/Parcel:recycle	()V
+    //   67: aload_1
+    //   68: athrow
+    //   69: astore_1
+    //   70: goto -26 -> 44
+    // Local variable table:
+    //   start	length	slot	name	signature
+    //   0	73	0	this	zzfg
+    //   0	73	1	paramArrayOfByte	byte[]
+    //   0	73	2	paramCreator	android.os.Parcelable.Creator<T>
+    //   9	55	3	localParcel	android.os.Parcel
+    // Exception table:
+    //   from	to	target	type
+    //   10	34	40	finally
+    //   44	57	40	finally
+    //   10	34	69	com/google/android/gms/common/internal/safeparcel/SafeParcelReader$ParseException
+  }
+  
+  final String zza(zzfv paramZzfv)
+  {
+    if (paramZzfv == null) {
+      return "null";
+    }
+    StringBuilder localStringBuilder = new StringBuilder();
+    localStringBuilder.append("\nevent_filter {\n");
+    Integer localInteger = zzave;
+    int i = 0;
+    zza(localStringBuilder, 0, "filter_id", localInteger);
+    zza(localStringBuilder, 0, "event_name", zzgl().zzbs(zzavf));
+    zza(localStringBuilder, 1, "event_count_filter", zzavi);
+    localStringBuilder.append("  filters {\n");
+    paramZzfv = zzavg;
+    int j = paramZzfv.length;
+    while (i < j)
+    {
+      zza(localStringBuilder, 2, paramZzfv[i]);
+      i += 1;
+    }
+    zza(localStringBuilder, 1);
+    localStringBuilder.append("}\n}\n");
+    return localStringBuilder.toString();
+  }
+  
+  final String zza(zzfy paramZzfy)
+  {
+    if (paramZzfy == null) {
+      return "null";
+    }
+    StringBuilder localStringBuilder = new StringBuilder();
+    localStringBuilder.append("\nproperty_filter {\n");
+    zza(localStringBuilder, 0, "filter_id", zzave);
+    zza(localStringBuilder, 0, "property_name", zzgl().zzbu(zzavu));
+    zza(localStringBuilder, 1, zzavv);
+    localStringBuilder.append("}\n");
+    return localStringBuilder.toString();
+  }
+  
+  final void zza(zzgg paramZzgg, Object paramObject)
+  {
+    Preconditions.checkNotNull(paramObject);
+    zzamp = null;
+    zzawx = null;
+    zzauh = null;
+    if ((paramObject instanceof String))
+    {
+      zzamp = ((String)paramObject);
+      return;
+    }
+    if ((paramObject instanceof Long))
+    {
+      zzawx = ((Long)paramObject);
+      return;
+    }
+    if ((paramObject instanceof Double))
+    {
+      zzauh = ((Double)paramObject);
+      return;
+    }
+    zzgo().zzjd().zzg("Ignoring invalid (type) event param value", paramObject);
+  }
+  
+  final void zza(zzgl paramZzgl, Object paramObject)
+  {
+    Preconditions.checkNotNull(paramObject);
+    zzamp = null;
+    zzawx = null;
+    zzauh = null;
+    if ((paramObject instanceof String))
+    {
+      zzamp = ((String)paramObject);
+      return;
+    }
+    if ((paramObject instanceof Long))
+    {
+      zzawx = ((Long)paramObject);
+      return;
+    }
+    if ((paramObject instanceof Double))
+    {
+      zzauh = ((Double)paramObject);
+      return;
+    }
+    zzgo().zzjd().zzg("Ignoring invalid (type) user attribute value", paramObject);
+  }
+  
+  final byte[] zza(zzgh paramZzgh)
+  {
+    try
+    {
+      byte[] arrayOfByte = new byte[paramZzgh.zzvu()];
+      zzyy localZzyy = zzyy.zzk(arrayOfByte, 0, arrayOfByte.length);
+      paramZzgh.zza(localZzyy);
+      localZzyy.zzyt();
+      return arrayOfByte;
+    }
+    catch (IOException paramZzgh)
+    {
+      zzgo().zzjd().zzg("Data loss. Failed to serialize batch", paramZzgh);
+    }
+    return null;
+  }
+  
+  final byte[] zza(byte[] paramArrayOfByte)
+    throws IOException
+  {
+    try
+    {
+      paramArrayOfByte = new ByteArrayInputStream(paramArrayOfByte);
+      GZIPInputStream localGZIPInputStream = new GZIPInputStream(paramArrayOfByte);
+      ByteArrayOutputStream localByteArrayOutputStream = new ByteArrayOutputStream();
+      byte[] arrayOfByte = new byte['?'];
+      for (;;)
+      {
+        int i = localGZIPInputStream.read(arrayOfByte);
+        if (i <= 0) {
+          break;
+        }
+        localByteArrayOutputStream.write(arrayOfByte, 0, i);
+      }
+      localGZIPInputStream.close();
+      paramArrayOfByte.close();
+      paramArrayOfByte = localByteArrayOutputStream.toByteArray();
+      return paramArrayOfByte;
+    }
+    catch (IOException paramArrayOfByte)
+    {
+      zzgo().zzjd().zzg("Failed to ungzip content", paramArrayOfByte);
+      throw paramArrayOfByte;
+    }
+  }
+  
+  final String zzb(zzgh paramZzgh)
+  {
+    StringBuilder localStringBuilder = new StringBuilder();
+    localStringBuilder.append("\nbatch {\n");
+    if (zzawy != null)
+    {
+      paramZzgh = zzawy;
+      int m = paramZzgh.length;
+      int i = 0;
+      while (i < m)
+      {
+        zzgf[] arrayOfZzgf = paramZzgh[i];
+        if ((arrayOfZzgf != null) && (arrayOfZzgf != null))
+        {
+          zza(localStringBuilder, 1);
+          localStringBuilder.append("bundle {\n");
+          zza(localStringBuilder, 1, "protocol_version", zzaxa);
+          zza(localStringBuilder, 1, "platform", zzaxi);
+          zza(localStringBuilder, 1, "gmp_version", zzaxm);
+          zza(localStringBuilder, 1, "uploading_gmp_version", zzaxn);
+          zza(localStringBuilder, 1, "config_version", zzaxy);
+          zza(localStringBuilder, 1, "gmp_app_id", zzafx);
+          zza(localStringBuilder, 1, "admob_app_id", zzawj);
+          zza(localStringBuilder, 1, "app_id", zztt);
+          zza(localStringBuilder, 1, "app_version", zzts);
+          zza(localStringBuilder, 1, "app_version_major", zzaxu);
+          zza(localStringBuilder, 1, "firebase_instance_id", zzafz);
+          zza(localStringBuilder, 1, "dev_cert_hash", zzaxq);
+          zza(localStringBuilder, 1, "app_store", zzage);
+          zza(localStringBuilder, 1, "upload_timestamp_millis", zzaxd);
+          zza(localStringBuilder, 1, "start_timestamp_millis", zzaxe);
+          zza(localStringBuilder, 1, "end_timestamp_millis", zzaxf);
+          zza(localStringBuilder, 1, "previous_bundle_start_timestamp_millis", zzaxg);
+          zza(localStringBuilder, 1, "previous_bundle_end_timestamp_millis", zzaxh);
+          zza(localStringBuilder, 1, "app_instance_id", zzafw);
+          zza(localStringBuilder, 1, "resettable_device_id", zzaxo);
+          zza(localStringBuilder, 1, "device_id", zzaxx);
+          zza(localStringBuilder, 1, "ds_id", zzaya);
+          zza(localStringBuilder, 1, "limited_ad_tracking", zzaxp);
+          zza(localStringBuilder, 1, "os_version", zzaxj);
+          zza(localStringBuilder, 1, "device_model", zzaxk);
+          zza(localStringBuilder, 1, "user_default_language", zzaia);
+          zza(localStringBuilder, 1, "time_zone_offset_minutes", zzaxl);
+          zza(localStringBuilder, 1, "bundle_sequential_index", zzaxr);
+          zza(localStringBuilder, 1, "service_upload", zzaxs);
+          zza(localStringBuilder, 1, "health_monitor", zzagv);
+          if ((zzaxz != null) && (zzaxz.longValue() != 0L)) {
+            zza(localStringBuilder, 1, "android_id", zzaxz);
+          }
+          if (zzayc != null) {
+            zza(localStringBuilder, 1, "retry_counter", zzayc);
+          }
+          Object localObject1 = zzaxc;
+          int k;
+          int j;
+          Object localObject2;
+          if (localObject1 != null)
+          {
+            k = localObject1.length;
+            j = 0;
+            while (j < k)
+            {
+              localObject2 = localObject1[j];
+              if (localObject2 != null)
+              {
+                zza(localStringBuilder, 2);
+                localStringBuilder.append("user_property {\n");
+                zza(localStringBuilder, 2, "set_timestamp_millis", zzayl);
+                zza(localStringBuilder, 2, "name", zzgl().zzbu(name));
+                zza(localStringBuilder, 2, "string_value", zzamp);
+                zza(localStringBuilder, 2, "int_value", zzawx);
+                zza(localStringBuilder, 2, "double_value", zzauh);
+                zza(localStringBuilder, 2);
+                localStringBuilder.append("}\n");
+              }
+              j += 1;
+            }
+          }
+          localObject1 = zzaxt;
+          if (localObject1 != null)
+          {
+            k = localObject1.length;
+            j = 0;
+            while (j < k)
+            {
+              localObject2 = localObject1[j];
+              if (localObject2 != null)
+              {
+                zza(localStringBuilder, 2);
+                localStringBuilder.append("audience_membership {\n");
+                zza(localStringBuilder, 2, "audience_id", zzauy);
+                zza(localStringBuilder, 2, "new_audience", zzawo);
+                zza(localStringBuilder, 2, "current_data", zzawm);
+                zza(localStringBuilder, 2, "previous_data", zzawn);
+                zza(localStringBuilder, 2);
+                localStringBuilder.append("}\n");
+              }
+              j += 1;
+            }
+          }
+          arrayOfZzgf = zzaxb;
+          if (arrayOfZzgf != null)
+          {
+            int n = arrayOfZzgf.length;
+            j = 0;
+            while (j < n)
+            {
+              localObject1 = arrayOfZzgf[j];
+              if (localObject1 != null)
+              {
+                zza(localStringBuilder, 2);
+                localStringBuilder.append("event {\n");
+                zza(localStringBuilder, 2, "name", zzgl().zzbs(name));
+                zza(localStringBuilder, 2, "timestamp_millis", zzawu);
+                zza(localStringBuilder, 2, "previous_timestamp_millis", zzawv);
+                zza(localStringBuilder, 2, "count", count);
+                localObject1 = zzawt;
+                if (localObject1 != null)
+                {
+                  int i1 = localObject1.length;
+                  k = 0;
+                  while (k < i1)
+                  {
+                    localObject2 = localObject1[k];
+                    if (localObject2 != null)
+                    {
+                      zza(localStringBuilder, 3);
+                      localStringBuilder.append("param {\n");
+                      zza(localStringBuilder, 3, "name", zzgl().zzbt(name));
+                      zza(localStringBuilder, 3, "string_value", zzamp);
+                      zza(localStringBuilder, 3, "int_value", zzawx);
+                      zza(localStringBuilder, 3, "double_value", zzauh);
+                      zza(localStringBuilder, 3);
+                      localStringBuilder.append("}\n");
+                    }
+                    k += 1;
+                  }
+                }
+                zza(localStringBuilder, 2);
+                localStringBuilder.append("}\n");
+              }
+              j += 1;
+            }
+          }
+          zza(localStringBuilder, 1);
+          localStringBuilder.append("}\n");
+        }
+        i += 1;
+      }
+    }
+    localStringBuilder.append("}\n");
+    return localStringBuilder.toString();
+  }
+  
+  final boolean zzb(long paramLong1, long paramLong2)
+  {
+    if (paramLong1 != 0L)
+    {
+      if (paramLong2 <= 0L) {
+        return true;
+      }
+      return Math.abs(zzbx().currentTimeMillis() - paramLong1) > paramLong2;
+    }
+    return true;
+  }
+  
+  final byte[] zzb(byte[] paramArrayOfByte)
+    throws IOException
+  {
+    try
+    {
+      ByteArrayOutputStream localByteArrayOutputStream = new ByteArrayOutputStream();
+      GZIPOutputStream localGZIPOutputStream = new GZIPOutputStream(localByteArrayOutputStream);
+      localGZIPOutputStream.write(paramArrayOfByte);
+      localGZIPOutputStream.close();
+      localByteArrayOutputStream.close();
+      paramArrayOfByte = localByteArrayOutputStream.toByteArray();
+      return paramArrayOfByte;
+    }
+    catch (IOException paramArrayOfByte)
+    {
+      zzgo().zzjd().zzg("Failed to gzip content", paramArrayOfByte);
+      throw paramArrayOfByte;
+    }
+  }
+  
+  @WorkerThread
+  final boolean zze(zzad paramZzad, zzh paramZzh)
+  {
+    Preconditions.checkNotNull(paramZzad);
+    Preconditions.checkNotNull(paramZzh);
+    if ((TextUtils.isEmpty(zzafx)) && (TextUtils.isEmpty(zzagk)))
+    {
+      zzgr();
+      return false;
+    }
+    return true;
+  }
+  
+  protected final boolean zzgt()
+  {
+    return false;
+  }
+}

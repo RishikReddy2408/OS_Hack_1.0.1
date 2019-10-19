@@ -1,0 +1,121 @@
+package com.google.android.gms.measurement.internal;
+
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.support.annotation.WorkerThread;
+import android.util.Pair;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.util.Clock;
+import com.google.android.gms.common.util.VisibleForTesting;
+import java.security.SecureRandom;
+
+public final class zzbe
+{
+  private final long zzabv;
+  @VisibleForTesting
+  private final String zzaoa;
+  private final String zzaob;
+  private final String zzaoc;
+  
+  private zzbe(zzba paramZzba, String paramString, long paramLong)
+  {
+    Preconditions.checkNotEmpty(paramString);
+    boolean bool;
+    if (paramLong > 0L) {
+      bool = true;
+    } else {
+      bool = false;
+    }
+    Preconditions.checkArgument(bool);
+    zzaoa = String.valueOf(paramString).concat(":start");
+    zzaob = String.valueOf(paramString).concat(":count");
+    zzaoc = String.valueOf(paramString).concat(":value");
+    zzabv = paramLong;
+  }
+  
+  @WorkerThread
+  private final void zzfl()
+  {
+    zzany.zzaf();
+    long l = zzany.zzbx().currentTimeMillis();
+    SharedPreferences.Editor localEditor = zzba.zza(zzany).edit();
+    localEditor.remove(zzaob);
+    localEditor.remove(zzaoc);
+    localEditor.putLong(zzaoa, l);
+    localEditor.apply();
+  }
+  
+  @WorkerThread
+  private final long zzfn()
+  {
+    return zzba.zza(zzany).getLong(zzaoa, 0L);
+  }
+  
+  @WorkerThread
+  public final void zzc(String paramString, long paramLong)
+  {
+    zzany.zzaf();
+    if (zzfn() == 0L) {
+      zzfl();
+    }
+    String str = paramString;
+    if (paramString == null) {
+      str = "";
+    }
+    long l = zzba.zza(zzany).getLong(zzaob, 0L);
+    if (l <= 0L)
+    {
+      paramString = zzba.zza(zzany).edit();
+      paramString.putString(zzaoc, str);
+      paramString.putLong(zzaob, 1L);
+      paramString.apply();
+      return;
+    }
+    paramLong = zzany.zzgm().zzmd().nextLong();
+    l += 1L;
+    int i;
+    if ((paramLong & 0x7FFFFFFFFFFFFFFF) < Long.MAX_VALUE / l) {
+      i = 1;
+    } else {
+      i = 0;
+    }
+    paramString = zzba.zza(zzany).edit();
+    if (i != 0) {
+      paramString.putString(zzaoc, str);
+    }
+    paramString.putLong(zzaob, l);
+    paramString.apply();
+  }
+  
+  @WorkerThread
+  public final Pair<String, Long> zzfm()
+  {
+    zzany.zzaf();
+    zzany.zzaf();
+    long l = zzfn();
+    if (l == 0L)
+    {
+      zzfl();
+      l = 0L;
+    }
+    else
+    {
+      l = Math.abs(l - zzany.zzbx().currentTimeMillis());
+    }
+    if (l < zzabv) {
+      return null;
+    }
+    if (l > zzabv << 1)
+    {
+      zzfl();
+      return null;
+    }
+    String str = zzba.zza(zzany).getString(zzaoc, null);
+    l = zzba.zza(zzany).getLong(zzaob, 0L);
+    zzfl();
+    if ((str != null) && (l > 0L)) {
+      return new Pair(str, Long.valueOf(l));
+    }
+    return zzba.zzanc;
+  }
+}

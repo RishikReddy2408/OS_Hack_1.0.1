@@ -1,0 +1,267 @@
+package com.google.android.gms.internal.measurement;
+
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.net.Uri;
+import android.util.Log;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class zzsg
+{
+  private static final Uri CONTENT_URI = Uri.parse("content://com.google.android.gsf.gservices");
+  private static final Uri zzbqd = Uri.parse("content://com.google.android.gsf.gservices/prefix");
+  public static final Pattern zzbqe = Pattern.compile("^(1|true|t|on|yes|y)$", 2);
+  public static final Pattern zzbqf = Pattern.compile("^(0|false|f|off|no|n)$", 2);
+  private static final AtomicBoolean zzbqg = new AtomicBoolean();
+  private static HashMap<String, String> zzbqh;
+  private static final HashMap<String, Boolean> zzbqi = new HashMap();
+  private static final HashMap<String, Integer> zzbqj = new HashMap();
+  private static final HashMap<String, Long> zzbqk = new HashMap();
+  private static final HashMap<String, Float> zzbql = new HashMap();
+  private static Object zzbqm;
+  private static boolean zzbqn;
+  private static String[] zzbqo = new String[0];
+  
+  public zzsg() {}
+  
+  private static <T> T zza(HashMap<String, T> paramHashMap, String paramString, T paramT)
+  {
+    for (;;)
+    {
+      try
+      {
+        if (paramHashMap.containsKey(paramString))
+        {
+          paramHashMap = paramHashMap.get(paramString);
+          if (paramHashMap != null) {
+            return paramHashMap;
+          }
+        }
+        else
+        {
+          return null;
+        }
+      }
+      finally {}
+      paramHashMap = paramT;
+    }
+  }
+  
+  public static String zza(ContentResolver paramContentResolver, String paramString1, String paramString2)
+  {
+    for (;;)
+    {
+      int i;
+      try
+      {
+        zza(paramContentResolver);
+        Object localObject = zzbqm;
+        if (zzbqh.containsKey(paramString1))
+        {
+          paramContentResolver = (String)zzbqh.get(paramString1);
+          if (paramContentResolver != null) {
+            return paramContentResolver;
+          }
+        }
+        else
+        {
+          paramString2 = zzbqo;
+          int j = paramString2.length;
+          i = 0;
+          if (i < j)
+          {
+            if (!paramString1.startsWith(paramString2[i])) {
+              break label304;
+            }
+            if ((!zzbqn) || (zzbqh.isEmpty()))
+            {
+              paramString2 = zzbqo;
+              zzbqh.putAll(zza(paramContentResolver, paramString2));
+              zzbqn = true;
+              if (zzbqh.containsKey(paramString1))
+              {
+                paramContentResolver = (String)zzbqh.get(paramString1);
+                if (paramContentResolver == null) {
+                  break label299;
+                }
+                return paramContentResolver;
+              }
+            }
+            return null;
+          }
+          Cursor localCursor = paramContentResolver.query(CONTENT_URI, null, null, new String[] { paramString1 }, null);
+          if (localCursor == null)
+          {
+            if (localCursor != null) {
+              localCursor.close();
+            }
+            return null;
+          }
+          try
+          {
+            if (!localCursor.moveToFirst())
+            {
+              zza(localObject, paramString1, null);
+              return null;
+            }
+            paramString2 = localCursor.getString(1);
+            paramContentResolver = paramString2;
+            if (paramString2 != null)
+            {
+              paramContentResolver = paramString2;
+              if (paramString2.equals(null)) {
+                paramContentResolver = null;
+              }
+            }
+            zza(localObject, paramString1, paramContentResolver);
+            if (paramContentResolver == null) {
+              paramContentResolver = null;
+            }
+            return paramContentResolver;
+          }
+          finally
+          {
+            if (localCursor != null) {
+              localCursor.close();
+            }
+          }
+        }
+        paramContentResolver = null;
+      }
+      finally {}
+      continue;
+      label299:
+      paramContentResolver = null;
+      continue;
+      label304:
+      i += 1;
+    }
+  }
+  
+  private static Map<String, String> zza(ContentResolver paramContentResolver, String... paramVarArgs)
+  {
+    paramContentResolver = paramContentResolver.query(zzbqd, null, null, paramVarArgs, null);
+    paramVarArgs = new TreeMap();
+    if (paramContentResolver == null) {
+      return paramVarArgs;
+    }
+    try
+    {
+      while (paramContentResolver.moveToNext()) {
+        paramVarArgs.put(paramContentResolver.getString(0), paramContentResolver.getString(1));
+      }
+      return paramVarArgs;
+    }
+    finally
+    {
+      paramContentResolver.close();
+    }
+  }
+  
+  private static void zza(ContentResolver paramContentResolver)
+  {
+    if (zzbqh == null)
+    {
+      zzbqg.set(false);
+      zzbqh = new HashMap();
+      zzbqm = new Object();
+      zzbqn = false;
+      paramContentResolver.registerContentObserver(CONTENT_URI, true, new zzsh(null));
+      return;
+    }
+    if (zzbqg.getAndSet(false))
+    {
+      zzbqh.clear();
+      zzbqi.clear();
+      zzbqj.clear();
+      zzbqk.clear();
+      zzbql.clear();
+      zzbqm = new Object();
+      zzbqn = false;
+    }
+  }
+  
+  private static void zza(Object paramObject, String paramString1, String paramString2)
+  {
+    try
+    {
+      if (paramObject == zzbqm) {
+        zzbqh.put(paramString1, paramString2);
+      }
+      return;
+    }
+    finally {}
+  }
+  
+  private static <T> void zza(Object paramObject, HashMap<String, T> paramHashMap, String paramString, T paramT)
+  {
+    try
+    {
+      if (paramObject == zzbqm)
+      {
+        paramHashMap.put(paramString, paramT);
+        zzbqh.remove(paramString);
+      }
+      return;
+    }
+    finally {}
+  }
+  
+  public static boolean zza(ContentResolver paramContentResolver, String paramString, boolean paramBoolean)
+  {
+    Object localObject = zzb(paramContentResolver);
+    Boolean localBoolean = (Boolean)zza(zzbqi, paramString, Boolean.valueOf(paramBoolean));
+    if (localBoolean != null) {
+      return localBoolean.booleanValue();
+    }
+    String str = zza(paramContentResolver, paramString, null);
+    paramContentResolver = localBoolean;
+    boolean bool = paramBoolean;
+    if (str != null) {
+      if (str.equals(""))
+      {
+        paramContentResolver = localBoolean;
+        bool = paramBoolean;
+      }
+      else if (zzbqe.matcher(str).matches())
+      {
+        paramContentResolver = Boolean.valueOf(true);
+        bool = true;
+      }
+      else if (zzbqf.matcher(str).matches())
+      {
+        paramContentResolver = Boolean.valueOf(false);
+        bool = false;
+      }
+      else
+      {
+        paramContentResolver = new StringBuilder("attempt to read gservices key ");
+        paramContentResolver.append(paramString);
+        paramContentResolver.append(" (value \"");
+        paramContentResolver.append(str);
+        paramContentResolver.append("\") as boolean");
+        Log.w("Gservices", paramContentResolver.toString());
+        bool = paramBoolean;
+        paramContentResolver = localBoolean;
+      }
+    }
+    zza(localObject, zzbqi, paramString, paramContentResolver);
+    return bool;
+  }
+  
+  private static Object zzb(ContentResolver paramContentResolver)
+  {
+    try
+    {
+      zza(paramContentResolver);
+      paramContentResolver = zzbqm;
+      return paramContentResolver;
+    }
+    finally {}
+  }
+}

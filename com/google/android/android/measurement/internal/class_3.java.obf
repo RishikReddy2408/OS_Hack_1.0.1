@@ -1,0 +1,383 @@
+package com.google.android.gms.measurement.internal;
+
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.Size;
+import android.support.annotation.WorkerThread;
+import android.text.TextUtils;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.util.ProcessUtils;
+import com.google.android.gms.common.util.VisibleForTesting;
+import com.google.android.gms.common.wrappers.PackageManagerWrapper;
+import com.google.android.gms.common.wrappers.Wrappers;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+public final class zzn
+  extends zzco
+{
+  private Boolean zzahf;
+  @NonNull
+  private zzp zzahg = zzo.zzahh;
+  private Boolean zzyk;
+  
+  zzn(zzbt paramZzbt)
+  {
+    super(paramZzbt);
+    zzaf.zza(paramZzbt);
+  }
+  
+  static String zzht()
+  {
+    return (String)zzaf.zzajd.get();
+  }
+  
+  public static long zzhw()
+  {
+    return ((Long)zzaf.zzakg.get()).longValue();
+  }
+  
+  public static long zzhx()
+  {
+    return ((Long)zzaf.zzajg.get()).longValue();
+  }
+  
+  public static boolean zzhz()
+  {
+    return ((Boolean)zzaf.zzajc.get()).booleanValue();
+  }
+  
+  static boolean zzia()
+  {
+    return ((Boolean)zzaf.zzalb.get()).booleanValue();
+  }
+  
+  @WorkerThread
+  static boolean zzic()
+  {
+    return ((Boolean)zzaf.zzald.get()).booleanValue();
+  }
+  
+  @WorkerThread
+  public final long zza(String paramString, @NonNull zzaf.zza<Long> paramZza)
+  {
+    if (paramString == null) {
+      return ((Long)paramZza.get()).longValue();
+    }
+    paramString = zzahg.zzf(paramString, paramZza.getKey());
+    if (TextUtils.isEmpty(paramString)) {
+      return ((Long)paramZza.get()).longValue();
+    }
+    try
+    {
+      long l = ((Long)paramZza.get(Long.valueOf(Long.parseLong(paramString)))).longValue();
+      return l;
+    }
+    catch (NumberFormatException paramString)
+    {
+      for (;;) {}
+    }
+    return ((Long)paramZza.get()).longValue();
+  }
+  
+  final void zza(@NonNull zzp paramZzp)
+  {
+    zzahg = paramZzp;
+  }
+  
+  public final boolean zza(zzaf.zza<Boolean> paramZza)
+  {
+    return zzd(null, paramZza);
+  }
+  
+  @WorkerThread
+  public final int zzat(@Size(min=1L) String paramString)
+  {
+    return zzb(paramString, zzaf.zzajr);
+  }
+  
+  @Nullable
+  @VisibleForTesting
+  final Boolean zzau(@Size(min=1L) String paramString)
+  {
+    Preconditions.checkNotEmpty(paramString);
+    try
+    {
+      if (getContext().getPackageManager() == null)
+      {
+        zzgo().zzjd().zzbx("Failed to load metadata: PackageManager is null");
+        return null;
+      }
+      ApplicationInfo localApplicationInfo = Wrappers.packageManager(getContext()).getApplicationInfo(getContext().getPackageName(), 128);
+      if (localApplicationInfo == null)
+      {
+        zzgo().zzjd().zzbx("Failed to load metadata: ApplicationInfo is null");
+        return null;
+      }
+      if (metaData == null)
+      {
+        zzgo().zzjd().zzbx("Failed to load metadata: Metadata bundle is null");
+        return null;
+      }
+      if (!metaData.containsKey(paramString)) {
+        return null;
+      }
+      boolean bool = metaData.getBoolean(paramString);
+      return Boolean.valueOf(bool);
+    }
+    catch (PackageManager.NameNotFoundException paramString)
+    {
+      zzgo().zzjd().zzg("Failed to load metadata: Package name not found", paramString);
+    }
+    return null;
+  }
+  
+  public final boolean zzav(String paramString)
+  {
+    return "1".equals(zzahg.zzf(paramString, "gaia_collection_enabled"));
+  }
+  
+  public final boolean zzaw(String paramString)
+  {
+    return "1".equals(zzahg.zzf(paramString, "measurement.event_sampling_enabled"));
+  }
+  
+  @WorkerThread
+  final boolean zzax(String paramString)
+  {
+    return zzd(paramString, zzaf.zzakp);
+  }
+  
+  @WorkerThread
+  final boolean zzay(String paramString)
+  {
+    return zzd(paramString, zzaf.zzakr);
+  }
+  
+  @WorkerThread
+  final boolean zzaz(String paramString)
+  {
+    return zzd(paramString, zzaf.zzaks);
+  }
+  
+  @WorkerThread
+  public final int zzb(String paramString, @NonNull zzaf.zza<Integer> paramZza)
+  {
+    if (paramString == null) {
+      return ((Integer)paramZza.get()).intValue();
+    }
+    paramString = zzahg.zzf(paramString, paramZza.getKey());
+    if (TextUtils.isEmpty(paramString)) {
+      return ((Integer)paramZza.get()).intValue();
+    }
+    try
+    {
+      int i = ((Integer)paramZza.get(Integer.valueOf(Integer.parseInt(paramString)))).intValue();
+      return i;
+    }
+    catch (NumberFormatException paramString)
+    {
+      for (;;) {}
+    }
+    return ((Integer)paramZza.get()).intValue();
+  }
+  
+  @WorkerThread
+  final boolean zzba(String paramString)
+  {
+    return zzd(paramString, zzaf.zzakk);
+  }
+  
+  @WorkerThread
+  final String zzbb(String paramString)
+  {
+    zzaf.zza localZza = zzaf.zzakl;
+    if (paramString == null) {
+      return (String)localZza.get();
+    }
+    return (String)localZza.get(zzahg.zzf(paramString, localZza.getKey()));
+  }
+  
+  final boolean zzbc(String paramString)
+  {
+    return zzd(paramString, zzaf.zzakt);
+  }
+  
+  @WorkerThread
+  final boolean zzbd(String paramString)
+  {
+    return zzd(paramString, zzaf.zzaku);
+  }
+  
+  @WorkerThread
+  final boolean zzbe(String paramString)
+  {
+    return zzd(paramString, zzaf.zzakx);
+  }
+  
+  @WorkerThread
+  final boolean zzbf(String paramString)
+  {
+    return zzd(paramString, zzaf.zzaky);
+  }
+  
+  @WorkerThread
+  final boolean zzbg(String paramString)
+  {
+    return zzd(paramString, zzaf.zzala);
+  }
+  
+  @WorkerThread
+  final boolean zzbh(String paramString)
+  {
+    return zzd(paramString, zzaf.zzakz);
+  }
+  
+  @WorkerThread
+  final boolean zzbi(String paramString)
+  {
+    return zzd(paramString, zzaf.zzale);
+  }
+  
+  @WorkerThread
+  final boolean zzbj(String paramString)
+  {
+    return zzd(paramString, zzaf.zzalf);
+  }
+  
+  @WorkerThread
+  public final double zzc(String paramString, @NonNull zzaf.zza<Double> paramZza)
+  {
+    if (paramString == null) {
+      return ((Double)paramZza.get()).doubleValue();
+    }
+    paramString = zzahg.zzf(paramString, paramZza.getKey());
+    if (TextUtils.isEmpty(paramString)) {
+      return ((Double)paramZza.get()).doubleValue();
+    }
+    try
+    {
+      double d = ((Double)paramZza.get(Double.valueOf(Double.parseDouble(paramString)))).doubleValue();
+      return d;
+    }
+    catch (NumberFormatException paramString)
+    {
+      for (;;) {}
+    }
+    return ((Double)paramZza.get()).doubleValue();
+  }
+  
+  @WorkerThread
+  public final boolean zzd(String paramString, @NonNull zzaf.zza<Boolean> paramZza)
+  {
+    if (paramString == null) {
+      return ((Boolean)paramZza.get()).booleanValue();
+    }
+    paramString = zzahg.zzf(paramString, paramZza.getKey());
+    if (TextUtils.isEmpty(paramString)) {
+      return ((Boolean)paramZza.get()).booleanValue();
+    }
+    return ((Boolean)paramZza.get(Boolean.valueOf(Boolean.parseBoolean(paramString)))).booleanValue();
+  }
+  
+  public final boolean zzdw()
+  {
+    if (zzyk == null) {}
+    for (;;)
+    {
+      try
+      {
+        if (zzyk == null)
+        {
+          Object localObject2 = getContext().getApplicationInfo();
+          String str = ProcessUtils.getMyProcessName();
+          if (localObject2 != null)
+          {
+            localObject2 = processName;
+            if ((localObject2 == null) || (!((String)localObject2).equals(str))) {
+              break label107;
+            }
+            bool = true;
+            zzyk = Boolean.valueOf(bool);
+          }
+          if (zzyk == null)
+          {
+            zzyk = Boolean.TRUE;
+            zzgo().zzjd().zzbx("My process not in the list of running processes");
+          }
+        }
+      }
+      finally {}
+      return zzyk.booleanValue();
+      label107:
+      boolean bool = false;
+    }
+  }
+  
+  public final boolean zze(String paramString, zzaf.zza<Boolean> paramZza)
+  {
+    return zzd(paramString, paramZza);
+  }
+  
+  public final long zzhc()
+  {
+    zzgr();
+    return 13001L;
+  }
+  
+  public final boolean zzhu()
+  {
+    zzgr();
+    Boolean localBoolean = zzau("firebase_analytics_collection_deactivated");
+    return (localBoolean != null) && (localBoolean.booleanValue());
+  }
+  
+  public final Boolean zzhv()
+  {
+    zzgr();
+    return zzau("firebase_analytics_collection_enabled");
+  }
+  
+  public final String zzhy()
+  {
+    try
+    {
+      String str = (String)Class.forName("android.os.SystemProperties").getMethod("get", new Class[] { String.class, String.class }).invoke(null, new Object[] { "debug.firebase.analytics.app", "" });
+      return str;
+    }
+    catch (InvocationTargetException localInvocationTargetException)
+    {
+      zzgo().zzjd().zzg("SystemProperties.get() threw an exception", localInvocationTargetException);
+    }
+    catch (IllegalAccessException localIllegalAccessException)
+    {
+      zzgo().zzjd().zzg("Could not access SystemProperties.get()", localIllegalAccessException);
+    }
+    catch (NoSuchMethodException localNoSuchMethodException)
+    {
+      zzgo().zzjd().zzg("Could not find SystemProperties.get() method", localNoSuchMethodException);
+    }
+    catch (ClassNotFoundException localClassNotFoundException)
+    {
+      zzgo().zzjd().zzg("Could not find SystemProperties class", localClassNotFoundException);
+    }
+    return "";
+  }
+  
+  @WorkerThread
+  final boolean zzib()
+  {
+    if (zzahf == null)
+    {
+      zzahf = zzau("app_measurement_lite");
+      if (zzahf == null) {
+        zzahf = Boolean.valueOf(false);
+      }
+    }
+    return (zzahf.booleanValue()) || (!zzadj.zzkn());
+  }
+}

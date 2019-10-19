@@ -1,0 +1,91 @@
+package com.google.firebase.components;
+
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.firebase.events.Publisher;
+import com.google.firebase.events.Subscriber;
+import com.google.firebase.inject.Provider;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executor;
+
+public final class zzf
+  extends zza
+{
+  private final List<Component<?>> zza;
+  private final Map<Class<?>, zzj<?>> zzb = new HashMap();
+  private final zzh zzc;
+  
+  public zzf(Executor paramExecutor, Iterable<ComponentRegistrar> paramIterable, Component<?>... paramVarArgs)
+  {
+    zzc = new zzh(paramExecutor);
+    paramExecutor = new ArrayList();
+    paramExecutor.add(Component.of(zzc, zzh.class, new Class[] { Subscriber.class, Publisher.class }));
+    paramIterable = paramIterable.iterator();
+    while (paramIterable.hasNext()) {
+      paramExecutor.addAll(((ComponentRegistrar)paramIterable.next()).getComponents());
+    }
+    Collections.addAll(paramExecutor, paramVarArgs);
+    zza = Collections.unmodifiableList(Component.1.zza(paramExecutor));
+    paramExecutor = zza.iterator();
+    while (paramExecutor.hasNext()) {
+      zza((Component)paramExecutor.next());
+    }
+    zza();
+  }
+  
+  private void zza()
+  {
+    Component localComponent;
+    Dependency localDependency;
+    do
+    {
+      Iterator localIterator1 = zza.iterator();
+      Iterator localIterator2;
+      while (!localIterator2.hasNext())
+      {
+        if (!localIterator1.hasNext()) {
+          break;
+        }
+        localComponent = (Component)localIterator1.next();
+        localIterator2 = localComponent.zzb().iterator();
+      }
+      localDependency = (Dependency)localIterator2.next();
+    } while ((!localDependency.zzb()) || (zzb.containsKey(localDependency.zza())));
+    throw new MissingDependencyException(String.format("Unsatisfied dependency for component %s: %s", new Object[] { localComponent, localDependency.zza() }));
+  }
+  
+  private <T> void zza(Component<T> paramComponent)
+  {
+    zzj localZzj = new zzj(paramComponent.zzc(), new zzl(paramComponent, this));
+    paramComponent = paramComponent.zza().iterator();
+    while (paramComponent.hasNext())
+    {
+      Class localClass = (Class)paramComponent.next();
+      zzb.put(localClass, localZzj);
+    }
+  }
+  
+  public final <T> Provider<T> getProvider(Class<T> paramClass)
+  {
+    Preconditions.checkNotNull(paramClass, "Null interface requested.");
+    return (Provider)zzb.get(paramClass);
+  }
+  
+  public final void zza(boolean paramBoolean)
+  {
+    Iterator localIterator = zza.iterator();
+    while (localIterator.hasNext())
+    {
+      Component localComponent = (Component)localIterator.next();
+      if ((localComponent.zze()) || ((localComponent.zzf()) && (paramBoolean))) {
+        get((Class)localComponent.zza().iterator().next());
+      }
+    }
+    zzc.zza();
+  }
+}

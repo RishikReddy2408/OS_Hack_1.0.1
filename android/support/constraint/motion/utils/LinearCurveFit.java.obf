@@ -1,0 +1,314 @@
+package android.support.constraint.motion.utils;
+
+public class LinearCurveFit
+  extends CurveFit
+{
+  private static final String TAG = "LinearCurveFit";
+  private double[] mT;
+  private double mTotalLength = NaN.0D;
+  private double[][] mY;
+  
+  public LinearCurveFit(double[] paramArrayOfDouble, double[][] paramArrayOfDouble1)
+  {
+    int i = paramArrayOfDouble.length;
+    i = paramArrayOfDouble1[0].length;
+    mT = paramArrayOfDouble;
+    mY = paramArrayOfDouble1;
+    if (i > 2)
+    {
+      double d1 = 0.0D;
+      double d2 = d1;
+      i = 0;
+      while (i < paramArrayOfDouble.length)
+      {
+        double d4 = paramArrayOfDouble1[i][0];
+        double d3 = paramArrayOfDouble1[i][0];
+        if (i > 0) {
+          Math.hypot(d4 - d1, d3 - d2);
+        }
+        i += 1;
+        d1 = d4;
+        d2 = d3;
+      }
+      mTotalLength = 0.0D;
+    }
+  }
+  
+  private double getLength2D(double paramDouble)
+  {
+    if (Double.isNaN(mTotalLength)) {
+      return 0.0D;
+    }
+    int i = mT.length;
+    if (paramDouble <= mT[0]) {
+      return 0.0D;
+    }
+    double[] arrayOfDouble = mT;
+    int k = i - 1;
+    if (paramDouble >= arrayOfDouble[k]) {
+      return mTotalLength;
+    }
+    double d2 = 0.0D;
+    double d1 = d2;
+    double d4 = d1;
+    i = 0;
+    double d3 = d1;
+    while (i < k)
+    {
+      double d6 = mY[i][0];
+      double d5 = mY[i][1];
+      d1 = d2;
+      if (i > 0) {
+        d1 = d2 + Math.hypot(d6 - d3, d5 - d4);
+      }
+      if (paramDouble == mT[i]) {
+        return d1;
+      }
+      arrayOfDouble = mT;
+      int j = i + 1;
+      if (paramDouble < arrayOfDouble[j])
+      {
+        d2 = mT[j];
+        d3 = mT[i];
+        paramDouble = (paramDouble - mT[i]) / (d2 - d3);
+        d2 = mY[i][0];
+        d3 = mY[j][0];
+        d4 = mY[i][1];
+        double d7 = mY[j][1];
+        double d8 = 1.0D - paramDouble;
+        return d1 + Math.hypot(d5 - (d4 * d8 + d7 * paramDouble), d6 - (d2 * d8 + d3 * paramDouble));
+      }
+      i = j;
+      d3 = d6;
+      d4 = d5;
+      d2 = d1;
+    }
+    return 0.0D;
+  }
+  
+  public double getPos(double paramDouble, int paramInt)
+  {
+    int j = mT.length;
+    double[] arrayOfDouble = mT;
+    int i = 0;
+    if (paramDouble <= arrayOfDouble[0]) {
+      return mY[0][paramInt];
+    }
+    arrayOfDouble = mT;
+    int k = j - 1;
+    if (paramDouble >= arrayOfDouble[k]) {
+      return mY[k][paramInt];
+    }
+    while (i < k)
+    {
+      if (paramDouble == mT[i]) {
+        return mY[i][paramInt];
+      }
+      arrayOfDouble = mT;
+      j = i + 1;
+      if (paramDouble < arrayOfDouble[j])
+      {
+        double d1 = mT[j];
+        double d2 = mT[i];
+        paramDouble = (paramDouble - mT[i]) / (d1 - d2);
+        return mY[i][paramInt] * (1.0D - paramDouble) + mY[j][paramInt] * paramDouble;
+      }
+      i = j;
+    }
+    return 0.0D;
+  }
+  
+  public void getPos(double paramDouble, double[] paramArrayOfDouble)
+  {
+    int j = mT.length;
+    Object localObject = mY;
+    int k = 0;
+    int i = 0;
+    int n = localObject[0].length;
+    if (paramDouble <= mT[0])
+    {
+      i = 0;
+      while (i < n)
+      {
+        paramArrayOfDouble[i] = mY[0][i];
+        i += 1;
+      }
+      return;
+    }
+    localObject = mT;
+    int i1 = j - 1;
+    if (paramDouble >= localObject[i1])
+    {
+      while (i < n)
+      {
+        paramArrayOfDouble[i] = mY[i1][i];
+        i += 1;
+      }
+      return;
+    }
+    int m;
+    for (i = 0; i < i1; i = m)
+    {
+      if (paramDouble == mT[i])
+      {
+        j = 0;
+        while (j < n)
+        {
+          paramArrayOfDouble[j] = mY[i][j];
+          j += 1;
+        }
+      }
+      localObject = mT;
+      m = i + 1;
+      if (paramDouble < localObject[m])
+      {
+        double d1 = mT[m];
+        double d2 = mT[i];
+        paramDouble = (paramDouble - mT[i]) / (d1 - d2);
+        j = k;
+        while (j < n)
+        {
+          paramArrayOfDouble[j] = (mY[i][j] * (1.0D - paramDouble) + mY[m][j] * paramDouble);
+          j += 1;
+        }
+        return;
+      }
+    }
+  }
+  
+  public void getPos(double paramDouble, float[] paramArrayOfFloat)
+  {
+    int j = mT.length;
+    Object localObject = mY;
+    int k = 0;
+    int i = 0;
+    int n = localObject[0].length;
+    if (paramDouble <= mT[0])
+    {
+      i = 0;
+      while (i < n)
+      {
+        paramArrayOfFloat[i] = ((float)mY[0][i]);
+        i += 1;
+      }
+      return;
+    }
+    localObject = mT;
+    int i1 = j - 1;
+    if (paramDouble >= localObject[i1])
+    {
+      while (i < n)
+      {
+        paramArrayOfFloat[i] = ((float)mY[i1][i]);
+        i += 1;
+      }
+      return;
+    }
+    int m;
+    for (i = 0; i < i1; i = m)
+    {
+      if (paramDouble == mT[i])
+      {
+        j = 0;
+        while (j < n)
+        {
+          paramArrayOfFloat[j] = ((float)mY[i][j]);
+          j += 1;
+        }
+      }
+      localObject = mT;
+      m = i + 1;
+      if (paramDouble < localObject[m])
+      {
+        double d1 = mT[m];
+        double d2 = mT[i];
+        paramDouble = (paramDouble - mT[i]) / (d1 - d2);
+        j = k;
+        while (j < n)
+        {
+          paramArrayOfFloat[j] = ((float)(mY[i][j] * (1.0D - paramDouble) + mY[m][j] * paramDouble));
+          j += 1;
+        }
+        return;
+      }
+    }
+  }
+  
+  public double getSlope(double paramDouble, int paramInt)
+  {
+    int k = mT.length;
+    double[] arrayOfDouble = mT;
+    int i = 0;
+    int j;
+    if (paramDouble < arrayOfDouble[0])
+    {
+      paramDouble = mT[0];
+    }
+    else
+    {
+      arrayOfDouble = mT;
+      j = k - 1;
+      if (paramDouble >= arrayOfDouble[j]) {
+        paramDouble = mT[j];
+      }
+    }
+    while (i < k - 1)
+    {
+      arrayOfDouble = mT;
+      j = i + 1;
+      if (paramDouble <= arrayOfDouble[j])
+      {
+        paramDouble = mT[j];
+        double d1 = mT[i];
+        double d2 = mT[i];
+        d2 = mY[i][paramInt];
+        return (mY[j][paramInt] - d2) / (paramDouble - d1);
+      }
+      i = j;
+    }
+    return 0.0D;
+  }
+  
+  public void getSlope(double paramDouble, double[] paramArrayOfDouble)
+  {
+    int n = mT.length;
+    Object localObject = mY;
+    int j = 0;
+    int m = localObject[0].length;
+    if (paramDouble <= mT[0])
+    {
+      paramDouble = mT[0];
+    }
+    else
+    {
+      localObject = mT;
+      i = n - 1;
+      if (paramDouble >= localObject[i]) {
+        paramDouble = mT[i];
+      }
+    }
+    int k;
+    for (int i = 0; i < n - 1; i = k)
+    {
+      localObject = mT;
+      k = i + 1;
+      if (paramDouble <= localObject[k])
+      {
+        paramDouble = mT[k];
+        double d1 = mT[i];
+        double d2 = mT[i];
+        while (j < m)
+        {
+          d2 = mY[i][j];
+          paramArrayOfDouble[j] = ((mY[k][j] - d2) / (paramDouble - d1));
+          j += 1;
+        }
+      }
+    }
+  }
+  
+  public double[] getTimePoints()
+  {
+    return mT;
+  }
+}

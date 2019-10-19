@@ -1,0 +1,42 @@
+package com.google.android.gms.internal.firebase_messaging;
+
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
+
+final class zzf
+  extends WeakReference<Throwable>
+{
+  private final int zzg;
+  
+  public zzf(Throwable paramThrowable, ReferenceQueue<Throwable> paramReferenceQueue)
+  {
+    super(paramThrowable, paramReferenceQueue);
+    if (paramThrowable != null)
+    {
+      zzg = System.identityHashCode(paramThrowable);
+      return;
+    }
+    throw new NullPointerException("The referent cannot be null");
+  }
+  
+  public final boolean equals(Object paramObject)
+  {
+    if (paramObject != null)
+    {
+      if (paramObject.getClass() != getClass()) {
+        return false;
+      }
+      if (this == paramObject) {
+        return true;
+      }
+      paramObject = (zzf)paramObject;
+      return (zzg == zzg) && (get() == paramObject.get());
+    }
+    return false;
+  }
+  
+  public final int hashCode()
+  {
+    return zzg;
+  }
+}

@@ -1,0 +1,76 @@
+package com.google.android.gms.common.api.internal;
+
+import android.os.DeadObjectException;
+import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import com.google.android.gms.common.Feature;
+import com.google.android.gms.common.api.Api.AnyClient;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.TaskCompletionSource;
+
+public final class zag<ResultT>
+  extends zac
+{
+  private final TaskCompletionSource<ResultT> zacm;
+  private final TaskApiCall<Api.AnyClient, ResultT> zacq;
+  private final StatusExceptionMapper zacr;
+  
+  public zag(int paramInt, TaskApiCall<Api.AnyClient, ResultT> paramTaskApiCall, TaskCompletionSource<ResultT> paramTaskCompletionSource, StatusExceptionMapper paramStatusExceptionMapper)
+  {
+    super(paramInt);
+    zacm = paramTaskCompletionSource;
+    zacq = paramTaskApiCall;
+    zacr = paramStatusExceptionMapper;
+  }
+  
+  public final void zaa(@NonNull Status paramStatus)
+  {
+    zacm.trySetException(zacr.getException(paramStatus));
+  }
+  
+  public final void zaa(GoogleApiManager.zaa<?> paramZaa)
+    throws DeadObjectException
+  {
+    try
+    {
+      zacq.doExecute(paramZaa.zaab(), zacm);
+      return;
+    }
+    catch (RuntimeException paramZaa)
+    {
+      zaa(paramZaa);
+      return;
+    }
+    catch (RemoteException paramZaa)
+    {
+      zaa(zab.zab(paramZaa));
+      return;
+    }
+    catch (DeadObjectException paramZaa)
+    {
+      throw paramZaa;
+    }
+  }
+  
+  public final void zaa(@NonNull zaab paramZaab, boolean paramBoolean)
+  {
+    paramZaab.zaa(zacm, paramBoolean);
+  }
+  
+  public final void zaa(@NonNull RuntimeException paramRuntimeException)
+  {
+    zacm.trySetException(paramRuntimeException);
+  }
+  
+  @Nullable
+  public final Feature[] zab(GoogleApiManager.zaa<?> paramZaa)
+  {
+    return zacq.zabt();
+  }
+  
+  public final boolean zac(GoogleApiManager.zaa<?> paramZaa)
+  {
+    return zacq.shouldAutoResolveMissingFeatures();
+  }
+}

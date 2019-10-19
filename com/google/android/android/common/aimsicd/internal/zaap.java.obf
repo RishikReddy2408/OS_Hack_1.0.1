@@ -1,0 +1,20 @@
+package com.google.android.gms.common.api.internal;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.internal.BaseGmsClient.ConnectionProgressReportCallbacks;
+import javax.annotation.concurrent.GuardedBy;
+
+final class zaap
+  extends zabf
+{
+  zaap(zaan paramZaan, zabd paramZabd, BaseGmsClient.ConnectionProgressReportCallbacks paramConnectionProgressReportCallbacks)
+  {
+    super(paramZabd);
+  }
+  
+  @GuardedBy("mLock")
+  public final void zaan()
+  {
+    zagn.onReportServiceBinding(new ConnectionResult(16, null));
+  }
+}

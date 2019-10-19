@@ -1,0 +1,357 @@
+package com.google.android.gms.common.api;
+
+import android.accounts.Account;
+import android.app.Activity;
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.api.internal.ApiExceptionMapper;
+import com.google.android.gms.common.api.internal.BaseImplementation.ApiMethodImpl;
+import com.google.android.gms.common.api.internal.BasePendingResult;
+import com.google.android.gms.common.api.internal.GoogleApiManager;
+import com.google.android.gms.common.api.internal.GoogleApiManager.zaa;
+import com.google.android.gms.common.api.internal.ListenerHolder;
+import com.google.android.gms.common.api.internal.ListenerHolder.ListenerKey;
+import com.google.android.gms.common.api.internal.ListenerHolders;
+import com.google.android.gms.common.api.internal.RegisterListenerMethod;
+import com.google.android.gms.common.api.internal.RegistrationMethods;
+import com.google.android.gms.common.api.internal.StatusExceptionMapper;
+import com.google.android.gms.common.api.internal.TaskApiCall;
+import com.google.android.gms.common.api.internal.UnregisterListenerMethod;
+import com.google.android.gms.common.api.internal.zaae;
+import com.google.android.gms.common.api.internal.zabp;
+import com.google.android.gms.common.api.internal.zace;
+import com.google.android.gms.common.api.internal.zai;
+import com.google.android.gms.common.internal.ClientSettings;
+import com.google.android.gms.common.internal.ClientSettings.Builder;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import java.util.Collection;
+import java.util.Collections;
+
+@KeepForSdk
+public class GoogleApi<O extends Api.ApiOptions>
+{
+  private final Api<O> mApi;
+  private final Context mContext;
+  private final int mId;
+  private final O zabh;
+  private final zai<O> zabi;
+  private final Looper zabj;
+  private final GoogleApiClient zabk;
+  private final StatusExceptionMapper zabl;
+  protected final GoogleApiManager zabm;
+  
+  @MainThread
+  @KeepForSdk
+  public GoogleApi(@NonNull Activity paramActivity, Api<O> paramApi, O paramO, Settings paramSettings)
+  {
+    Preconditions.checkNotNull(paramActivity, "Null activity is not permitted.");
+    Preconditions.checkNotNull(paramApi, "Api must not be null.");
+    Preconditions.checkNotNull(paramSettings, "Settings must not be null; use Settings.DEFAULT_SETTINGS instead.");
+    mContext = paramActivity.getApplicationContext();
+    mApi = paramApi;
+    zabh = paramO;
+    zabj = zabo;
+    zabi = zai.zaa(mApi, zabh);
+    zabk = new zabp(this);
+    zabm = GoogleApiManager.zab(mContext);
+    mId = zabm.zabd();
+    zabl = zabn;
+    if (!(paramActivity instanceof GoogleApiActivity)) {
+      zaae.zaa(paramActivity, zabm, zabi);
+    }
+    zabm.zaa(this);
+  }
+  
+  @Deprecated
+  @KeepForSdk
+  public GoogleApi(@NonNull Activity paramActivity, Api<O> paramApi, O paramO, StatusExceptionMapper paramStatusExceptionMapper)
+  {
+    this(paramActivity, paramApi, paramO, new GoogleApi.Settings.Builder().setMapper(paramStatusExceptionMapper).setLooper(paramActivity.getMainLooper()).build());
+  }
+  
+  @KeepForSdk
+  protected GoogleApi(@NonNull Context paramContext, Api<O> paramApi, Looper paramLooper)
+  {
+    Preconditions.checkNotNull(paramContext, "Null context is not permitted.");
+    Preconditions.checkNotNull(paramApi, "Api must not be null.");
+    Preconditions.checkNotNull(paramLooper, "Looper must not be null.");
+    mContext = paramContext.getApplicationContext();
+    mApi = paramApi;
+    zabh = null;
+    zabj = paramLooper;
+    zabi = zai.zaa(paramApi);
+    zabk = new zabp(this);
+    zabm = GoogleApiManager.zab(mContext);
+    mId = zabm.zabd();
+    zabl = new ApiExceptionMapper();
+  }
+  
+  @Deprecated
+  @KeepForSdk
+  public GoogleApi(@NonNull Context paramContext, Api<O> paramApi, O paramO, Looper paramLooper, StatusExceptionMapper paramStatusExceptionMapper)
+  {
+    this(paramContext, paramApi, paramO, new GoogleApi.Settings.Builder().setLooper(paramLooper).setMapper(paramStatusExceptionMapper).build());
+  }
+  
+  @KeepForSdk
+  public GoogleApi(@NonNull Context paramContext, Api<O> paramApi, O paramO, Settings paramSettings)
+  {
+    Preconditions.checkNotNull(paramContext, "Null context is not permitted.");
+    Preconditions.checkNotNull(paramApi, "Api must not be null.");
+    Preconditions.checkNotNull(paramSettings, "Settings must not be null; use Settings.DEFAULT_SETTINGS instead.");
+    mContext = paramContext.getApplicationContext();
+    mApi = paramApi;
+    zabh = paramO;
+    zabj = zabo;
+    zabi = zai.zaa(mApi, zabh);
+    zabk = new zabp(this);
+    zabm = GoogleApiManager.zab(mContext);
+    mId = zabm.zabd();
+    zabl = zabn;
+    zabm.zaa(this);
+  }
+  
+  @Deprecated
+  @KeepForSdk
+  public GoogleApi(@NonNull Context paramContext, Api<O> paramApi, O paramO, StatusExceptionMapper paramStatusExceptionMapper)
+  {
+    this(paramContext, paramApi, paramO, new GoogleApi.Settings.Builder().setMapper(paramStatusExceptionMapper).build());
+  }
+  
+  private final <A extends Api.AnyClient, T extends BaseImplementation.ApiMethodImpl<? extends Result, A>> T zaa(int paramInt, @NonNull T paramT)
+  {
+    paramT.zau();
+    zabm.zaa(this, paramInt, paramT);
+    return paramT;
+  }
+  
+  private final <TResult, A extends Api.AnyClient> Task<TResult> zaa(int paramInt, @NonNull TaskApiCall<A, TResult> paramTaskApiCall)
+  {
+    TaskCompletionSource localTaskCompletionSource = new TaskCompletionSource();
+    zabm.zaa(this, paramInt, paramTaskApiCall, localTaskCompletionSource, zabl);
+    return localTaskCompletionSource.getTask();
+  }
+  
+  @KeepForSdk
+  public GoogleApiClient asGoogleApiClient()
+  {
+    return zabk;
+  }
+  
+  @KeepForSdk
+  protected ClientSettings.Builder createClientSettingsBuilder()
+  {
+    ClientSettings.Builder localBuilder = new ClientSettings.Builder();
+    if ((zabh instanceof Api.ApiOptions.HasGoogleSignInAccountOptions))
+    {
+      localObject = ((Api.ApiOptions.HasGoogleSignInAccountOptions)zabh).getGoogleSignInAccount();
+      if (localObject != null)
+      {
+        localObject = ((GoogleSignInAccount)localObject).getAccount();
+        break label71;
+      }
+    }
+    if ((zabh instanceof Api.ApiOptions.HasAccountOptions)) {
+      localObject = ((Api.ApiOptions.HasAccountOptions)zabh).getAccount();
+    } else {
+      localObject = null;
+    }
+    label71:
+    localBuilder = localBuilder.setAccount((Account)localObject);
+    if ((zabh instanceof Api.ApiOptions.HasGoogleSignInAccountOptions))
+    {
+      localObject = ((Api.ApiOptions.HasGoogleSignInAccountOptions)zabh).getGoogleSignInAccount();
+      if (localObject != null)
+      {
+        localObject = ((GoogleSignInAccount)localObject).getRequestedScopes();
+        break label116;
+      }
+    }
+    Object localObject = Collections.emptySet();
+    label116:
+    return localBuilder.addAllRequiredScopes((Collection)localObject).setRealClientClassName(mContext.getClass().getName()).setRealClientPackageName(mContext.getPackageName());
+  }
+  
+  @KeepForSdk
+  protected Task<Boolean> disconnectService()
+  {
+    return zabm.zac(this);
+  }
+  
+  @KeepForSdk
+  public <A extends Api.AnyClient, T extends BaseImplementation.ApiMethodImpl<? extends Result, A>> T doBestEffortWrite(@NonNull T paramT)
+  {
+    return zaa(2, paramT);
+  }
+  
+  @KeepForSdk
+  public <TResult, A extends Api.AnyClient> Task<TResult> doBestEffortWrite(TaskApiCall<A, TResult> paramTaskApiCall)
+  {
+    return zaa(2, paramTaskApiCall);
+  }
+  
+  @KeepForSdk
+  public <A extends Api.AnyClient, T extends BaseImplementation.ApiMethodImpl<? extends Result, A>> T doRead(@NonNull T paramT)
+  {
+    return zaa(0, paramT);
+  }
+  
+  @KeepForSdk
+  public <TResult, A extends Api.AnyClient> Task<TResult> doRead(TaskApiCall<A, TResult> paramTaskApiCall)
+  {
+    return zaa(0, paramTaskApiCall);
+  }
+  
+  @Deprecated
+  @KeepForSdk
+  public <A extends Api.AnyClient, T extends RegisterListenerMethod<A, ?>, U extends UnregisterListenerMethod<A, ?>> Task<Void> doRegisterEventListener(@NonNull T paramT, U paramU)
+  {
+    Preconditions.checkNotNull(paramT);
+    Preconditions.checkNotNull(paramU);
+    Preconditions.checkNotNull(paramT.getListenerKey(), "Listener has already been released.");
+    Preconditions.checkNotNull(paramU.getListenerKey(), "Listener has already been released.");
+    Preconditions.checkArgument(paramT.getListenerKey().equals(paramU.getListenerKey()), "Listener registration and unregistration methods must be constructed with the same ListenerHolder.");
+    return zabm.zaa(this, paramT, paramU);
+  }
+  
+  @KeepForSdk
+  public <A extends Api.AnyClient> Task<Void> doRegisterEventListener(@NonNull RegistrationMethods<A, ?> paramRegistrationMethods)
+  {
+    Preconditions.checkNotNull(paramRegistrationMethods);
+    Preconditions.checkNotNull(zajy.getListenerKey(), "Listener has already been released.");
+    Preconditions.checkNotNull(zajz.getListenerKey(), "Listener has already been released.");
+    return zabm.zaa(this, zajy, zajz);
+  }
+  
+  @KeepForSdk
+  public Task<Boolean> doUnregisterEventListener(@NonNull ListenerHolder.ListenerKey<?> paramListenerKey)
+  {
+    Preconditions.checkNotNull(paramListenerKey, "Listener key cannot be null.");
+    return zabm.zaa(this, paramListenerKey);
+  }
+  
+  @KeepForSdk
+  public <A extends Api.AnyClient, T extends BaseImplementation.ApiMethodImpl<? extends Result, A>> T doWrite(@NonNull T paramT)
+  {
+    return zaa(1, paramT);
+  }
+  
+  @KeepForSdk
+  public <TResult, A extends Api.AnyClient> Task<TResult> doWrite(TaskApiCall<A, TResult> paramTaskApiCall)
+  {
+    return zaa(1, paramTaskApiCall);
+  }
+  
+  public final Api<O> getApi()
+  {
+    return mApi;
+  }
+  
+  @KeepForSdk
+  public O getApiOptions()
+  {
+    return zabh;
+  }
+  
+  @KeepForSdk
+  public Context getApplicationContext()
+  {
+    return mContext;
+  }
+  
+  public final int getInstanceId()
+  {
+    return mId;
+  }
+  
+  @KeepForSdk
+  public Looper getLooper()
+  {
+    return zabj;
+  }
+  
+  @KeepForSdk
+  public <L> ListenerHolder<L> registerListener(@NonNull L paramL, String paramString)
+  {
+    return ListenerHolders.createListenerHolder(paramL, zabj, paramString);
+  }
+  
+  @WorkerThread
+  public Api.Client zaa(Looper paramLooper, GoogleApiManager.zaa<O> paramZaa)
+  {
+    ClientSettings localClientSettings = createClientSettingsBuilder().build();
+    return mApi.zai().buildClient(mContext, paramLooper, localClientSettings, zabh, paramZaa, paramZaa);
+  }
+  
+  public zace zaa(Context paramContext, Handler paramHandler)
+  {
+    return new zace(paramContext, paramHandler, createClientSettingsBuilder().build());
+  }
+  
+  public final zai<O> zak()
+  {
+    return zabi;
+  }
+  
+  @KeepForSdk
+  public static class Settings
+  {
+    @KeepForSdk
+    public static final Settings DEFAULT_SETTINGS = new Builder().build();
+    public final StatusExceptionMapper zabn;
+    public final Looper zabo;
+    
+    @KeepForSdk
+    private Settings(StatusExceptionMapper paramStatusExceptionMapper, Account paramAccount, Looper paramLooper)
+    {
+      zabn = paramStatusExceptionMapper;
+      zabo = paramLooper;
+    }
+    
+    @KeepForSdk
+    public static class Builder
+    {
+      private Looper zabj;
+      private StatusExceptionMapper zabl;
+      
+      @KeepForSdk
+      public Builder() {}
+      
+      @KeepForSdk
+      public GoogleApi.Settings build()
+      {
+        if (zabl == null) {
+          zabl = new ApiExceptionMapper();
+        }
+        if (zabj == null) {
+          zabj = Looper.getMainLooper();
+        }
+        return new GoogleApi.Settings(zabl, null, zabj, null);
+      }
+      
+      @KeepForSdk
+      public Builder setLooper(Looper paramLooper)
+      {
+        Preconditions.checkNotNull(paramLooper, "Looper must not be null.");
+        zabj = paramLooper;
+        return this;
+      }
+      
+      @KeepForSdk
+      public Builder setMapper(StatusExceptionMapper paramStatusExceptionMapper)
+      {
+        Preconditions.checkNotNull(paramStatusExceptionMapper, "StatusExceptionMapper must not be null.");
+        zabl = paramStatusExceptionMapper;
+        return this;
+      }
+    }
+  }
+}

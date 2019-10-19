@@ -1,0 +1,346 @@
+package com.google.android.gms.common.util;
+
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.internal.Objects;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+
+@KeepForSdk
+@VisibleForTesting
+public final class ArrayUtils
+{
+  private ArrayUtils() {}
+  
+  @KeepForSdk
+  public static <T> T[] appendToArray(T[] paramArrayOfT, T paramT)
+  {
+    if ((paramArrayOfT == null) && (paramT == null)) {
+      throw new IllegalArgumentException("Cannot generate array of generic type w/o class info");
+    }
+    if (paramArrayOfT == null) {
+      paramArrayOfT = (Object[])Array.newInstance(paramT.getClass(), 1);
+    } else {
+      paramArrayOfT = Arrays.copyOf(paramArrayOfT, paramArrayOfT.length + 1);
+    }
+    paramArrayOfT[(paramArrayOfT.length - 1)] = paramT;
+    return paramArrayOfT;
+  }
+  
+  @KeepForSdk
+  public static <T> T[] concat(T[]... paramVarArgs)
+  {
+    if (paramVarArgs.length == 0) {
+      return (Object[])Array.newInstance(paramVarArgs.getClass(), 0);
+    }
+    int i = 0;
+    int j = 0;
+    while (i < paramVarArgs.length)
+    {
+      j += paramVarArgs[i].length;
+      i += 1;
+    }
+    Object[] arrayOfObject = Arrays.copyOf(paramVarArgs[0], j);
+    j = paramVarArgs[0].length;
+    i = 1;
+    while (i < paramVarArgs.length)
+    {
+      T[] arrayOfT = paramVarArgs[i];
+      System.arraycopy(arrayOfT, 0, arrayOfObject, j, arrayOfT.length);
+      j += arrayOfT.length;
+      i += 1;
+    }
+    return arrayOfObject;
+  }
+  
+  @KeepForSdk
+  public static byte[] concatByteArrays(byte[]... paramVarArgs)
+  {
+    if (paramVarArgs.length == 0) {
+      return new byte[0];
+    }
+    int i = 0;
+    int j = 0;
+    while (i < paramVarArgs.length)
+    {
+      j += paramVarArgs[i].length;
+      i += 1;
+    }
+    byte[] arrayOfByte1 = Arrays.copyOf(paramVarArgs[0], j);
+    j = paramVarArgs[0].length;
+    i = 1;
+    while (i < paramVarArgs.length)
+    {
+      byte[] arrayOfByte2 = paramVarArgs[i];
+      System.arraycopy(arrayOfByte2, 0, arrayOfByte1, j, arrayOfByte2.length);
+      j += arrayOfByte2.length;
+      i += 1;
+    }
+    return arrayOfByte1;
+  }
+  
+  @KeepForSdk
+  public static boolean contains(int[] paramArrayOfInt, int paramInt)
+  {
+    if (paramArrayOfInt == null) {
+      return false;
+    }
+    int j = paramArrayOfInt.length;
+    int i = 0;
+    while (i < j)
+    {
+      if (paramArrayOfInt[i] == paramInt) {
+        return true;
+      }
+      i += 1;
+    }
+    return false;
+  }
+  
+  @KeepForSdk
+  public static <T> boolean contains(T[] paramArrayOfT, T paramT)
+  {
+    int j;
+    if (paramArrayOfT != null) {
+      j = paramArrayOfT.length;
+    } else {
+      j = 0;
+    }
+    int i = 0;
+    while (i < j)
+    {
+      if (Objects.equal(paramArrayOfT[i], paramT)) {
+        break label41;
+      }
+      i += 1;
+    }
+    i = -1;
+    label41:
+    return i >= 0;
+  }
+  
+  @KeepForSdk
+  public static <T> ArrayList<T> newArrayList()
+  {
+    return new ArrayList();
+  }
+  
+  @KeepForSdk
+  public static <T> T[] removeAll(T[] paramArrayOfT1, T... paramVarArgs)
+  {
+    if (paramArrayOfT1 == null) {
+      return null;
+    }
+    if ((paramVarArgs != null) && (paramVarArgs.length != 0))
+    {
+      Object[] arrayOfObject = (Object[])Array.newInstance(paramVarArgs.getClass().getComponentType(), paramArrayOfT1.length);
+      int i = paramVarArgs.length;
+      int k = 0;
+      int j;
+      T ?;
+      if (i == 1)
+      {
+        m = paramArrayOfT1.length;
+        k = 0;
+        for (i = 0;; i = j)
+        {
+          j = i;
+          if (k >= m) {
+            break;
+          }
+          ? = paramArrayOfT1[k];
+          j = i;
+          if (!Objects.equal(paramVarArgs[0], ?))
+          {
+            arrayOfObject[i] = ?;
+            j = i + 1;
+          }
+          k += 1;
+        }
+      }
+      int m = paramArrayOfT1.length;
+      for (i = 0;; i = j)
+      {
+        j = i;
+        if (k >= m) {
+          break;
+        }
+        ? = paramArrayOfT1[k];
+        j = i;
+        if (!contains(paramVarArgs, ?))
+        {
+          arrayOfObject[i] = ?;
+          j = i + 1;
+        }
+        k += 1;
+      }
+      if (arrayOfObject == null) {
+        return null;
+      }
+      paramArrayOfT1 = arrayOfObject;
+      if (j != arrayOfObject.length) {
+        paramArrayOfT1 = Arrays.copyOf(arrayOfObject, j);
+      }
+      return paramArrayOfT1;
+    }
+    return Arrays.copyOf(paramArrayOfT1, paramArrayOfT1.length);
+  }
+  
+  @KeepForSdk
+  public static <T> ArrayList<T> toArrayList(T[] paramArrayOfT)
+  {
+    int j = paramArrayOfT.length;
+    ArrayList localArrayList = new ArrayList(j);
+    int i = 0;
+    while (i < j)
+    {
+      localArrayList.add(paramArrayOfT[i]);
+      i += 1;
+    }
+    return localArrayList;
+  }
+  
+  @KeepForSdk
+  public static int[] toPrimitiveArray(Collection<Integer> paramCollection)
+  {
+    int i = 0;
+    if ((paramCollection != null) && (paramCollection.size() != 0))
+    {
+      int[] arrayOfInt = new int[paramCollection.size()];
+      paramCollection = paramCollection.iterator();
+      while (paramCollection.hasNext())
+      {
+        arrayOfInt[i] = ((Integer)paramCollection.next()).intValue();
+        i += 1;
+      }
+      return arrayOfInt;
+    }
+    return new int[0];
+  }
+  
+  @KeepForSdk
+  public static Integer[] toWrapperArray(int[] paramArrayOfInt)
+  {
+    if (paramArrayOfInt == null) {
+      return null;
+    }
+    int j = paramArrayOfInt.length;
+    Integer[] arrayOfInteger = new Integer[j];
+    int i = 0;
+    while (i < j)
+    {
+      arrayOfInteger[i] = Integer.valueOf(paramArrayOfInt[i]);
+      i += 1;
+    }
+    return arrayOfInteger;
+  }
+  
+  @KeepForSdk
+  public static void writeArray(StringBuilder paramStringBuilder, double[] paramArrayOfDouble)
+  {
+    int j = paramArrayOfDouble.length;
+    int i = 0;
+    while (i < j)
+    {
+      if (i != 0) {
+        paramStringBuilder.append(",");
+      }
+      paramStringBuilder.append(Double.toString(paramArrayOfDouble[i]));
+      i += 1;
+    }
+  }
+  
+  @KeepForSdk
+  public static void writeArray(StringBuilder paramStringBuilder, float[] paramArrayOfFloat)
+  {
+    int j = paramArrayOfFloat.length;
+    int i = 0;
+    while (i < j)
+    {
+      if (i != 0) {
+        paramStringBuilder.append(",");
+      }
+      paramStringBuilder.append(Float.toString(paramArrayOfFloat[i]));
+      i += 1;
+    }
+  }
+  
+  @KeepForSdk
+  public static void writeArray(StringBuilder paramStringBuilder, int[] paramArrayOfInt)
+  {
+    int j = paramArrayOfInt.length;
+    int i = 0;
+    while (i < j)
+    {
+      if (i != 0) {
+        paramStringBuilder.append(",");
+      }
+      paramStringBuilder.append(Integer.toString(paramArrayOfInt[i]));
+      i += 1;
+    }
+  }
+  
+  @KeepForSdk
+  public static void writeArray(StringBuilder paramStringBuilder, long[] paramArrayOfLong)
+  {
+    int j = paramArrayOfLong.length;
+    int i = 0;
+    while (i < j)
+    {
+      if (i != 0) {
+        paramStringBuilder.append(",");
+      }
+      paramStringBuilder.append(Long.toString(paramArrayOfLong[i]));
+      i += 1;
+    }
+  }
+  
+  @KeepForSdk
+  public static <T> void writeArray(StringBuilder paramStringBuilder, T[] paramArrayOfT)
+  {
+    int j = paramArrayOfT.length;
+    int i = 0;
+    while (i < j)
+    {
+      if (i != 0) {
+        paramStringBuilder.append(",");
+      }
+      paramStringBuilder.append(paramArrayOfT[i].toString());
+      i += 1;
+    }
+  }
+  
+  @KeepForSdk
+  public static void writeArray(StringBuilder paramStringBuilder, boolean[] paramArrayOfBoolean)
+  {
+    int j = paramArrayOfBoolean.length;
+    int i = 0;
+    while (i < j)
+    {
+      if (i != 0) {
+        paramStringBuilder.append(",");
+      }
+      paramStringBuilder.append(Boolean.toString(paramArrayOfBoolean[i]));
+      i += 1;
+    }
+  }
+  
+  @KeepForSdk
+  public static void writeStringArray(StringBuilder paramStringBuilder, String[] paramArrayOfString)
+  {
+    int j = paramArrayOfString.length;
+    int i = 0;
+    while (i < j)
+    {
+      if (i != 0) {
+        paramStringBuilder.append(",");
+      }
+      paramStringBuilder.append("\"");
+      paramStringBuilder.append(paramArrayOfString[i]);
+      paramStringBuilder.append("\"");
+      i += 1;
+    }
+  }
+}

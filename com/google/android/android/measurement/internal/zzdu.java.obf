@@ -1,0 +1,46 @@
+package com.google.android.gms.measurement.internal;
+
+import android.os.RemoteException;
+import java.util.concurrent.atomic.AtomicReference;
+
+final class zzdu
+  implements Runnable
+{
+  zzdu(zzdr paramZzdr, AtomicReference paramAtomicReference, zzh paramZzh) {}
+  
+  public final void run()
+  {
+    try
+    {
+      synchronized (zzash)
+      {
+        Object localObject1 = zzdr.zzd(zzasg);
+        if (localObject1 == null) {
+          zzasg.zzgo().zzjd().zzbx("Failed to get app instance id");
+        }
+        try
+        {
+          zzash.notify();
+          return;
+        }
+        finally {}
+        zzash.set(((zzag)localObject1).zzc(zzaqn));
+        localObject1 = (String)zzash.get();
+        if (localObject1 != null)
+        {
+          zzasg.zzge().zzcm((String)localObject1);
+          zzasg.zzgp().zzanl.zzcc((String)localObject1);
+        }
+        zzdr.zze(zzasg);
+        zzash.notify();
+      }
+      zzash.notify();
+    }
+    catch (RemoteException localRemoteException)
+    {
+      zzasg.zzgo().zzjd().zzg("Failed to get app instance id", localRemoteException);
+      zzash.notify();
+      return;
+    }
+  }
+}

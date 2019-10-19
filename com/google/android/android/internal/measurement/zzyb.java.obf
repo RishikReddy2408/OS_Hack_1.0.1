@@ -1,0 +1,80 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.IOException;
+
+abstract class zzyb<T, B>
+{
+  zzyb() {}
+  
+  abstract void zza(B paramB, int paramInt, long paramLong);
+  
+  abstract void zza(B paramB, int paramInt, zzud paramZzud);
+  
+  abstract void zza(B paramB, int paramInt, T paramT);
+  
+  abstract void zza(T paramT, zzyw paramZzyw)
+    throws IOException;
+  
+  abstract boolean zza(zzxi paramZzxi);
+  
+  final boolean zza(B paramB, zzxi paramZzxi)
+    throws IOException
+  {
+    int i = paramZzxi.getTag();
+    int j = i >>> 3;
+    switch (i & 0x7)
+    {
+    default: 
+      throw zzvt.zzwo();
+    case 5: 
+      zzc(paramB, j, paramZzxi.zzul());
+      return true;
+    case 4: 
+      return false;
+    case 3: 
+      Object localObject = zzye();
+      while ((paramZzxi.zzve() != Integer.MAX_VALUE) && (zza(localObject, paramZzxi))) {}
+      if ((j << 3 | 0x4) == paramZzxi.getTag())
+      {
+        zza(paramB, j, zzab(localObject));
+        return true;
+      }
+      throw zzvt.zzwn();
+    case 2: 
+      zza(paramB, j, paramZzxi.zzuo());
+      return true;
+    case 1: 
+      zzb(paramB, j, paramZzxi.zzuk());
+      return true;
+    }
+    zza(paramB, j, paramZzxi.zzui());
+    return true;
+  }
+  
+  abstract T zzab(B paramB);
+  
+  abstract int zzae(T paramT);
+  
+  abstract T zzah(Object paramObject);
+  
+  abstract B zzai(Object paramObject);
+  
+  abstract int zzaj(T paramT);
+  
+  abstract void zzb(B paramB, int paramInt, long paramLong);
+  
+  abstract void zzc(B paramB, int paramInt1, int paramInt2);
+  
+  abstract void zzc(T paramT, zzyw paramZzyw)
+    throws IOException;
+  
+  abstract void zzf(Object paramObject, T paramT);
+  
+  abstract void zzg(Object paramObject, B paramB);
+  
+  abstract T zzh(T paramT1, T paramT2);
+  
+  abstract void zzu(Object paramObject);
+  
+  abstract B zzye();
+}

@@ -1,0 +1,7 @@
+package com.google.android.gms.common.server.response;
+
+final class zac
+  implements FastParser.zaa<Float>
+{
+  zac() {}
+}

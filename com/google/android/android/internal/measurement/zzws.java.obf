@@ -1,0 +1,8 @@
+package com.google.android.gms.internal.measurement;
+
+abstract interface zzws
+{
+  public abstract boolean zze(Class<?> paramClass);
+  
+  public abstract zzwr zzf(Class<?> paramClass);
+}

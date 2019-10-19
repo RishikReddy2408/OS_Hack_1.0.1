@@ -1,0 +1,50 @@
+package com.google.android.gms.measurement.internal;
+
+import android.content.ComponentName;
+import android.content.ServiceConnection;
+import android.os.IBinder;
+import android.support.annotation.MainThread;
+import com.google.android.gms.internal.measurement.zzv;
+
+public final class zzbh
+  implements ServiceConnection
+{
+  private final String packageName;
+  
+  zzbh(zzbg paramZzbg, String paramString)
+  {
+    packageName = paramString;
+  }
+  
+  @MainThread
+  public final void onServiceConnected(ComponentName paramComponentName, IBinder paramIBinder)
+  {
+    if (paramIBinder == null)
+    {
+      zzaoe.zzadj.zzgo().zzjg().zzbx("Install Referrer connection returned with null binder");
+      return;
+    }
+    try
+    {
+      paramComponentName = zzv.zza(paramIBinder);
+      if (paramComponentName == null)
+      {
+        zzaoe.zzadj.zzgo().zzjg().zzbx("Install Referrer Service implementation was not found");
+        return;
+      }
+      zzaoe.zzadj.zzgo().zzjj().zzbx("Install Referrer Service connected");
+      zzaoe.zzadj.zzgn().zzc(new zzbi(this, paramComponentName, this));
+      return;
+    }
+    catch (Exception paramComponentName)
+    {
+      zzaoe.zzadj.zzgo().zzjg().zzg("Exception occurred while calling Install Referrer API", paramComponentName);
+    }
+  }
+  
+  @MainThread
+  public final void onServiceDisconnected(ComponentName paramComponentName)
+  {
+    zzaoe.zzadj.zzgo().zzjj().zzbx("Install Referrer Service disconnected");
+  }
+}

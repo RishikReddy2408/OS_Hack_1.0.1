@@ -1,0 +1,40 @@
+package com.google.android.gms.internal.measurement;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
+
+final class zzxn
+  extends zzxm<FieldDescriptorType, Object>
+{
+  zzxn(int paramInt)
+  {
+    super(paramInt, null);
+  }
+  
+  public final void zzsm()
+  {
+    if (!isImmutable())
+    {
+      int i = 0;
+      while (i < zzxw())
+      {
+        localObject = zzbu(i);
+        if (((zzvf)((Map.Entry)localObject).getKey()).zzvy()) {
+          ((Map.Entry)localObject).setValue(Collections.unmodifiableList((List)((Map.Entry)localObject).getValue()));
+        }
+        i += 1;
+      }
+      Object localObject = zzxx().iterator();
+      while (((Iterator)localObject).hasNext())
+      {
+        Map.Entry localEntry = (Map.Entry)((Iterator)localObject).next();
+        if (((zzvf)localEntry.getKey()).zzvy()) {
+          localEntry.setValue(Collections.unmodifiableList((List)localEntry.getValue()));
+        }
+      }
+    }
+    super.zzsm();
+  }
+}

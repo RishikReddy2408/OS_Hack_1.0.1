@@ -1,0 +1,27 @@
+package com.google.android.gms.common.api.internal;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.internal.Preconditions;
+
+final class zam
+{
+  private final int zadg;
+  private final ConnectionResult zadh;
+  
+  zam(ConnectionResult paramConnectionResult, int paramInt)
+  {
+    Preconditions.checkNotNull(paramConnectionResult);
+    zadh = paramConnectionResult;
+    zadg = paramInt;
+  }
+  
+  final ConnectionResult getConnectionResult()
+  {
+    return zadh;
+  }
+  
+  final int zar()
+  {
+    return zadg;
+  }
+}

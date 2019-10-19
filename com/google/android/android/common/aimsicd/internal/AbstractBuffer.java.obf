@@ -1,0 +1,60 @@
+package com.google.android.gms.common.api.internal;
+
+import android.os.DeadObjectException;
+import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.TaskCompletionSource;
+
+abstract class zad<T>
+  extends zac
+{
+  protected final TaskCompletionSource<T> zacm;
+  
+  public zad(int paramInt, TaskCompletionSource<T> paramTaskCompletionSource)
+  {
+    super(paramInt);
+    zacm = paramTaskCompletionSource;
+  }
+  
+  public void zaa(@NonNull Status paramStatus)
+  {
+    zacm.trySetException(new ApiException(paramStatus));
+  }
+  
+  public final void zaa(GoogleApiManager.zaa<?> paramZaa)
+    throws DeadObjectException
+  {
+    try
+    {
+      zad(paramZaa);
+      return;
+    }
+    catch (RuntimeException paramZaa)
+    {
+      zaa(paramZaa);
+      return;
+    }
+    catch (RemoteException paramZaa)
+    {
+      zaa(zab.zab(paramZaa));
+      return;
+    }
+    catch (DeadObjectException paramZaa)
+    {
+      zaa(zab.zab(paramZaa));
+      throw paramZaa;
+    }
+  }
+  
+  public void zaa(@NonNull zaab paramZaab, boolean paramBoolean) {}
+  
+  public void zaa(@NonNull RuntimeException paramRuntimeException)
+  {
+    zacm.trySetException(paramRuntimeException);
+  }
+  
+  protected abstract void zad(GoogleApiManager.zaa<?> paramZaa)
+    throws RemoteException;
+}

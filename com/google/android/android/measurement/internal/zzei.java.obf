@@ -1,0 +1,21 @@
+package com.google.android.gms.measurement.internal;
+
+final class zzei
+  implements Runnable
+{
+  zzei(zzef paramZzef, zzag paramZzag) {}
+  
+  public final void run()
+  {
+    synchronized (zzasp)
+    {
+      zzef.zza(zzasp, false);
+      if (!zzasp.zzasg.isConnected())
+      {
+        zzasp.zzasg.zzgo().zzjk().zzbx("Connected to remote service");
+        zzasp.zzasg.zza(zzasq);
+      }
+      return;
+    }
+  }
+}

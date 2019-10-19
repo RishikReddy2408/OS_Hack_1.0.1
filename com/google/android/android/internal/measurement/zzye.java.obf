@@ -1,0 +1,54 @@
+package com.google.android.gms.internal.measurement;
+
+import java.util.AbstractList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.RandomAccess;
+
+public final class zzye
+  extends AbstractList<String>
+  implements zzwc, RandomAccess
+{
+  private final zzwc zzccq;
+  
+  public zzye(zzwc paramZzwc)
+  {
+    zzccq = paramZzwc;
+  }
+  
+  public final Object getRaw(int paramInt)
+  {
+    return zzccq.getRaw(paramInt);
+  }
+  
+  public final Iterator<String> iterator()
+  {
+    return new zzyg(this);
+  }
+  
+  public final ListIterator<String> listIterator(int paramInt)
+  {
+    return new zzyf(this, paramInt);
+  }
+  
+  public final int size()
+  {
+    return zzccq.size();
+  }
+  
+  public final void zzc(zzud paramZzud)
+  {
+    throw new UnsupportedOperationException();
+  }
+  
+  public final List<?> zzwv()
+  {
+    return zzccq.zzwv();
+  }
+  
+  public final zzwc zzww()
+  {
+    return this;
+  }
+}

@@ -1,0 +1,12 @@
+package com.google.android.gms.common.internal.service;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+
+final class zae
+  extends zah
+{
+  zae(zad paramZad, GoogleApiClient paramGoogleApiClient)
+  {
+    super(paramGoogleApiClient);
+  }
+}

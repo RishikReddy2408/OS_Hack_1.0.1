@@ -1,0 +1,76 @@
+package com.google.android.gms.measurement;
+
+import android.annotation.TargetApi;
+import android.app.job.JobParameters;
+import android.app.job.JobService;
+import android.content.Intent;
+import android.support.annotation.MainThread;
+import com.google.android.gms.measurement.internal.zzel;
+import com.google.android.gms.measurement.internal.zzep;
+
+@TargetApi(24)
+public final class AppMeasurementJobService
+  extends JobService
+  implements zzep
+{
+  private zzel<AppMeasurementJobService> zzadr;
+  
+  public AppMeasurementJobService() {}
+  
+  private final zzel<AppMeasurementJobService> zzfu()
+  {
+    if (zzadr == null) {
+      zzadr = new zzel(this);
+    }
+    return zzadr;
+  }
+  
+  public final boolean callServiceStopSelfResult(int paramInt)
+  {
+    throw new UnsupportedOperationException();
+  }
+  
+  @MainThread
+  public final void onCreate()
+  {
+    super.onCreate();
+    zzfu().onCreate();
+  }
+  
+  @MainThread
+  public final void onDestroy()
+  {
+    zzfu().onDestroy();
+    super.onDestroy();
+  }
+  
+  @MainThread
+  public final void onRebind(Intent paramIntent)
+  {
+    zzfu().onRebind(paramIntent);
+  }
+  
+  public final boolean onStartJob(JobParameters paramJobParameters)
+  {
+    return zzfu().onStartJob(paramJobParameters);
+  }
+  
+  public final boolean onStopJob(JobParameters paramJobParameters)
+  {
+    return false;
+  }
+  
+  @MainThread
+  public final boolean onUnbind(Intent paramIntent)
+  {
+    return zzfu().onUnbind(paramIntent);
+  }
+  
+  @TargetApi(24)
+  public final void zza(JobParameters paramJobParameters, boolean paramBoolean)
+  {
+    jobFinished(paramJobParameters, false);
+  }
+  
+  public final void zzb(Intent paramIntent) {}
+}

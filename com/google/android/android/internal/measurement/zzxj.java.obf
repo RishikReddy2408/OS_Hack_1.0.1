@@ -1,0 +1,26 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.IOException;
+
+abstract interface zzxj<T>
+{
+  public abstract boolean equals(T paramT1, T paramT2);
+  
+  public abstract int hashCode(T paramT);
+  
+  public abstract T newInstance();
+  
+  public abstract void zza(T paramT, zzxi paramZzxi, zzuz paramZzuz)
+    throws IOException;
+  
+  public abstract void zza(T paramT, zzyw paramZzyw)
+    throws IOException;
+  
+  public abstract int zzae(T paramT);
+  
+  public abstract boolean zzaf(T paramT);
+  
+  public abstract void zzd(T paramT1, T paramT2);
+  
+  public abstract void zzu(T paramT);
+}

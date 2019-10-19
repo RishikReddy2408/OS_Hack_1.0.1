@@ -1,0 +1,85 @@
+package com.google.firebase.components;
+
+import com.google.firebase.events.Event;
+import com.google.firebase.events.Publisher;
+import com.google.firebase.inject.Provider;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+final class zzl
+  extends zza
+{
+  private final Set<Class<?>> zza;
+  private final Set<Class<?>> zzb;
+  private final Set<Class<?>> zzc;
+  private final ComponentContainer zzd;
+  
+  zzl(Component<?> paramComponent, ComponentContainer paramComponentContainer)
+  {
+    HashSet localHashSet1 = new HashSet();
+    HashSet localHashSet2 = new HashSet();
+    Iterator localIterator = paramComponent.zzb().iterator();
+    while (localIterator.hasNext())
+    {
+      Dependency localDependency = (Dependency)localIterator.next();
+      if (localDependency.zzc()) {
+        localHashSet1.add(localDependency.zza());
+      } else {
+        localHashSet2.add(localDependency.zza());
+      }
+    }
+    if (!paramComponent.zzd().isEmpty()) {
+      localHashSet1.add(Publisher.class);
+    }
+    zza = Collections.unmodifiableSet(localHashSet1);
+    zzb = Collections.unmodifiableSet(localHashSet2);
+    zzc = paramComponent.zzd();
+    zzd = paramComponentContainer;
+  }
+  
+  public final <T> T get(Class<T> paramClass)
+  {
+    if (zza.contains(paramClass))
+    {
+      Object localObject = zzd.get(paramClass);
+      if (!paramClass.equals(Publisher.class)) {
+        return localObject;
+      }
+      return new zza(zzc, (Publisher)localObject);
+    }
+    throw new IllegalArgumentException(String.format("Requesting %s is not allowed.", new Object[] { paramClass }));
+  }
+  
+  public final <T> Provider<T> getProvider(Class<T> paramClass)
+  {
+    if (zzb.contains(paramClass)) {
+      return zzd.getProvider(paramClass);
+    }
+    throw new IllegalArgumentException(String.format("Requesting Provider<%s> is not allowed.", new Object[] { paramClass }));
+  }
+  
+  static final class zza
+    implements Publisher
+  {
+    private final Set<Class<?>> zza;
+    private final Publisher zzb;
+    
+    public zza(Set<Class<?>> paramSet, Publisher paramPublisher)
+    {
+      zza = paramSet;
+      zzb = paramPublisher;
+    }
+    
+    public final void publish(Event<?> paramEvent)
+    {
+      if (zza.contains(paramEvent.getType()))
+      {
+        zzb.publish(paramEvent);
+        return;
+      }
+      throw new IllegalArgumentException(String.format("Attempting to publish an undeclared event %s.", new Object[] { paramEvent }));
+    }
+  }
+}

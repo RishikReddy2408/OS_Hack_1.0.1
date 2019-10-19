@@ -1,0 +1,54 @@
+package com.google.android.gms.internal.measurement;
+
+import android.net.Uri;
+
+public final class zzsv
+{
+  private final String zzbrm = null;
+  private final Uri zzbrn;
+  private final String zzbro;
+  private final String zzbrp;
+  private final boolean zzbrq;
+  private final boolean zzbrr;
+  private final boolean zzbrs;
+  
+  public zzsv(Uri paramUri)
+  {
+    this(null, paramUri, "", "", false, false, false);
+  }
+  
+  private zzsv(String paramString1, Uri paramUri, String paramString2, String paramString3, boolean paramBoolean1, boolean paramBoolean2, boolean paramBoolean3)
+  {
+    zzbrn = paramUri;
+    zzbro = paramString2;
+    zzbrp = paramString3;
+    zzbrq = false;
+    zzbrr = false;
+    zzbrs = false;
+  }
+  
+  public final zzsl<Double> zzb(String paramString, double paramDouble)
+  {
+    return zzsl.zzb(this, paramString, paramDouble);
+  }
+  
+  public final zzsl<Integer> zzd(String paramString, int paramInt)
+  {
+    return zzsl.zzb(this, paramString, paramInt);
+  }
+  
+  public final zzsl<Long> zze(String paramString, long paramLong)
+  {
+    return zzsl.zzb(this, paramString, paramLong);
+  }
+  
+  public final zzsl<Boolean> zzf(String paramString, boolean paramBoolean)
+  {
+    return zzsl.zzb(this, paramString, paramBoolean);
+  }
+  
+  public final zzsl<String> zzx(String paramString1, String paramString2)
+  {
+    return zzsl.zzb(this, paramString1, paramString2);
+  }
+}

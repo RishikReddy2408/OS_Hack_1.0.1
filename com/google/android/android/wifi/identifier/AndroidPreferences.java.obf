@@ -1,0 +1,82 @@
+package com.google.android.gms.ads.identifier;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+import com.google.android.gms.common.GooglePlayServicesUtilLight;
+
+public final class zzb
+{
+  private SharedPreferences zzs;
+  
+  public zzb(Context paramContext)
+  {
+    try
+    {
+      paramContext = GooglePlayServicesUtilLight.getRemoteContext(paramContext);
+      if (paramContext == null) {
+        paramContext = null;
+      } else {
+        paramContext = paramContext.getSharedPreferences("google_ads_flags", 0);
+      }
+      zzs = paramContext;
+      return;
+    }
+    catch (Throwable paramContext)
+    {
+      Log.w("GmscoreFlag", "Error while getting SharedPreferences ", paramContext);
+      zzs = null;
+    }
+  }
+  
+  public final boolean getBoolean(String paramString, boolean paramBoolean)
+  {
+    try
+    {
+      if (zzs == null) {
+        return false;
+      }
+      paramBoolean = zzs.getBoolean(paramString, false);
+      return paramBoolean;
+    }
+    catch (Throwable paramString)
+    {
+      Log.w("GmscoreFlag", "Error while reading from SharedPreferences ", paramString);
+    }
+    return false;
+  }
+  
+  final float getFloat(String paramString, float paramFloat)
+  {
+    try
+    {
+      if (zzs == null) {
+        return 0.0F;
+      }
+      paramFloat = zzs.getFloat(paramString, 0.0F);
+      return paramFloat;
+    }
+    catch (Throwable paramString)
+    {
+      Log.w("GmscoreFlag", "Error while reading from SharedPreferences ", paramString);
+    }
+    return 0.0F;
+  }
+  
+  final String getString(String paramString1, String paramString2)
+  {
+    try
+    {
+      if (zzs == null) {
+        return paramString2;
+      }
+      paramString1 = zzs.getString(paramString1, paramString2);
+      return paramString1;
+    }
+    catch (Throwable paramString1)
+    {
+      Log.w("GmscoreFlag", "Error while reading from SharedPreferences ", paramString1);
+    }
+    return paramString2;
+  }
+}

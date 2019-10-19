@@ -1,0 +1,37 @@
+package com.google.android.gms.common.api.internal;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.Api.Client;
+import java.util.Collections;
+import java.util.Map;
+
+final class zabo
+  implements Runnable
+{
+  zabo(GoogleApiManager.zac paramZac, ConnectionResult paramConnectionResult) {}
+  
+  public final void run()
+  {
+    if (zaiy.isSuccess())
+    {
+      GoogleApiManager.zac.zaa(zajf, true);
+      if (GoogleApiManager.zac.zaa(zajf).requiresSignIn())
+      {
+        GoogleApiManager.zac.zab(zajf);
+        return;
+      }
+    }
+    try
+    {
+      GoogleApiManager.zac.zaa(zajf).getRemoteService(null, Collections.emptySet());
+      return;
+    }
+    catch (SecurityException localSecurityException)
+    {
+      for (;;) {}
+    }
+    ((GoogleApiManager.zaa)GoogleApiManager.zaj(zajf.zail).get(GoogleApiManager.zac.zac(zajf))).onConnectionFailed(new ConnectionResult(10));
+    return;
+    ((GoogleApiManager.zaa)GoogleApiManager.zaj(zajf.zail).get(GoogleApiManager.zac.zac(zajf))).onConnectionFailed(zaiy);
+  }
+}

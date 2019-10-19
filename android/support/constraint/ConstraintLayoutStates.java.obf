@@ -1,0 +1,395 @@
+package android.support.constraint;
+
+import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.content.res.XmlResourceParser;
+import android.util.Log;
+import android.util.SparseArray;
+import android.util.Xml;
+import java.io.IOException;
+import java.util.ArrayList;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+public class ConstraintLayoutStates
+{
+  private static final boolean DEBUG = false;
+  public static final String TAG = "ConstraintLayoutStates";
+  private final ConstraintLayout mConstraintLayout;
+  private SparseArray<ConstraintSet> mConstraintSetMap = new SparseArray();
+  private ConstraintsChangedListener mConstraintsChangedListener = null;
+  int mCurrentConstraintNumber = -1;
+  int mCurrentStateId = -1;
+  ConstraintSet mDefaultConstraintSet;
+  private SparseArray<State> mStateList = new SparseArray();
+  
+  ConstraintLayoutStates(Context paramContext, ConstraintLayout paramConstraintLayout, int paramInt)
+  {
+    mConstraintLayout = paramConstraintLayout;
+    load(paramContext, paramInt);
+  }
+  
+  private void load(Context paramContext, int paramInt)
+  {
+    XmlResourceParser localXmlResourceParser = paramContext.getResources().getXml(paramInt);
+    Object localObject1 = null;
+    int i;
+    Object localObject2;
+    try
+    {
+      paramInt = localXmlResourceParser.getEventType();
+    }
+    catch (IOException paramContext)
+    {
+      Object localObject3;
+      paramContext.printStackTrace();
+      return;
+    }
+    catch (XmlPullParserException paramContext)
+    {
+      paramContext.printStackTrace();
+    }
+    localObject3 = localXmlResourceParser.getName();
+    switch (((String)localObject3).hashCode())
+    {
+    case 1901439077: 
+      if (((String)localObject3).equals("Variant")) {
+        paramInt = 3;
+      }
+      break;
+    case 1657696882: 
+      if (((String)localObject3).equals("layoutDescription")) {
+        paramInt = 0;
+      }
+      break;
+    case 1382829617: 
+      if (((String)localObject3).equals("StateSet")) {
+        paramInt = i;
+      }
+      break;
+    case 80204913: 
+      if (((String)localObject3).equals("State")) {
+        paramInt = 2;
+      }
+      break;
+    case -1349929691: 
+      if (((String)localObject3).equals("ConstraintSet"))
+      {
+        paramInt = 4;
+        break label369;
+        parseConstraintSet(paramContext, localXmlResourceParser);
+        localObject2 = localObject1;
+        break;
+        localObject3 = new Variant(paramContext, localXmlResourceParser);
+        localObject2 = localObject1;
+        if (localObject1 != null)
+        {
+          localObject1.add((Variant)localObject3);
+          localObject2 = localObject1;
+          break;
+          localObject2 = new State(paramContext, localXmlResourceParser);
+          mStateList.put(mId, localObject2);
+        }
+      }
+      break;
+    }
+    for (;;)
+    {
+      localObject2 = new StringBuilder();
+      ((StringBuilder)localObject2).append("unknown tag ");
+      ((StringBuilder)localObject2).append((String)localObject3);
+      Log.v("ConstraintLayoutStates", ((StringBuilder)localObject2).toString());
+      localObject2 = localObject1;
+      break label296;
+      localXmlResourceParser.getName();
+      for (localObject2 = localObject1;; localObject2 = localObject1)
+      {
+        label296:
+        paramInt = localXmlResourceParser.next();
+        localObject1 = localObject2;
+        do
+        {
+          return;
+          i = 1;
+        } while (paramInt == 1);
+        if (paramInt == 0) {
+          break;
+        }
+        localObject2 = localObject1;
+        switch (paramInt)
+        {
+        }
+      }
+      paramInt = -1;
+      label369:
+      localObject2 = localObject1;
+      switch (paramInt)
+      {
+      }
+    }
+  }
+  
+  private void parseConstraintSet(Context paramContext, XmlPullParser paramXmlPullParser)
+  {
+    ConstraintSet localConstraintSet = new ConstraintSet();
+    int j = paramXmlPullParser.getAttributeCount();
+    int i = 0;
+    while (i < j)
+    {
+      if ("mId".equals(paramXmlPullParser.getAttributeName(i)))
+      {
+        String str1 = paramXmlPullParser.getAttributeValue(i);
+        if (str1.contains("/"))
+        {
+          String str2 = str1.substring(str1.indexOf('/') + 1);
+          i = paramContext.getResources().getIdentifier(str2, "mId", null);
+        }
+        else
+        {
+          i = -1;
+        }
+        j = i;
+        if (i == -1) {
+          if ((str1 != null) && (str1.length() > 1))
+          {
+            j = Integer.parseInt(str1.substring(1));
+          }
+          else
+          {
+            Log.e("ConstraintLayoutStates", "error in parsing mId");
+            j = i;
+          }
+        }
+        localConstraintSet.load(paramContext, paramXmlPullParser);
+        mConstraintSetMap.put(j, localConstraintSet);
+        return;
+      }
+      i += 1;
+    }
+  }
+  
+  public boolean needsToChange(int paramInt, float paramFloat1, float paramFloat2)
+  {
+    if (mCurrentStateId != paramInt) {
+      return true;
+    }
+    if (paramInt == -1) {}
+    for (Object localObject = mStateList.valueAt(0);; localObject = mStateList.get(mCurrentStateId))
+    {
+      localObject = (State)localObject;
+      break;
+    }
+    if ((mCurrentConstraintNumber != -1) && (((Variant)mVariants.get(mCurrentConstraintNumber)).match(paramFloat1, paramFloat2))) {
+      return false;
+    }
+    return mCurrentConstraintNumber != ((State)localObject).findMatch(paramFloat1, paramFloat2);
+  }
+  
+  public void setOnConstraintsChanged(ConstraintsChangedListener paramConstraintsChangedListener)
+  {
+    mConstraintsChangedListener = paramConstraintsChangedListener;
+  }
+  
+  public void updateConstraints(int paramInt, float paramFloat1, float paramFloat2)
+  {
+    Object localObject1;
+    int i;
+    Object localObject2;
+    if (mCurrentStateId == paramInt)
+    {
+      if (paramInt == -1) {
+        localObject1 = (State)mStateList.valueAt(0);
+      } else {
+        localObject1 = (State)mStateList.get(mCurrentStateId);
+      }
+      if ((mCurrentConstraintNumber != -1) && (((Variant)mVariants.get(mCurrentConstraintNumber)).match(paramFloat1, paramFloat2))) {
+        return;
+      }
+      i = ((State)localObject1).findMatch(paramFloat1, paramFloat2);
+      if (mCurrentConstraintNumber == i) {
+        return;
+      }
+      if (i == -1) {
+        localObject2 = mDefaultConstraintSet;
+      } else {
+        localObject2 = mVariants.get(i)).mConstraintSet;
+      }
+      if (i == -1) {
+        paramInt = mConstraintID;
+      } else {
+        paramInt = mVariants.get(i)).mConstraintID;
+      }
+      if (localObject2 == null) {
+        return;
+      }
+      mCurrentConstraintNumber = i;
+      if (mConstraintsChangedListener != null) {
+        mConstraintsChangedListener.preLayoutChange(-1, paramInt);
+      }
+      ((ConstraintSet)localObject2).applyTo(mConstraintLayout);
+      if (mConstraintsChangedListener != null) {
+        mConstraintsChangedListener.postLayoutChange(-1, paramInt);
+      }
+    }
+    else
+    {
+      mCurrentStateId = paramInt;
+      localObject2 = (State)mStateList.get(mCurrentStateId);
+      int j = ((State)localObject2).findMatch(paramFloat1, paramFloat2);
+      if (j == -1) {
+        localObject1 = mConstraintSet;
+      } else {
+        localObject1 = mVariants.get(j)).mConstraintSet;
+      }
+      if (j == -1) {
+        i = mConstraintID;
+      } else {
+        i = mVariants.get(j)).mConstraintID;
+      }
+      if (localObject1 == null)
+      {
+        localObject1 = new StringBuilder();
+        ((StringBuilder)localObject1).append("NO Constraint set found ! id=");
+        ((StringBuilder)localObject1).append(paramInt);
+        ((StringBuilder)localObject1).append(", dim =");
+        ((StringBuilder)localObject1).append(paramFloat1);
+        ((StringBuilder)localObject1).append(", ");
+        ((StringBuilder)localObject1).append(paramFloat2);
+        Log.v("ConstraintLayoutStates", ((StringBuilder)localObject1).toString());
+        return;
+      }
+      mCurrentConstraintNumber = j;
+      if (mConstraintsChangedListener != null) {
+        mConstraintsChangedListener.preLayoutChange(paramInt, i);
+      }
+      ((ConstraintSet)localObject1).applyTo(mConstraintLayout);
+      if (mConstraintsChangedListener != null) {
+        mConstraintsChangedListener.postLayoutChange(paramInt, i);
+      }
+    }
+  }
+  
+  static class State
+  {
+    int mConstraintID = -1;
+    ConstraintSet mConstraintSet;
+    int mId;
+    ArrayList<ConstraintLayoutStates.Variant> mVariants = new ArrayList();
+    
+    public State(Context paramContext, XmlPullParser paramXmlPullParser)
+    {
+      paramXmlPullParser = paramContext.obtainStyledAttributes(Xml.asAttributeSet(paramXmlPullParser), R.styleable.State);
+      int j = paramXmlPullParser.getIndexCount();
+      int i = 0;
+      while (i < j)
+      {
+        int k = paramXmlPullParser.getIndex(i);
+        if (k == R.styleable.State_android_id)
+        {
+          mId = paramXmlPullParser.getResourceId(k, mId);
+        }
+        else if (k == R.styleable.State_constraints)
+        {
+          mConstraintID = paramXmlPullParser.getResourceId(k, mConstraintID);
+          String str = paramContext.getResources().getResourceTypeName(mConstraintID);
+          paramContext.getResources().getResourceName(mConstraintID);
+          if ("layout".equals(str))
+          {
+            mConstraintSet = new ConstraintSet();
+            mConstraintSet.clone(paramContext, mConstraintID);
+          }
+        }
+        i += 1;
+      }
+      paramXmlPullParser.recycle();
+    }
+    
+    void add(ConstraintLayoutStates.Variant paramVariant)
+    {
+      mVariants.add(paramVariant);
+    }
+    
+    public int findMatch(float paramFloat1, float paramFloat2)
+    {
+      int i = 0;
+      while (i < mVariants.size())
+      {
+        if (((ConstraintLayoutStates.Variant)mVariants.get(i)).match(paramFloat1, paramFloat2)) {
+          return i;
+        }
+        i += 1;
+      }
+      return -1;
+    }
+  }
+  
+  static class Variant
+  {
+    int mConstraintID = -1;
+    ConstraintSet mConstraintSet;
+    int mId;
+    float mMaxHeight = NaN.0F;
+    float mMaxWidth = NaN.0F;
+    float mMinHeight = NaN.0F;
+    float mMinWidth = NaN.0F;
+    
+    public Variant(Context paramContext, XmlPullParser paramXmlPullParser)
+    {
+      paramXmlPullParser = paramContext.obtainStyledAttributes(Xml.asAttributeSet(paramXmlPullParser), R.styleable.Variant);
+      int j = paramXmlPullParser.getIndexCount();
+      int i = 0;
+      while (i < j)
+      {
+        int k = paramXmlPullParser.getIndex(i);
+        if (k == R.styleable.Variant_constraints)
+        {
+          mConstraintID = paramXmlPullParser.getResourceId(k, mConstraintID);
+          String str = paramContext.getResources().getResourceTypeName(mConstraintID);
+          paramContext.getResources().getResourceName(mConstraintID);
+          if ("layout".equals(str))
+          {
+            mConstraintSet = new ConstraintSet();
+            mConstraintSet.clone(paramContext, mConstraintID);
+          }
+        }
+        else if (k == R.styleable.Variant_region_heightLessThan)
+        {
+          mMaxHeight = paramXmlPullParser.getDimension(k, mMaxHeight);
+        }
+        else if (k == R.styleable.Variant_region_heightMoreThan)
+        {
+          mMinHeight = paramXmlPullParser.getDimension(k, mMinHeight);
+        }
+        else if (k == R.styleable.Variant_region_widthLessThan)
+        {
+          mMaxWidth = paramXmlPullParser.getDimension(k, mMaxWidth);
+        }
+        else if (k == R.styleable.Variant_region_widthMoreThan)
+        {
+          mMinWidth = paramXmlPullParser.getDimension(k, mMinWidth);
+        }
+        else
+        {
+          Log.v("ConstraintLayoutStates", "Unknown tag");
+        }
+        i += 1;
+      }
+      paramXmlPullParser.recycle();
+    }
+    
+    boolean match(float paramFloat1, float paramFloat2)
+    {
+      if ((!Float.isNaN(mMinWidth)) && (paramFloat1 < mMinWidth)) {
+        return false;
+      }
+      if ((!Float.isNaN(mMinHeight)) && (paramFloat2 < mMinHeight)) {
+        return false;
+      }
+      if ((!Float.isNaN(mMaxWidth)) && (paramFloat1 > mMaxWidth)) {
+        return false;
+      }
+      return (Float.isNaN(mMaxHeight)) || (paramFloat2 <= mMaxHeight);
+    }
+  }
+}

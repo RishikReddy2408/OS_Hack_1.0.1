@@ -1,0 +1,21 @@
+package com.google.android.gms.measurement.internal;
+
+final class zzeg
+  implements Runnable
+{
+  zzeg(zzef paramZzef, zzag paramZzag) {}
+  
+  public final void run()
+  {
+    synchronized (zzasp)
+    {
+      zzef.zza(zzasp, false);
+      if (!zzasp.zzasg.isConnected())
+      {
+        zzasp.zzasg.zzgo().zzjl().zzbx("Connected to service");
+        zzasp.zzasg.zza(zzaso);
+      }
+      return;
+    }
+  }
+}

@@ -1,0 +1,60 @@
+package com.google.android.gms.common.api.internal;
+
+import android.app.Activity;
+import android.content.ContextWrapper;
+import android.support.v4.app.FragmentActivity;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.internal.Preconditions;
+
+@KeepForSdk
+public class LifecycleActivity
+{
+  private final Object zzbc;
+  
+  public LifecycleActivity(Activity paramActivity)
+  {
+    Preconditions.checkNotNull(paramActivity, "Activity must not be null");
+    zzbc = paramActivity;
+  }
+  
+  @KeepForSdk
+  public LifecycleActivity(ContextWrapper paramContextWrapper)
+  {
+    throw new UnsupportedOperationException();
+  }
+  
+  @KeepForSdk
+  public Activity asActivity()
+  {
+    return (Activity)zzbc;
+  }
+  
+  @KeepForSdk
+  public FragmentActivity asFragmentActivity()
+  {
+    return (FragmentActivity)zzbc;
+  }
+  
+  @KeepForSdk
+  public Object asObject()
+  {
+    return zzbc;
+  }
+  
+  @KeepForSdk
+  public boolean isChimera()
+  {
+    return false;
+  }
+  
+  @KeepForSdk
+  public boolean isSupport()
+  {
+    return zzbc instanceof FragmentActivity;
+  }
+  
+  public final boolean zzh()
+  {
+    return zzbc instanceof Activity;
+  }
+}

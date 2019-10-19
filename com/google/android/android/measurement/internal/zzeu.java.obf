@@ -1,0 +1,12 @@
+package com.google.android.gms.measurement.internal;
+
+final class zzeu
+  implements Runnable
+{
+  zzeu(zzeq paramZzeq, long paramLong) {}
+  
+  public final void run()
+  {
+    zzeq.zzb(zzasz, zzafv);
+  }
+}

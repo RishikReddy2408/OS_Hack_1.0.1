@@ -1,0 +1,52 @@
+package com.google.android.gms.common.api.internal;
+
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.Api;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.common.internal.Preconditions;
+
+public final class zaq
+  implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
+{
+  public final Api<?> mApi;
+  private final boolean zaeb;
+  private zar zaec;
+  
+  public zaq(Api<?> paramApi, boolean paramBoolean)
+  {
+    mApi = paramApi;
+    zaeb = paramBoolean;
+  }
+  
+  private final void zav()
+  {
+    Preconditions.checkNotNull(zaec, "Callbacks must be attached to a ClientConnectionHelper instance before connecting the client.");
+  }
+  
+  public final void onConnected(@Nullable Bundle paramBundle)
+  {
+    zav();
+    zaec.onConnected(paramBundle);
+  }
+  
+  public final void onConnectionFailed(@NonNull ConnectionResult paramConnectionResult)
+  {
+    zav();
+    zaec.zaa(paramConnectionResult, mApi, zaeb);
+  }
+  
+  public final void onConnectionSuspended(int paramInt)
+  {
+    zav();
+    zaec.onConnectionSuspended(paramInt);
+  }
+  
+  public final void zaa(zar paramZar)
+  {
+    zaec = paramZar;
+  }
+}

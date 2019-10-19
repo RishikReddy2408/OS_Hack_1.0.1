@@ -1,0 +1,7 @@
+package com.google.android.gms.internal.measurement;
+
+public abstract interface zzwz
+  extends zzwt, Cloneable
+{
+  public abstract zzwz zzxj();
+}

@@ -1,0 +1,7 @@
+package com.google.android.gms.common.internal;
+
+final class zal
+  implements PendingResultUtil.ResultConverter<R, Void>
+{
+  zal() {}
+}

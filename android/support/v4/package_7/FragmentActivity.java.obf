@@ -1,0 +1,749 @@
+package android.support.v4.app;
+
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.Lifecycle.State;
+import android.arch.lifecycle.LifecycleRegistry;
+import android.arch.lifecycle.ViewModelStore;
+import android.arch.lifecycle.ViewModelStoreOwner;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
+import android.content.IntentSender.SendIntentException;
+import android.content.res.Configuration;
+import android.os.Build.VERSION;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Parcelable;
+import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
+import android.support.v4.util.SparseArrayCompat;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager.LayoutParams;
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Iterator;
+
+public class FragmentActivity
+  extends BaseFragmentActivityApi16
+  implements ViewModelStoreOwner, ActivityCompat.OnRequestPermissionsResultCallback, ActivityCompat.RequestPermissionsRequestCodeValidator
+{
+  static final String ALLOCATED_REQUEST_INDICIES_TAG = "android:support:request_indicies";
+  static final String FRAGMENTS_TAG = "android:support:fragments";
+  static final int MAX_NUM_PENDING_FRAGMENT_ACTIVITY_RESULTS = 65534;
+  static final int MSG_REALLY_STOPPED = 1;
+  static final int MSG_RESUME_PENDING = 2;
+  static final String NEXT_CANDIDATE_REQUEST_INDEX_TAG = "android:support:next_request_index";
+  static final String REQUEST_FRAGMENT_WHO_TAG = "android:support:request_fragment_who";
+  private static final String TAG = "FragmentActivity";
+  boolean mCreated;
+  final FragmentController mFragments = FragmentController.createController(new HostCallbacks());
+  final Handler mHandler = new Handler()
+  {
+    public void handleMessage(Message paramAnonymousMessage)
+    {
+      switch (what)
+      {
+      default: 
+        super.handleMessage(paramAnonymousMessage);
+        return;
+      case 2: 
+        onResumeFragments();
+        mFragments.execPendingActions();
+        return;
+      }
+      if (mStopped) {
+        doReallyStop(false);
+      }
+    }
+  };
+  LoaderManager mLoaderManager;
+  int mNextCandidateRequestIndex;
+  SparseArrayCompat<String> mPendingFragmentActivityResults;
+  boolean mReallyStopped = true;
+  boolean mRequestedPermissionsFromFragment;
+  boolean mResumed;
+  boolean mRetaining;
+  boolean mStopped = true;
+  private ViewModelStore mViewModelStore;
+  
+  public FragmentActivity() {}
+  
+  private int allocateRequestIndex(Fragment paramFragment)
+  {
+    if (mPendingFragmentActivityResults.size() < 65534)
+    {
+      while (mPendingFragmentActivityResults.indexOfKey(mNextCandidateRequestIndex) >= 0) {
+        mNextCandidateRequestIndex = ((mNextCandidateRequestIndex + 1) % 65534);
+      }
+      int i = mNextCandidateRequestIndex;
+      mPendingFragmentActivityResults.put(i, mWho);
+      mNextCandidateRequestIndex = ((mNextCandidateRequestIndex + 1) % 65534);
+      return i;
+    }
+    throw new IllegalStateException("Too many pending Fragment activity results.");
+  }
+  
+  private void markFragmentsCreated()
+  {
+    while (markState(getSupportFragmentManager(), Lifecycle.State.CREATED)) {}
+  }
+  
+  private static boolean markState(FragmentManager paramFragmentManager, Lifecycle.State paramState)
+  {
+    paramFragmentManager = paramFragmentManager.getFragments().iterator();
+    boolean bool1 = false;
+    while (paramFragmentManager.hasNext())
+    {
+      Object localObject = (Fragment)paramFragmentManager.next();
+      if (localObject != null)
+      {
+        boolean bool2 = bool1;
+        if (((Fragment)localObject).getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED))
+        {
+          mLifecycleRegistry.markState(paramState);
+          bool2 = true;
+        }
+        localObject = ((Fragment)localObject).peekChildFragmentManager();
+        bool1 = bool2;
+        if (localObject != null) {
+          bool1 = bool2 | markState((FragmentManager)localObject, paramState);
+        }
+      }
+    }
+    return bool1;
+  }
+  
+  final View dispatchFragmentsOnCreateView(View paramView, String paramString, Context paramContext, AttributeSet paramAttributeSet)
+  {
+    return mFragments.onCreateView(paramView, paramString, paramContext, paramAttributeSet);
+  }
+  
+  void doReallyStop(boolean paramBoolean)
+  {
+    if (!mReallyStopped)
+    {
+      mReallyStopped = true;
+      mRetaining = paramBoolean;
+      mHandler.removeMessages(1);
+      onReallyStop();
+    }
+  }
+  
+  public void dump(String paramString, FileDescriptor paramFileDescriptor, PrintWriter paramPrintWriter, String[] paramArrayOfString)
+  {
+    super.dump(paramString, paramFileDescriptor, paramPrintWriter, paramArrayOfString);
+    paramPrintWriter.print(paramString);
+    paramPrintWriter.print("Local FragmentActivity ");
+    paramPrintWriter.print(Integer.toHexString(System.identityHashCode(this)));
+    paramPrintWriter.println(" State:");
+    Object localObject = new StringBuilder();
+    ((StringBuilder)localObject).append(paramString);
+    ((StringBuilder)localObject).append("  ");
+    localObject = ((StringBuilder)localObject).toString();
+    paramPrintWriter.print((String)localObject);
+    paramPrintWriter.print("mCreated=");
+    paramPrintWriter.print(mCreated);
+    paramPrintWriter.print("mResumed=");
+    paramPrintWriter.print(mResumed);
+    paramPrintWriter.print(" mStopped=");
+    paramPrintWriter.print(mStopped);
+    paramPrintWriter.print(" mReallyStopped=");
+    paramPrintWriter.println(mReallyStopped);
+    if (mLoaderManager != null) {
+      mLoaderManager.dump((String)localObject, paramFileDescriptor, paramPrintWriter, paramArrayOfString);
+    }
+    mFragments.getSupportFragmentManager().dump(paramString, paramFileDescriptor, paramPrintWriter, paramArrayOfString);
+  }
+  
+  public Object getLastCustomNonConfigurationInstance()
+  {
+    NonConfigurationInstances localNonConfigurationInstances = (NonConfigurationInstances)getLastNonConfigurationInstance();
+    if (localNonConfigurationInstances != null) {
+      return custom;
+    }
+    return null;
+  }
+  
+  public Lifecycle getLifecycle()
+  {
+    return super.getLifecycle();
+  }
+  
+  public FragmentManager getSupportFragmentManager()
+  {
+    return mFragments.getSupportFragmentManager();
+  }
+  
+  public LoaderManager getSupportLoaderManager()
+  {
+    if (mLoaderManager != null) {
+      return mLoaderManager;
+    }
+    mLoaderManager = new LoaderManagerImpl(this, getViewModelStore());
+    return mLoaderManager;
+  }
+  
+  @NonNull
+  public ViewModelStore getViewModelStore()
+  {
+    if (getApplication() != null)
+    {
+      if (mViewModelStore == null) {
+        mViewModelStore = new ViewModelStore();
+      }
+      return mViewModelStore;
+    }
+    throw new IllegalStateException("Your activity is not yet attached to the Application instance. You can't request ViewModel before onCreate call.");
+  }
+  
+  protected void onActivityResult(int paramInt1, int paramInt2, Intent paramIntent)
+  {
+    mFragments.noteStateNotSaved();
+    int i = paramInt1 >> 16;
+    if (i != 0)
+    {
+      i -= 1;
+      localObject = (String)mPendingFragmentActivityResults.get(i);
+      mPendingFragmentActivityResults.remove(i);
+      if (localObject == null)
+      {
+        Log.w("FragmentActivity", "Activity result delivered for unknown Fragment.");
+        return;
+      }
+      Fragment localFragment = mFragments.findFragmentByWho((String)localObject);
+      if (localFragment == null)
+      {
+        paramIntent = new StringBuilder();
+        paramIntent.append("Activity result no fragment exists for who: ");
+        paramIntent.append((String)localObject);
+        Log.w("FragmentActivity", paramIntent.toString());
+        return;
+      }
+      localFragment.onActivityResult(paramInt1 & 0xFFFF, paramInt2, paramIntent);
+      return;
+    }
+    Object localObject = ActivityCompat.getPermissionCompatDelegate();
+    if ((localObject != null) && (((ActivityCompat.PermissionCompatDelegate)localObject).onActivityResult(this, paramInt1, paramInt2, paramIntent))) {
+      return;
+    }
+    super.onActivityResult(paramInt1, paramInt2, paramIntent);
+  }
+  
+  public void onAttachFragment(Fragment paramFragment) {}
+  
+  public void onBackPressed()
+  {
+    FragmentManager localFragmentManager = mFragments.getSupportFragmentManager();
+    boolean bool = localFragmentManager.isStateSaved();
+    if ((bool) && (Build.VERSION.SDK_INT <= 25)) {
+      return;
+    }
+    if ((bool) || (!localFragmentManager.popBackStackImmediate())) {
+      super.onBackPressed();
+    }
+  }
+  
+  public void onConfigurationChanged(Configuration paramConfiguration)
+  {
+    super.onConfigurationChanged(paramConfiguration);
+    mFragments.noteStateNotSaved();
+    mFragments.dispatchConfigurationChanged(paramConfiguration);
+  }
+  
+  protected void onCreate(@Nullable Bundle paramBundle)
+  {
+    Object localObject2 = mFragments;
+    Object localObject1 = null;
+    ((FragmentController)localObject2).attachHost(null);
+    super.onCreate(paramBundle);
+    NonConfigurationInstances localNonConfigurationInstances = (NonConfigurationInstances)getLastNonConfigurationInstance();
+    if (localNonConfigurationInstances != null) {
+      mViewModelStore = viewModelStore;
+    }
+    if (paramBundle != null)
+    {
+      localObject2 = paramBundle.getParcelable("android:support:fragments");
+      FragmentController localFragmentController = mFragments;
+      if (localNonConfigurationInstances != null) {
+        localObject1 = fragments;
+      }
+      localFragmentController.restoreAllState((Parcelable)localObject2, (FragmentManagerNonConfig)localObject1);
+      if (paramBundle.containsKey("android:support:next_request_index"))
+      {
+        mNextCandidateRequestIndex = paramBundle.getInt("android:support:next_request_index");
+        localObject1 = paramBundle.getIntArray("android:support:request_indicies");
+        paramBundle = paramBundle.getStringArray("android:support:request_fragment_who");
+        int i;
+        if ((localObject1 != null) && (paramBundle != null) && (localObject1.length == paramBundle.length))
+        {
+          mPendingFragmentActivityResults = new SparseArrayCompat(localObject1.length);
+          i = 0;
+        }
+        while (i < localObject1.length)
+        {
+          mPendingFragmentActivityResults.put(localObject1[i], paramBundle[i]);
+          i += 1;
+          continue;
+          Log.w("FragmentActivity", "Invalid requestCode mapping in savedInstanceState.");
+        }
+      }
+    }
+    if (mPendingFragmentActivityResults == null)
+    {
+      mPendingFragmentActivityResults = new SparseArrayCompat();
+      mNextCandidateRequestIndex = 0;
+    }
+    mFragments.dispatchCreate();
+  }
+  
+  public boolean onCreatePanelMenu(int paramInt, Menu paramMenu)
+  {
+    if (paramInt == 0) {
+      return super.onCreatePanelMenu(paramInt, paramMenu) | mFragments.dispatchCreateOptionsMenu(paramMenu, getMenuInflater());
+    }
+    return super.onCreatePanelMenu(paramInt, paramMenu);
+  }
+  
+  protected void onDestroy()
+  {
+    super.onDestroy();
+    doReallyStop(false);
+    if ((mViewModelStore != null) && (!mRetaining)) {
+      mViewModelStore.clear();
+    }
+    mFragments.dispatchDestroy();
+  }
+  
+  public void onLowMemory()
+  {
+    super.onLowMemory();
+    mFragments.dispatchLowMemory();
+  }
+  
+  public boolean onMenuItemSelected(int paramInt, MenuItem paramMenuItem)
+  {
+    if (super.onMenuItemSelected(paramInt, paramMenuItem)) {
+      return true;
+    }
+    if (paramInt != 0)
+    {
+      if (paramInt != 6) {
+        return false;
+      }
+      return mFragments.dispatchContextItemSelected(paramMenuItem);
+    }
+    return mFragments.dispatchOptionsItemSelected(paramMenuItem);
+  }
+  
+  @CallSuper
+  public void onMultiWindowModeChanged(boolean paramBoolean)
+  {
+    mFragments.dispatchMultiWindowModeChanged(paramBoolean);
+  }
+  
+  protected void onNewIntent(Intent paramIntent)
+  {
+    super.onNewIntent(paramIntent);
+    mFragments.noteStateNotSaved();
+  }
+  
+  public void onPanelClosed(int paramInt, Menu paramMenu)
+  {
+    if (paramInt == 0) {
+      mFragments.dispatchOptionsMenuClosed(paramMenu);
+    }
+    super.onPanelClosed(paramInt, paramMenu);
+  }
+  
+  protected void onPause()
+  {
+    super.onPause();
+    mResumed = false;
+    if (mHandler.hasMessages(2))
+    {
+      mHandler.removeMessages(2);
+      onResumeFragments();
+    }
+    mFragments.dispatchPause();
+  }
+  
+  @CallSuper
+  public void onPictureInPictureModeChanged(boolean paramBoolean)
+  {
+    mFragments.dispatchPictureInPictureModeChanged(paramBoolean);
+  }
+  
+  protected void onPostResume()
+  {
+    super.onPostResume();
+    mHandler.removeMessages(2);
+    onResumeFragments();
+    mFragments.execPendingActions();
+  }
+  
+  @RestrictTo({android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP})
+  protected boolean onPrepareOptionsPanel(View paramView, Menu paramMenu)
+  {
+    return super.onPreparePanel(0, paramView, paramMenu);
+  }
+  
+  public boolean onPreparePanel(int paramInt, View paramView, Menu paramMenu)
+  {
+    if ((paramInt == 0) && (paramMenu != null)) {
+      return onPrepareOptionsPanel(paramView, paramMenu) | mFragments.dispatchPrepareOptionsMenu(paramMenu);
+    }
+    return super.onPreparePanel(paramInt, paramView, paramMenu);
+  }
+  
+  void onReallyStop()
+  {
+    mFragments.dispatchReallyStop();
+  }
+  
+  public void onRequestPermissionsResult(int paramInt, @NonNull String[] paramArrayOfString, @NonNull int[] paramArrayOfInt)
+  {
+    mFragments.noteStateNotSaved();
+    int i = paramInt >> 16 & 0xFFFF;
+    if (i != 0)
+    {
+      i -= 1;
+      String str = (String)mPendingFragmentActivityResults.get(i);
+      mPendingFragmentActivityResults.remove(i);
+      if (str == null)
+      {
+        Log.w("FragmentActivity", "Activity result delivered for unknown Fragment.");
+        return;
+      }
+      Fragment localFragment = mFragments.findFragmentByWho(str);
+      if (localFragment == null)
+      {
+        paramArrayOfString = new StringBuilder();
+        paramArrayOfString.append("Activity result no fragment exists for who: ");
+        paramArrayOfString.append(str);
+        Log.w("FragmentActivity", paramArrayOfString.toString());
+        return;
+      }
+      localFragment.onRequestPermissionsResult(paramInt & 0xFFFF, paramArrayOfString, paramArrayOfInt);
+    }
+  }
+  
+  protected void onResume()
+  {
+    super.onResume();
+    mHandler.sendEmptyMessage(2);
+    mResumed = true;
+    mFragments.execPendingActions();
+  }
+  
+  protected void onResumeFragments()
+  {
+    mFragments.dispatchResume();
+  }
+  
+  public Object onRetainCustomNonConfigurationInstance()
+  {
+    return null;
+  }
+  
+  public final Object onRetainNonConfigurationInstance()
+  {
+    if (mStopped) {
+      doReallyStop(true);
+    }
+    Object localObject = onRetainCustomNonConfigurationInstance();
+    FragmentManagerNonConfig localFragmentManagerNonConfig = mFragments.retainNestedNonConfig();
+    if ((localFragmentManagerNonConfig == null) && (mViewModelStore == null) && (localObject == null)) {
+      return null;
+    }
+    NonConfigurationInstances localNonConfigurationInstances = new NonConfigurationInstances();
+    custom = localObject;
+    viewModelStore = mViewModelStore;
+    fragments = localFragmentManagerNonConfig;
+    return localNonConfigurationInstances;
+  }
+  
+  protected void onSaveInstanceState(Bundle paramBundle)
+  {
+    super.onSaveInstanceState(paramBundle);
+    markFragmentsCreated();
+    Object localObject = mFragments.saveAllState();
+    if (localObject != null) {
+      paramBundle.putParcelable("android:support:fragments", (Parcelable)localObject);
+    }
+    if (mPendingFragmentActivityResults.size() > 0)
+    {
+      paramBundle.putInt("android:support:next_request_index", mNextCandidateRequestIndex);
+      localObject = new int[mPendingFragmentActivityResults.size()];
+      String[] arrayOfString = new String[mPendingFragmentActivityResults.size()];
+      int i = 0;
+      while (i < mPendingFragmentActivityResults.size())
+      {
+        localObject[i] = mPendingFragmentActivityResults.keyAt(i);
+        arrayOfString[i] = ((String)mPendingFragmentActivityResults.valueAt(i));
+        i += 1;
+      }
+      paramBundle.putIntArray("android:support:request_indicies", (int[])localObject);
+      paramBundle.putStringArray("android:support:request_fragment_who", arrayOfString);
+    }
+  }
+  
+  protected void onStart()
+  {
+    super.onStart();
+    mStopped = false;
+    mReallyStopped = false;
+    mHandler.removeMessages(1);
+    if (!mCreated)
+    {
+      mCreated = true;
+      mFragments.dispatchActivityCreated();
+    }
+    mFragments.noteStateNotSaved();
+    mFragments.execPendingActions();
+    mFragments.dispatchStart();
+  }
+  
+  public void onStateNotSaved()
+  {
+    mFragments.noteStateNotSaved();
+  }
+  
+  protected void onStop()
+  {
+    super.onStop();
+    mStopped = true;
+    markFragmentsCreated();
+    mHandler.sendEmptyMessage(1);
+    mFragments.dispatchStop();
+  }
+  
+  void requestPermissionsFromFragment(Fragment paramFragment, String[] paramArrayOfString, int paramInt)
+  {
+    if (paramInt == -1)
+    {
+      ActivityCompat.requestPermissions(this, paramArrayOfString, paramInt);
+      return;
+    }
+    checkForValidRequestCode(paramInt);
+    try
+    {
+      mRequestedPermissionsFromFragment = true;
+      ActivityCompat.requestPermissions(this, paramArrayOfString, (allocateRequestIndex(paramFragment) + 1 << 16) + (paramInt & 0xFFFF));
+      return;
+    }
+    finally
+    {
+      mRequestedPermissionsFromFragment = false;
+    }
+  }
+  
+  public void setEnterSharedElementCallback(SharedElementCallback paramSharedElementCallback)
+  {
+    ActivityCompat.setEnterSharedElementCallback(this, paramSharedElementCallback);
+  }
+  
+  public void setExitSharedElementCallback(SharedElementCallback paramSharedElementCallback)
+  {
+    ActivityCompat.setExitSharedElementCallback(this, paramSharedElementCallback);
+  }
+  
+  public void startActivityForResult(Intent paramIntent, int paramInt)
+  {
+    if ((!mStartedActivityFromFragment) && (paramInt != -1)) {
+      checkForValidRequestCode(paramInt);
+    }
+    super.startActivityForResult(paramIntent, paramInt);
+  }
+  
+  public void startActivityFromFragment(Fragment paramFragment, Intent paramIntent, int paramInt)
+  {
+    startActivityFromFragment(paramFragment, paramIntent, paramInt, null);
+  }
+  
+  public void startActivityFromFragment(Fragment paramFragment, Intent paramIntent, int paramInt, @Nullable Bundle paramBundle)
+  {
+    mStartedActivityFromFragment = true;
+    if (paramInt == -1) {
+      try
+      {
+        ActivityCompat.startActivityForResult(this, paramIntent, -1, paramBundle);
+        mStartedActivityFromFragment = false;
+        return;
+      }
+      finally
+      {
+        break label61;
+      }
+    }
+    checkForValidRequestCode(paramInt);
+    ActivityCompat.startActivityForResult(this, paramIntent, (allocateRequestIndex(paramFragment) + 1 << 16) + (paramInt & 0xFFFF), paramBundle);
+    mStartedActivityFromFragment = false;
+    return;
+    label61:
+    mStartedActivityFromFragment = false;
+    throw paramFragment;
+  }
+  
+  public void startIntentSenderFromFragment(Fragment paramFragment, IntentSender paramIntentSender, int paramInt1, @Nullable Intent paramIntent, int paramInt2, int paramInt3, int paramInt4, Bundle paramBundle)
+    throws IntentSender.SendIntentException
+  {
+    mStartedIntentSenderFromFragment = true;
+    if (paramInt1 == -1) {
+      try
+      {
+        ActivityCompat.startIntentSenderForResult(this, paramIntentSender, paramInt1, paramIntent, paramInt2, paramInt3, paramInt4, paramBundle);
+        mStartedIntentSenderFromFragment = false;
+        return;
+      }
+      finally
+      {
+        break label77;
+      }
+    }
+    checkForValidRequestCode(paramInt1);
+    ActivityCompat.startIntentSenderForResult(this, paramIntentSender, (allocateRequestIndex(paramFragment) + 1 << 16) + (paramInt1 & 0xFFFF), paramIntent, paramInt2, paramInt3, paramInt4, paramBundle);
+    mStartedIntentSenderFromFragment = false;
+    return;
+    label77:
+    mStartedIntentSenderFromFragment = false;
+    throw paramFragment;
+  }
+  
+  public void supportFinishAfterTransition()
+  {
+    ActivityCompat.finishAfterTransition(this);
+  }
+  
+  @Deprecated
+  public void supportInvalidateOptionsMenu()
+  {
+    invalidateOptionsMenu();
+  }
+  
+  public void supportPostponeEnterTransition()
+  {
+    ActivityCompat.postponeEnterTransition(this);
+  }
+  
+  public void supportStartPostponedEnterTransition()
+  {
+    ActivityCompat.startPostponedEnterTransition(this);
+  }
+  
+  public final void validateRequestPermissionsRequestCode(int paramInt)
+  {
+    if ((!mRequestedPermissionsFromFragment) && (paramInt != -1)) {
+      checkForValidRequestCode(paramInt);
+    }
+  }
+  
+  class HostCallbacks
+    extends FragmentHostCallback<FragmentActivity>
+  {
+    public HostCallbacks()
+    {
+      super();
+    }
+    
+    public void onAttachFragment(Fragment paramFragment)
+    {
+      FragmentActivity.this.onAttachFragment(paramFragment);
+    }
+    
+    public void onDump(String paramString, FileDescriptor paramFileDescriptor, PrintWriter paramPrintWriter, String[] paramArrayOfString)
+    {
+      dump(paramString, paramFileDescriptor, paramPrintWriter, paramArrayOfString);
+    }
+    
+    @Nullable
+    public View onFindViewById(int paramInt)
+    {
+      return findViewById(paramInt);
+    }
+    
+    public FragmentActivity onGetHost()
+    {
+      return FragmentActivity.this;
+    }
+    
+    public LayoutInflater onGetLayoutInflater()
+    {
+      return getLayoutInflater().cloneInContext(FragmentActivity.this);
+    }
+    
+    public int onGetWindowAnimations()
+    {
+      Window localWindow = getWindow();
+      if (localWindow == null) {
+        return 0;
+      }
+      return getAttributeswindowAnimations;
+    }
+    
+    public boolean onHasView()
+    {
+      Window localWindow = getWindow();
+      return (localWindow != null) && (localWindow.peekDecorView() != null);
+    }
+    
+    public boolean onHasWindowAnimations()
+    {
+      return getWindow() != null;
+    }
+    
+    public void onRequestPermissionsFromFragment(@NonNull Fragment paramFragment, @NonNull String[] paramArrayOfString, int paramInt)
+    {
+      requestPermissionsFromFragment(paramFragment, paramArrayOfString, paramInt);
+    }
+    
+    public boolean onShouldSaveFragmentState(Fragment paramFragment)
+    {
+      return isFinishing() ^ true;
+    }
+    
+    public boolean onShouldShowRequestPermissionRationale(@NonNull String paramString)
+    {
+      return ActivityCompat.shouldShowRequestPermissionRationale(FragmentActivity.this, paramString);
+    }
+    
+    public void onStartActivityFromFragment(Fragment paramFragment, Intent paramIntent, int paramInt)
+    {
+      startActivityFromFragment(paramFragment, paramIntent, paramInt);
+    }
+    
+    public void onStartActivityFromFragment(Fragment paramFragment, Intent paramIntent, int paramInt, @Nullable Bundle paramBundle)
+    {
+      startActivityFromFragment(paramFragment, paramIntent, paramInt, paramBundle);
+    }
+    
+    public void onStartIntentSenderFromFragment(Fragment paramFragment, IntentSender paramIntentSender, int paramInt1, @Nullable Intent paramIntent, int paramInt2, int paramInt3, int paramInt4, Bundle paramBundle)
+      throws IntentSender.SendIntentException
+    {
+      startIntentSenderFromFragment(paramFragment, paramIntentSender, paramInt1, paramIntent, paramInt2, paramInt3, paramInt4, paramBundle);
+    }
+    
+    public void onSupportInvalidateOptionsMenu()
+    {
+      supportInvalidateOptionsMenu();
+    }
+  }
+  
+  static final class NonConfigurationInstances
+  {
+    Object custom;
+    FragmentManagerNonConfig fragments;
+    ViewModelStore viewModelStore;
+    
+    NonConfigurationInstances() {}
+  }
+}

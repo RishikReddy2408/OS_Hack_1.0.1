@@ -1,0 +1,99 @@
+package com.google.android.gms.measurement.internal;
+
+import android.os.Parcel;
+import android.os.RemoteException;
+import com.google.android.gms.internal.measurement.zzr;
+import com.google.android.gms.internal.measurement.zzs;
+
+public abstract class zzah
+  extends zzr
+  implements zzag
+{
+  public zzah()
+  {
+    super("com.google.android.gms.measurement.internal.IMeasurementService");
+  }
+  
+  protected final boolean dispatchTransaction(int paramInt1, Parcel paramParcel1, Parcel paramParcel2, int paramInt2)
+    throws RemoteException
+  {
+    switch (paramInt1)
+    {
+    case 3: 
+    case 8: 
+    default: 
+      return false;
+    case 18: 
+      zzd((zzh)zzs.zza(paramParcel1, zzh.CREATOR));
+      paramParcel2.writeNoException();
+      break;
+    case 17: 
+      paramParcel1 = zze(paramParcel1.readString(), paramParcel1.readString(), paramParcel1.readString());
+      paramParcel2.writeNoException();
+      paramParcel2.writeTypedList(paramParcel1);
+      break;
+    case 16: 
+      paramParcel1 = zza(paramParcel1.readString(), paramParcel1.readString(), (zzh)zzs.zza(paramParcel1, zzh.CREATOR));
+      paramParcel2.writeNoException();
+      paramParcel2.writeTypedList(paramParcel1);
+      break;
+    case 15: 
+      paramParcel1 = zza(paramParcel1.readString(), paramParcel1.readString(), paramParcel1.readString(), zzs.zza(paramParcel1));
+      paramParcel2.writeNoException();
+      paramParcel2.writeTypedList(paramParcel1);
+      break;
+    case 14: 
+      paramParcel1 = zza(paramParcel1.readString(), paramParcel1.readString(), zzs.zza(paramParcel1), (zzh)zzs.zza(paramParcel1, zzh.CREATOR));
+      paramParcel2.writeNoException();
+      paramParcel2.writeTypedList(paramParcel1);
+      break;
+    case 13: 
+      zzb((zzl)zzs.zza(paramParcel1, zzl.CREATOR));
+      paramParcel2.writeNoException();
+      break;
+    case 12: 
+      zza((zzl)zzs.zza(paramParcel1, zzl.CREATOR), (zzh)zzs.zza(paramParcel1, zzh.CREATOR));
+      paramParcel2.writeNoException();
+      break;
+    case 11: 
+      paramParcel1 = zzc((zzh)zzs.zza(paramParcel1, zzh.CREATOR));
+      paramParcel2.writeNoException();
+      paramParcel2.writeString(paramParcel1);
+      break;
+    case 10: 
+      zza(paramParcel1.readLong(), paramParcel1.readString(), paramParcel1.readString(), paramParcel1.readString());
+      paramParcel2.writeNoException();
+      break;
+    case 9: 
+      paramParcel1 = zza((zzad)zzs.zza(paramParcel1, zzad.CREATOR), paramParcel1.readString());
+      paramParcel2.writeNoException();
+      paramParcel2.writeByteArray(paramParcel1);
+      break;
+    case 7: 
+      paramParcel1 = zza((zzh)zzs.zza(paramParcel1, zzh.CREATOR), zzs.zza(paramParcel1));
+      paramParcel2.writeNoException();
+      paramParcel2.writeTypedList(paramParcel1);
+      break;
+    case 6: 
+      zzb((zzh)zzs.zza(paramParcel1, zzh.CREATOR));
+      paramParcel2.writeNoException();
+      break;
+    case 5: 
+      zza((zzad)zzs.zza(paramParcel1, zzad.CREATOR), paramParcel1.readString(), paramParcel1.readString());
+      paramParcel2.writeNoException();
+      break;
+    case 4: 
+      zza((zzh)zzs.zza(paramParcel1, zzh.CREATOR));
+      paramParcel2.writeNoException();
+      break;
+    case 2: 
+      zza((zzfh)zzs.zza(paramParcel1, zzfh.CREATOR), (zzh)zzs.zza(paramParcel1, zzh.CREATOR));
+      paramParcel2.writeNoException();
+      break;
+    case 1: 
+      zza((zzad)zzs.zza(paramParcel1, zzad.CREATOR), (zzh)zzs.zza(paramParcel1, zzh.CREATOR));
+      paramParcel2.writeNoException();
+    }
+    return true;
+  }
+}

@@ -1,0 +1,19 @@
+package com.google.firebase.iid;
+
+import android.os.Looper;
+import android.os.Message;
+import com.google.android.gms.internal.firebase_messaging.zza;
+
+final class zzau
+  extends zza
+{
+  zzau(zzat paramZzat, Looper paramLooper)
+  {
+    super(paramLooper);
+  }
+  
+  public final void handleMessage(Message paramMessage)
+  {
+    zzat.zza(zzcw, paramMessage);
+  }
+}

@@ -1,0 +1,136 @@
+package com.google.android.gms.measurement.internal;
+
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build.VERSION;
+import android.support.annotation.WorkerThread;
+import com.google.android.gms.common.util.VisibleForTesting;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
+
+public final class zzat
+  extends zzez
+{
+  private final SSLSocketFactory zzamq;
+  
+  public zzat(zzfa paramZzfa)
+  {
+    super(paramZzfa);
+    if (Build.VERSION.SDK_INT < 19) {
+      paramZzfa = new zzfl();
+    } else {
+      paramZzfa = null;
+    }
+    zzamq = paramZzfa;
+  }
+  
+  /* Error */
+  @WorkerThread
+  private static byte[] zzb(HttpURLConnection paramHttpURLConnection)
+    throws IOException
+  {
+    // Byte code:
+    //   0: new 36	java/io/ByteArrayOutputStream
+    //   3: dup
+    //   4: invokespecial 37	java/io/ByteArrayOutputStream:<init>	()V
+    //   7: astore_3
+    //   8: aload_0
+    //   9: invokevirtual 43	java/net/HttpURLConnection:getInputStream	()Ljava/io/InputStream;
+    //   12: astore_2
+    //   13: sipush 1024
+    //   16: newarray byte
+    //   18: astore_0
+    //   19: aload_2
+    //   20: aload_0
+    //   21: invokevirtual 49	java/io/InputStream:read	([B)I
+    //   24: istore_1
+    //   25: iload_1
+    //   26: ifle +13 -> 39
+    //   29: aload_3
+    //   30: aload_0
+    //   31: iconst_0
+    //   32: iload_1
+    //   33: invokevirtual 53	java/io/ByteArrayOutputStream:write	([BII)V
+    //   36: goto -17 -> 19
+    //   39: aload_3
+    //   40: invokevirtual 57	java/io/ByteArrayOutputStream:toByteArray	()[B
+    //   43: astore_0
+    //   44: aload_2
+    //   45: ifnull +7 -> 52
+    //   48: aload_2
+    //   49: invokevirtual 60	java/io/InputStream:close	()V
+    //   52: aload_0
+    //   53: areturn
+    //   54: astore_0
+    //   55: goto +6 -> 61
+    //   58: astore_0
+    //   59: aconst_null
+    //   60: astore_2
+    //   61: aload_2
+    //   62: ifnull +7 -> 69
+    //   65: aload_2
+    //   66: invokevirtual 60	java/io/InputStream:close	()V
+    //   69: aload_0
+    //   70: athrow
+    // Local variable table:
+    //   start	length	slot	name	signature
+    //   0	71	0	paramHttpURLConnection	HttpURLConnection
+    //   24	9	1	i	int
+    //   12	54	2	localInputStream	java.io.InputStream
+    //   7	33	3	localByteArrayOutputStream	java.io.ByteArrayOutputStream
+    // Exception table:
+    //   from	to	target	type
+    //   13	19	54	finally
+    //   19	25	54	finally
+    //   29	36	54	finally
+    //   39	44	54	finally
+    //   0	13	58	finally
+  }
+  
+  @WorkerThread
+  @VisibleForTesting
+  protected final HttpURLConnection zzb(URL paramURL)
+    throws IOException
+  {
+    paramURL = paramURL.openConnection();
+    if ((paramURL instanceof HttpURLConnection))
+    {
+      if ((zzamq != null) && ((paramURL instanceof HttpsURLConnection))) {
+        ((HttpsURLConnection)paramURL).setSSLSocketFactory(zzamq);
+      }
+      paramURL = (HttpURLConnection)paramURL;
+      paramURL.setDefaultUseCaches(false);
+      paramURL.setConnectTimeout(60000);
+      paramURL.setReadTimeout(61000);
+      paramURL.setInstanceFollowRedirects(false);
+      paramURL.setDoInput(true);
+      return paramURL;
+    }
+    throw new IOException("Failed to obtain HTTP connection");
+  }
+  
+  public final boolean zzfb()
+  {
+    zzcl();
+    Object localObject = (ConnectivityManager)getContext().getSystemService("connectivity");
+    try
+    {
+      localObject = ((ConnectivityManager)localObject).getActiveNetworkInfo();
+    }
+    catch (SecurityException localSecurityException)
+    {
+      for (;;) {}
+    }
+    localObject = null;
+    return (localObject != null) && (((NetworkInfo)localObject).isConnected());
+  }
+  
+  protected final boolean zzgt()
+  {
+    return false;
+  }
+}

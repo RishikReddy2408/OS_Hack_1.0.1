@@ -1,0 +1,17 @@
+package com.google.android.gms.common.internal;
+
+import android.app.Activity;
+import android.content.Intent;
+
+final class zac
+  extends DialogRedirect
+{
+  zac(Intent paramIntent, Activity paramActivity, int paramInt) {}
+  
+  public final void redirect()
+  {
+    if (zaog != null) {
+      val$activity.startActivityForResult(zaog, val$requestCode);
+    }
+  }
+}

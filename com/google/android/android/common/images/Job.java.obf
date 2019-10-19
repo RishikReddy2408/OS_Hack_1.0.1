@@ -1,0 +1,30 @@
+package com.google.android.gms.common.images;
+
+import android.net.Uri;
+import com.google.android.gms.common.internal.Objects;
+
+final class zab
+{
+  public final Uri uri;
+  
+  public zab(Uri paramUri)
+  {
+    uri = paramUri;
+  }
+  
+  public final boolean equals(Object paramObject)
+  {
+    if (!(paramObject instanceof zab)) {
+      return false;
+    }
+    if (this == paramObject) {
+      return true;
+    }
+    return Objects.equal(uri, uri);
+  }
+  
+  public final int hashCode()
+  {
+    return Objects.hashCode(new Object[] { uri });
+  }
+}

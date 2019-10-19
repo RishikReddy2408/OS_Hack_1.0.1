@@ -1,0 +1,11 @@
+package com.google.android.gms.measurement.internal;
+
+import android.support.annotation.WorkerThread;
+import java.util.List;
+import java.util.Map;
+
+@WorkerThread
+abstract interface zzav
+{
+  public abstract void zza(String paramString, int paramInt, Throwable paramThrowable, byte[] paramArrayOfByte, Map<String, List<String>> paramMap);
+}

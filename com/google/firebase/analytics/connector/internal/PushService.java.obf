@@ -1,0 +1,23 @@
+package com.google.firebase.analytics.connector.internal;
+
+import android.os.Bundle;
+import com.google.android.gms.measurement.AppMeasurement.OnEventListener;
+import com.google.firebase.analytics.connector.AnalyticsConnector.AnalyticsConnectorListener;
+
+final class zzg
+  implements AppMeasurement.OnEventListener
+{
+  public zzg(zzf paramZzf) {}
+  
+  public final void onEvent(String paramString1, String paramString2, Bundle paramBundle, long paramLong)
+  {
+    if ((paramString1 != null) && (!paramString1.equals("crash")) && (zzc.zzfp(paramString2)))
+    {
+      paramString1 = new Bundle();
+      paramString1.putString("name", paramString2);
+      paramString1.putLong("timestampInMillis", paramLong);
+      paramString1.putBundle("params", paramBundle);
+      zzf.zza(zzbsx).onMessageTriggered(3, paramString1);
+    }
+  }
+}

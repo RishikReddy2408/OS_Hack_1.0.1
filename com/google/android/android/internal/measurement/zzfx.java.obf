@@ -1,0 +1,243 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.IOException;
+
+public final class zzfx
+  extends zzza<zzfx>
+{
+  public Integer zzavo = null;
+  public Boolean zzavp = null;
+  public String zzavq = null;
+  public String zzavr = null;
+  public String zzavs = null;
+  
+  public zzfx()
+  {
+    zzcfc = null;
+    zzcfm = -1;
+  }
+  
+  private final zzfx zzc(zzyx paramZzyx)
+    throws IOException
+  {
+    for (;;)
+    {
+      int i = paramZzyx.zzug();
+      if (i == 0) {
+        break;
+      }
+      int j;
+      if (i != 8)
+      {
+        if (i != 16)
+        {
+          if (i != 26)
+          {
+            if (i != 34)
+            {
+              if (i != 42)
+              {
+                if (!super.zza(paramZzyx, i)) {
+                  return this;
+                }
+              }
+              else {
+                zzavs = paramZzyx.readString();
+              }
+            }
+            else {
+              zzavr = paramZzyx.readString();
+            }
+          }
+          else {
+            zzavq = paramZzyx.readString();
+          }
+        }
+        else {
+          zzavp = Boolean.valueOf(paramZzyx.zzum());
+        }
+      }
+      else {
+        j = paramZzyx.getPosition();
+      }
+      try
+      {
+        int k = paramZzyx.zzuy();
+        if ((k >= 0) && (k <= 4))
+        {
+          zzavo = Integer.valueOf(k);
+          continue;
+        }
+        StringBuilder localStringBuilder = new StringBuilder(46);
+        localStringBuilder.append(k);
+        localStringBuilder.append(" is not a valid enum ComparisonType");
+        throw new IllegalArgumentException(localStringBuilder.toString());
+      }
+      catch (IllegalArgumentException localIllegalArgumentException)
+      {
+        for (;;) {}
+      }
+      paramZzyx.zzby(j);
+      zza(paramZzyx, i);
+    }
+    return this;
+  }
+  
+  public final boolean equals(Object paramObject)
+  {
+    if (paramObject == this) {
+      return true;
+    }
+    if (!(paramObject instanceof zzfx)) {
+      return false;
+    }
+    paramObject = (zzfx)paramObject;
+    if (zzavo == null)
+    {
+      if (zzavo != null) {
+        return false;
+      }
+    }
+    else if (!zzavo.equals(zzavo)) {
+      return false;
+    }
+    if (zzavp == null)
+    {
+      if (zzavp != null) {
+        return false;
+      }
+    }
+    else if (!zzavp.equals(zzavp)) {
+      return false;
+    }
+    if (zzavq == null)
+    {
+      if (zzavq != null) {
+        return false;
+      }
+    }
+    else if (!zzavq.equals(zzavq)) {
+      return false;
+    }
+    if (zzavr == null)
+    {
+      if (zzavr != null) {
+        return false;
+      }
+    }
+    else if (!zzavr.equals(zzavr)) {
+      return false;
+    }
+    if (zzavs == null)
+    {
+      if (zzavs != null) {
+        return false;
+      }
+    }
+    else if (!zzavs.equals(zzavs)) {
+      return false;
+    }
+    if ((zzcfc != null) && (!zzcfc.isEmpty())) {
+      return zzcfc.equals(zzcfc);
+    }
+    if (zzcfc != null) {
+      return zzcfc.isEmpty();
+    }
+    return true;
+  }
+  
+  public final int hashCode()
+  {
+    int i3 = getClass().getName().hashCode();
+    Integer localInteger = zzavo;
+    int i2 = 0;
+    int i;
+    if (localInteger == null) {
+      i = 0;
+    } else {
+      i = zzavo.intValue();
+    }
+    int j;
+    if (zzavp == null) {
+      j = 0;
+    } else {
+      j = zzavp.hashCode();
+    }
+    int k;
+    if (zzavq == null) {
+      k = 0;
+    } else {
+      k = zzavq.hashCode();
+    }
+    int m;
+    if (zzavr == null) {
+      m = 0;
+    } else {
+      m = zzavr.hashCode();
+    }
+    int n;
+    if (zzavs == null) {
+      n = 0;
+    } else {
+      n = zzavs.hashCode();
+    }
+    int i1 = i2;
+    if (zzcfc != null) {
+      if (zzcfc.isEmpty()) {
+        i1 = i2;
+      } else {
+        i1 = zzcfc.hashCode();
+      }
+    }
+    return ((((((i3 + 527) * 31 + i) * 31 + j) * 31 + k) * 31 + m) * 31 + n) * 31 + i1;
+  }
+  
+  public final void zza(zzyy paramZzyy)
+    throws IOException
+  {
+    if (zzavo != null) {
+      paramZzyy.zzd(1, zzavo.intValue());
+    }
+    if (zzavp != null) {
+      paramZzyy.zzb(2, zzavp.booleanValue());
+    }
+    if (zzavq != null) {
+      paramZzyy.zzb(3, zzavq);
+    }
+    if (zzavr != null) {
+      paramZzyy.zzb(4, zzavr);
+    }
+    if (zzavs != null) {
+      paramZzyy.zzb(5, zzavs);
+    }
+    super.zza(paramZzyy);
+  }
+  
+  protected final int zzf()
+  {
+    int j = super.zzf();
+    int i = j;
+    if (zzavo != null) {
+      i = j + zzyy.zzh(1, zzavo.intValue());
+    }
+    j = i;
+    if (zzavp != null)
+    {
+      zzavp.booleanValue();
+      j = i + (zzyy.zzbb(2) + 1);
+    }
+    i = j;
+    if (zzavq != null) {
+      i = j + zzyy.zzc(3, zzavq);
+    }
+    j = i;
+    if (zzavr != null) {
+      j = i + zzyy.zzc(4, zzavr);
+    }
+    i = j;
+    if (zzavs != null) {
+      i = j + zzyy.zzc(5, zzavs);
+    }
+    return i;
+  }
+}

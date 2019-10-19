@@ -1,0 +1,10 @@
+package com.google.android.gms.common.config;
+
+final class zzc
+  extends GservicesValue<Integer>
+{
+  zzc(String paramString, Integer paramInteger)
+  {
+    super(paramString, paramInteger);
+  }
+}

@@ -1,0 +1,271 @@
+package com.google.android.gms.internal.measurement;
+
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Binder;
+import android.os.Build.VERSION;
+import android.support.v4.content.PermissionChecker;
+import android.util.Log;
+import javax.annotation.Nullable;
+
+public abstract class zzsl<T>
+{
+  private static final Object zzbqy = new Object();
+  private static boolean zzbqz = false;
+  private static volatile Boolean zzbra = null;
+  @SuppressLint({"StaticFieldLeak"})
+  private static Context zzri = null;
+  private final zzsv zzbrb;
+  final String zzbrc;
+  private final String zzbrd;
+  private final T zzbre;
+  private T zzbrf = null;
+  private volatile zzsi zzbrg = null;
+  private volatile SharedPreferences zzbrh = null;
+  
+  private zzsl(zzsv paramZzsv, String paramString, T paramT)
+  {
+    if (zzsv.zza(paramZzsv) != null)
+    {
+      zzbrb = paramZzsv;
+      String str1 = String.valueOf(zzsv.zzb(paramZzsv));
+      String str2 = String.valueOf(paramString);
+      if (str2.length() != 0) {
+        str1 = str1.concat(str2);
+      } else {
+        str1 = new String(str1);
+      }
+      zzbrd = str1;
+      paramZzsv = String.valueOf(zzsv.zzc(paramZzsv));
+      paramString = String.valueOf(paramString);
+      if (paramString.length() != 0) {
+        paramZzsv = paramZzsv.concat(paramString);
+      } else {
+        paramZzsv = new String(paramZzsv);
+      }
+      zzbrc = paramZzsv;
+      zzbre = paramT;
+      return;
+    }
+    throw new IllegalArgumentException("Must pass a valid SharedPreferences file name or ContentProvider URI");
+  }
+  
+  public static void init(Context paramContext)
+  {
+    for (;;)
+    {
+      Context localContext;
+      synchronized (zzbqy)
+      {
+        if ((Build.VERSION.SDK_INT < 24) || (!paramContext.isDeviceProtectedStorage()))
+        {
+          localContext = paramContext.getApplicationContext();
+          if (localContext != null) {
+            break label63;
+          }
+        }
+        if (zzri != paramContext) {
+          zzbra = null;
+        }
+        zzri = paramContext;
+        zzbqz = false;
+        return;
+      }
+      label63:
+      paramContext = localContext;
+    }
+  }
+  
+  private static zzsl<Double> zza(zzsv paramZzsv, String paramString, double paramDouble)
+  {
+    return new zzss(paramZzsv, paramString, Double.valueOf(paramDouble));
+  }
+  
+  private static zzsl<Integer> zza(zzsv paramZzsv, String paramString, int paramInt)
+  {
+    return new zzsq(paramZzsv, paramString, Integer.valueOf(paramInt));
+  }
+  
+  private static zzsl<Long> zza(zzsv paramZzsv, String paramString, long paramLong)
+  {
+    return new zzsp(paramZzsv, paramString, Long.valueOf(paramLong));
+  }
+  
+  private static zzsl<String> zza(zzsv paramZzsv, String paramString1, String paramString2)
+  {
+    return new zzst(paramZzsv, paramString1, paramString2);
+  }
+  
+  private static zzsl<Boolean> zza(zzsv paramZzsv, String paramString, boolean paramBoolean)
+  {
+    return new zzsr(paramZzsv, paramString, Boolean.valueOf(paramBoolean));
+  }
+  
+  private static <V> V zza(zzsu<V> paramZzsu)
+  {
+    try
+    {
+      Object localObject = paramZzsu.zztj();
+      return localObject;
+    }
+    catch (SecurityException localSecurityException)
+    {
+      long l;
+      for (;;) {}
+    }
+    l = Binder.clearCallingIdentity();
+    try
+    {
+      paramZzsu = paramZzsu.zztj();
+      return paramZzsu;
+    }
+    finally
+    {
+      Binder.restoreCallingIdentity(l);
+    }
+  }
+  
+  static boolean zzd(String paramString, boolean paramBoolean)
+  {
+    try
+    {
+      if (zzth())
+      {
+        paramBoolean = ((Boolean)zza(new zzso(paramString, false))).booleanValue();
+        return paramBoolean;
+      }
+      return false;
+    }
+    catch (SecurityException paramString)
+    {
+      Log.e("PhenotypeFlag", "Unable to read GServices, returning default value.", paramString);
+    }
+    return false;
+  }
+  
+  @Nullable
+  @TargetApi(24)
+  private final T zzte()
+  {
+    Object localObject = zzbrb;
+    if (!zzd("gms:phenotype:phenotype_flag:debug_bypass_phenotype", false))
+    {
+      if (zzsv.zza(zzbrb) != null)
+      {
+        localObject = zztg();
+        if (localObject != null)
+        {
+          localObject = (String)zza(new zzsm(this, (zzsi)localObject));
+          if (localObject != null) {
+            return zzfj((String)localObject);
+          }
+        }
+      }
+      else
+      {
+        localObject = zzbrb;
+      }
+    }
+    else
+    {
+      localObject = String.valueOf(zzbrc);
+      if (((String)localObject).length() != 0) {
+        localObject = "Bypass reading Phenotype values for flag: ".concat((String)localObject);
+      } else {
+        localObject = new String("Bypass reading Phenotype values for flag: ");
+      }
+      Log.w("PhenotypeFlag", (String)localObject);
+    }
+    return null;
+  }
+  
+  @Nullable
+  private final T zztf()
+  {
+    Object localObject = zzbrb;
+    if (zzth()) {
+      try
+      {
+        localObject = (String)zza(new zzsn(this));
+        if (localObject != null)
+        {
+          localObject = zzfj((String)localObject);
+          return localObject;
+        }
+      }
+      catch (SecurityException localSecurityException)
+      {
+        localObject = String.valueOf(zzbrc);
+        if (((String)localObject).length() != 0) {
+          localObject = "Unable to read GServices for flag: ".concat((String)localObject);
+        } else {
+          localObject = new String("Unable to read GServices for flag: ");
+        }
+        Log.e("PhenotypeFlag", (String)localObject, localSecurityException);
+      }
+    }
+    return null;
+  }
+  
+  private final zzsi zztg()
+  {
+    if (zzbrg == null) {}
+    try
+    {
+      zzbrg = zzsi.zza(zzri.getContentResolver(), zzsv.zza(zzbrb));
+      return zzbrg;
+    }
+    catch (SecurityException localSecurityException)
+    {
+      for (;;) {}
+    }
+  }
+  
+  private static boolean zzth()
+  {
+    if (zzbra == null)
+    {
+      Context localContext = zzri;
+      boolean bool = false;
+      if (localContext != null)
+      {
+        if (PermissionChecker.checkSelfPermission(zzri, "com.google.android.providers.gsf.permission.READ_GSERVICES") == 0) {
+          bool = true;
+        }
+        zzbra = Boolean.valueOf(bool);
+      }
+      else
+      {
+        return false;
+      }
+    }
+    return zzbra.booleanValue();
+  }
+  
+  public final T get()
+  {
+    if (zzri != null)
+    {
+      Object localObject = zzbrb;
+      localObject = zzte();
+      if (localObject != null) {
+        return localObject;
+      }
+      localObject = zztf();
+      if (localObject != null) {
+        return localObject;
+      }
+      return zzbre;
+    }
+    throw new IllegalStateException("Must call PhenotypeFlag.init() first");
+  }
+  
+  public final T getDefaultValue()
+  {
+    return zzbre;
+  }
+  
+  protected abstract T zzfj(String paramString);
+}

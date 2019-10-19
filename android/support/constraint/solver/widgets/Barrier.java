@@ -1,0 +1,277 @@
+package android.support.constraint.solver.widgets;
+
+import android.support.constraint.solver.LinearSystem;
+import android.support.constraint.solver.Metrics;
+import android.support.constraint.solver.SolverVariable;
+import java.util.ArrayList;
+
+public class Barrier
+  extends HelperWidget
+{
+  public static final int BOTTOM = 3;
+  public static final int LEFT = 0;
+  public static final int RIGHT = 1;
+  public static final int TYPE_DIALOG = 2;
+  private boolean mAllowsGoneWidget = true;
+  private int mBarrierType = 0;
+  private ArrayList<ResolutionAnchor> mNodes = new ArrayList(4);
+  
+  public Barrier() {}
+  
+  public void addToSolver(LinearSystem paramLinearSystem)
+  {
+    mListAnchors[0] = mLeft;
+    mListAnchors[2] = mTop;
+    mListAnchors[1] = mRight;
+    Object localObject1 = mListAnchors;
+    Barrier localBarrier = this;
+    localObject1[3] = mBottom;
+    int i = 0;
+    Object localObject2;
+    while (i < mListAnchors.length)
+    {
+      localObject1 = mListAnchors[i];
+      localObject2 = mListAnchors;
+      mSolverVariable = paramLinearSystem.createObjectVariable(localObject2[i]);
+      i += 1;
+    }
+    if ((mBarrierType >= 0) && (mBarrierType < 4))
+    {
+      localObject1 = mListAnchors[mBarrierType];
+      i = 0;
+      while (i < mWidgetsCount)
+      {
+        localObject2 = mWidgets[i];
+        if ((mAllowsGoneWidget) || (((ConstraintWidget)localObject2).allowedInBarrier()))
+        {
+          if (((mBarrierType == 0) || (mBarrierType == 1)) && (((ConstraintWidget)localObject2).getHorizontalDimensionBehaviour() == ConstraintWidget.DimensionBehaviour.MATCH_CONSTRAINT)) {}
+          while (((mBarrierType == 2) || (mBarrierType == 3)) && (((ConstraintWidget)localObject2).getVerticalDimensionBehaviour() == ConstraintWidget.DimensionBehaviour.MATCH_CONSTRAINT))
+          {
+            bool = true;
+            break;
+          }
+        }
+        i += 1;
+      }
+      boolean bool = false;
+      if ((mBarrierType != 0) && (mBarrierType != 1) ? localBarrier.getParent().getVerticalDimensionBehaviour() == ConstraintWidget.DimensionBehaviour.WRAP_CONTENT : localBarrier.getParent().getHorizontalDimensionBehaviour() == ConstraintWidget.DimensionBehaviour.WRAP_CONTENT) {
+        bool = false;
+      }
+      i = 0;
+      while (i < mWidgetsCount)
+      {
+        localObject2 = mWidgets[i];
+        if ((mAllowsGoneWidget) || (((ConstraintWidget)localObject2).allowedInBarrier()))
+        {
+          SolverVariable localSolverVariable = paramLinearSystem.createObjectVariable(mListAnchors[mBarrierType]);
+          mListAnchors[mBarrierType].mSolverVariable = localSolverVariable;
+          if ((mBarrierType != 0) && (mBarrierType != 2)) {
+            paramLinearSystem.addGreaterBarrier(mSolverVariable, localSolverVariable, bool);
+          } else {
+            paramLinearSystem.addLowerBarrier(mSolverVariable, localSolverVariable, bool);
+          }
+        }
+        i += 1;
+      }
+      if (mBarrierType == 0)
+      {
+        paramLinearSystem.addEquality(mRight.mSolverVariable, mLeft.mSolverVariable, 0, 6);
+        if (!bool) {
+          paramLinearSystem.addEquality(mLeft.mSolverVariable, mParent.mRight.mSolverVariable, 0, 5);
+        }
+      }
+      else if (mBarrierType == 1)
+      {
+        paramLinearSystem.addEquality(mLeft.mSolverVariable, mRight.mSolverVariable, 0, 6);
+        if (!bool) {
+          paramLinearSystem.addEquality(mLeft.mSolverVariable, mParent.mLeft.mSolverVariable, 0, 5);
+        }
+      }
+      else if (mBarrierType == 2)
+      {
+        paramLinearSystem.addEquality(mBottom.mSolverVariable, mTop.mSolverVariable, 0, 6);
+        if (!bool) {
+          paramLinearSystem.addEquality(mTop.mSolverVariable, mParent.mBottom.mSolverVariable, 0, 5);
+        }
+      }
+      else if (mBarrierType == 3)
+      {
+        paramLinearSystem.addEquality(mTop.mSolverVariable, mBottom.mSolverVariable, 0, 6);
+        if (!bool) {
+          paramLinearSystem.addEquality(mTop.mSolverVariable, mParent.mTop.mSolverVariable, 0, 5);
+        }
+      }
+    }
+  }
+  
+  public boolean allowedInBarrier()
+  {
+    return true;
+  }
+  
+  public boolean allowsGoneWidget()
+  {
+    return mAllowsGoneWidget;
+  }
+  
+  public void analyze(int paramInt)
+  {
+    if (mParent == null) {
+      return;
+    }
+    if (!((ConstraintWidgetContainer)mParent).optimizeFor(2)) {
+      return;
+    }
+    ResolutionAnchor localResolutionAnchor;
+    switch (mBarrierType)
+    {
+    default: 
+      return;
+    case 3: 
+      localResolutionAnchor = mBottom.getResolutionNode();
+      break;
+    case 2: 
+      localResolutionAnchor = mTop.getResolutionNode();
+      break;
+    case 1: 
+      localResolutionAnchor = mRight.getResolutionNode();
+      break;
+    case 0: 
+      localResolutionAnchor = mLeft.getResolutionNode();
+    }
+    localResolutionAnchor.setType(5);
+    if ((mBarrierType != 0) && (mBarrierType != 1))
+    {
+      mLeft.getResolutionNode().resolve(null, 0.0F);
+      mRight.getResolutionNode().resolve(null, 0.0F);
+    }
+    else
+    {
+      mTop.getResolutionNode().resolve(null, 0.0F);
+      mBottom.getResolutionNode().resolve(null, 0.0F);
+    }
+    mNodes.clear();
+    paramInt = 0;
+    while (paramInt < mWidgetsCount)
+    {
+      Object localObject = mWidgets[paramInt];
+      if ((mAllowsGoneWidget) || (((ConstraintWidget)localObject).allowedInBarrier()))
+      {
+        switch (mBarrierType)
+        {
+        default: 
+          localObject = null;
+          break;
+        case 3: 
+          localObject = mBottom.getResolutionNode();
+          break;
+        case 2: 
+          localObject = mTop.getResolutionNode();
+          break;
+        case 1: 
+          localObject = mRight.getResolutionNode();
+          break;
+        case 0: 
+          localObject = mLeft.getResolutionNode();
+        }
+        if (localObject != null)
+        {
+          mNodes.add(localObject);
+          ((ResolutionNode)localObject).addDependent(localResolutionAnchor);
+        }
+      }
+      paramInt += 1;
+    }
+  }
+  
+  public void resetResolutionNodes()
+  {
+    super.resetResolutionNodes();
+    mNodes.clear();
+  }
+  
+  public void resolve()
+  {
+    int i = mBarrierType;
+    float f1 = Float.MAX_VALUE;
+    switch (i)
+    {
+    default: 
+      return;
+    case 3: 
+      localResolutionAnchor1 = mBottom.getResolutionNode();
+      break;
+    case 2: 
+      localResolutionAnchor1 = mTop.getResolutionNode();
+      break;
+    case 1: 
+      localResolutionAnchor1 = mRight.getResolutionNode();
+      f1 = 0.0F;
+      break;
+    }
+    ResolutionAnchor localResolutionAnchor1 = mLeft.getResolutionNode();
+    int j = mNodes.size();
+    ResolutionAnchor localResolutionAnchor2 = null;
+    i = 0;
+    Object localObject;
+    for (float f2 = f1; i < j; f2 = f1)
+    {
+      localObject = (ResolutionAnchor)mNodes.get(i);
+      if (state != 1) {
+        return;
+      }
+      if ((mBarrierType != 0) && (mBarrierType != 2))
+      {
+        f1 = f2;
+        if (resolvedOffset > f2)
+        {
+          f1 = resolvedOffset;
+          localResolutionAnchor2 = resolvedTarget;
+        }
+      }
+      else
+      {
+        f1 = f2;
+        if (resolvedOffset < f2)
+        {
+          f1 = resolvedOffset;
+          localResolutionAnchor2 = resolvedTarget;
+        }
+      }
+      i += 1;
+    }
+    if (LinearSystem.getMetrics() != null)
+    {
+      localObject = LinearSystem.getMetrics();
+      barrierConnectionResolved += 1L;
+    }
+    resolvedTarget = localResolutionAnchor2;
+    resolvedOffset = f2;
+    localResolutionAnchor1.didResolve();
+    switch (mBarrierType)
+    {
+    default: 
+      return;
+    case 3: 
+      mTop.getResolutionNode().resolve(localResolutionAnchor2, f2);
+      return;
+    case 2: 
+      mBottom.getResolutionNode().resolve(localResolutionAnchor2, f2);
+      return;
+    case 1: 
+      mLeft.getResolutionNode().resolve(localResolutionAnchor2, f2);
+      return;
+    }
+    mRight.getResolutionNode().resolve(localResolutionAnchor2, f2);
+  }
+  
+  public void setAllowsGoneWidget(boolean paramBoolean)
+  {
+    mAllowsGoneWidget = paramBoolean;
+  }
+  
+  public void setBarrierType(int paramInt)
+  {
+    mBarrierType = paramInt;
+  }
+}

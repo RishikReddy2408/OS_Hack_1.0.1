@@ -1,0 +1,10 @@
+package com.google.firebase.events;
+
+import com.google.android.gms.common.annotation.KeepForSdk;
+
+@KeepForSdk
+public abstract interface EventHandler<T>
+{
+  @KeepForSdk
+  public abstract void handle(Event<T> paramEvent);
+}

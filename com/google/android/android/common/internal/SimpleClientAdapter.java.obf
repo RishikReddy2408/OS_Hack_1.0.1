@@ -1,0 +1,51 @@
+package com.google.android.gms.common.internal;
+
+import android.content.Context;
+import android.os.IBinder;
+import android.os.IInterface;
+import android.os.Looper;
+import com.google.android.gms.common.api.Api.SimpleClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+
+public class SimpleClientAdapter<T extends IInterface>
+  extends GmsClient<T>
+{
+  private final Api.SimpleClient<T> zapf;
+  
+  public SimpleClientAdapter(Context paramContext, Looper paramLooper, int paramInt, GoogleApiClient.ConnectionCallbacks paramConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener paramOnConnectionFailedListener, ClientSettings paramClientSettings, Api.SimpleClient<T> paramSimpleClient)
+  {
+    super(paramContext, paramLooper, paramInt, paramClientSettings, paramConnectionCallbacks, paramOnConnectionFailedListener);
+    zapf = paramSimpleClient;
+  }
+  
+  protected T createServiceInterface(IBinder paramIBinder)
+  {
+    return zapf.createServiceInterface(paramIBinder);
+  }
+  
+  public Api.SimpleClient<T> getClient()
+  {
+    return zapf;
+  }
+  
+  public int getMinApkVersion()
+  {
+    return super.getMinApkVersion();
+  }
+  
+  protected String getServiceDescriptor()
+  {
+    return zapf.getServiceDescriptor();
+  }
+  
+  protected String getStartServiceAction()
+  {
+    return zapf.getStartServiceAction();
+  }
+  
+  protected void onSetConnectState(int paramInt, T paramT)
+  {
+    zapf.setState(paramInt, paramT);
+  }
+}

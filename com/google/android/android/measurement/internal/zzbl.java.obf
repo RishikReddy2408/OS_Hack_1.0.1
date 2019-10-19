@@ -1,0 +1,39 @@
+package com.google.android.gms.measurement.internal;
+
+import android.content.BroadcastReceiver.PendingResult;
+import android.content.Context;
+import android.os.Bundle;
+import com.google.android.gms.measurement.AppMeasurement;
+
+final class zzbl
+  implements Runnable
+{
+  zzbl(zzbj paramZzbj, zzbt paramZzbt, long paramLong, Bundle paramBundle, Context paramContext, zzap paramZzap, BroadcastReceiver.PendingResult paramPendingResult) {}
+  
+  public final void run()
+  {
+    long l3 = zzaoj.zzgp().zzanj.get();
+    long l2 = zzaol;
+    long l1 = l2;
+    if (l3 > 0L) {
+      if (l2 < l3)
+      {
+        l1 = l2;
+        if (l2 > 0L) {}
+      }
+      else
+      {
+        l1 = l3 - 1L;
+      }
+    }
+    if (l1 > 0L) {
+      zzaom.putLong("click_timestamp", l1);
+    }
+    zzaom.putString("_cis", "referrer broadcast");
+    AppMeasurement.getInstance(val$context).logEventInternal("auto", "_cmp", zzaom);
+    zzaok.zzjl().zzbx("Install campaign recorded");
+    if (zzrf != null) {
+      zzrf.finish();
+    }
+  }
+}

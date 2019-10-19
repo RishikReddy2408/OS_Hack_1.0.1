@@ -1,0 +1,45 @@
+package com.google.android.gms.common.api.internal;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.support.annotation.MainThread;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiActivity;
+
+final class zan
+  implements Runnable
+{
+  private final zam zadi;
+  
+  zan(zal paramZal, zam paramZam)
+  {
+    zadi = paramZam;
+  }
+  
+  @MainThread
+  public final void run()
+  {
+    if (!zadj.mStarted) {
+      return;
+    }
+    Object localObject = zadi.getConnectionResult();
+    if (((ConnectionResult)localObject).hasResolution())
+    {
+      zadj.mLifecycleFragment.startActivityForResult(GoogleApiActivity.zaa(zadj.getActivity(), ((ConnectionResult)localObject).getResolution(), zadi.zar(), false), 1);
+      return;
+    }
+    if (zadj.zacc.isUserResolvableError(((ConnectionResult)localObject).getErrorCode()))
+    {
+      zadj.zacc.zaa(zadj.getActivity(), zadj.mLifecycleFragment, ((ConnectionResult)localObject).getErrorCode(), 2, zadj);
+      return;
+    }
+    if (((ConnectionResult)localObject).getErrorCode() == 18)
+    {
+      localObject = GoogleApiAvailability.zaa(zadj.getActivity(), zadj);
+      zadj.zacc.zaa(zadj.getActivity().getApplicationContext(), new zao(this, (Dialog)localObject));
+      return;
+    }
+    zadj.zaa((ConnectionResult)localObject, zadi.zar());
+  }
+}

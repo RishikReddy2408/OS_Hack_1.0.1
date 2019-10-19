@@ -1,0 +1,658 @@
+package com.google.android.gms.internal.measurement;
+
+import java.lang.reflect.Field;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.security.AccessController;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import libcore.io.Memory;
+import sun.misc.Unsafe;
+
+final class zzyh
+{
+  private static final Logger logger = Logger.getLogger(zzyh.class.getName());
+  private static final Class<?> zzbtv;
+  private static final boolean zzbuv;
+  private static final Unsafe zzcay = zzyk();
+  private static final boolean zzccv;
+  private static final boolean zzccw;
+  private static final zzd zzccx;
+  private static final boolean zzccy;
+  private static final long zzccz;
+  private static final long zzcda;
+  private static final long zzcdb;
+  private static final long zzcdc;
+  private static final long zzcdd;
+  private static final long zzcde;
+  private static final long zzcdf;
+  private static final long zzcdg;
+  private static final long zzcdh;
+  private static final long zzcdi;
+  private static final long zzcdj;
+  private static final long zzcdk;
+  private static final long zzcdl;
+  private static final long zzcdm;
+  private static final boolean zzcdn;
+  
+  static
+  {
+    zzbtv = zzua.zztz();
+    zzccv = zzm(Long.TYPE);
+    zzccw = zzm(Integer.TYPE);
+    Unsafe localUnsafe = zzcay;
+    Object localObject = null;
+    if (localUnsafe != null) {
+      if (zzua.zzty())
+      {
+        if (zzccv) {
+          localObject = new zzb(zzcay);
+        } else if (zzccw) {
+          localObject = new zza(zzcay);
+        }
+      }
+      else {
+        localObject = new zzc(zzcay);
+      }
+    }
+    zzccx = (zzd)localObject;
+    zzccy = zzym();
+    zzbuv = zzyl();
+    zzccz = zzk([B.class);
+    zzcda = zzk([Z.class);
+    zzcdb = zzl([Z.class);
+    zzcdc = zzk([I.class);
+    zzcdd = zzl([I.class);
+    zzcde = zzk([J.class);
+    zzcdf = zzl([J.class);
+    zzcdg = zzk([F.class);
+    zzcdh = zzl([F.class);
+    zzcdi = zzk([D.class);
+    zzcdj = zzl([D.class);
+    zzcdk = zzk([Ljava.lang.Object.class);
+    zzcdl = zzl([Ljava.lang.Object.class);
+    localObject = zzyn();
+    long l;
+    if ((localObject != null) && (zzccx != null)) {
+      l = zzccxzzcdo.objectFieldOffset((Field)localObject);
+    } else {
+      l = -1L;
+    }
+    zzcdm = l;
+    boolean bool;
+    if (ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN) {
+      bool = true;
+    } else {
+      bool = false;
+    }
+    zzcdn = bool;
+  }
+  
+  private zzyh() {}
+  
+  static byte zza(byte[] paramArrayOfByte, long paramLong)
+  {
+    return zzccx.zzy(paramArrayOfByte, zzccz + paramLong);
+  }
+  
+  static void zza(long paramLong, byte paramByte)
+  {
+    zzccx.zza(paramLong, paramByte);
+  }
+  
+  private static void zza(Object paramObject, long paramLong, byte paramByte)
+  {
+    long l = 0xFFFFFFFFFFFFFFFC & paramLong;
+    int i = zzk(paramObject, l);
+    int j = (((int)paramLong ^ 0xFFFFFFFF) & 0x3) << 3;
+    zzb(paramObject, l, (0xFF & paramByte) << j | i & (255 << j ^ 0xFFFFFFFF));
+  }
+  
+  static void zza(Object paramObject, long paramLong, double paramDouble)
+  {
+    zzccx.zza(paramObject, paramLong, paramDouble);
+  }
+  
+  static void zza(Object paramObject, long paramLong, float paramFloat)
+  {
+    zzccx.zza(paramObject, paramLong, paramFloat);
+  }
+  
+  static void zza(Object paramObject, long paramLong1, long paramLong2)
+  {
+    zzccx.zza(paramObject, paramLong1, paramLong2);
+  }
+  
+  static void zza(Object paramObject1, long paramLong, Object paramObject2)
+  {
+    zzccxzzcdo.putObject(paramObject1, paramLong, paramObject2);
+  }
+  
+  static void zza(Object paramObject, long paramLong, boolean paramBoolean)
+  {
+    zzccx.zza(paramObject, paramLong, paramBoolean);
+  }
+  
+  static void zza(byte[] paramArrayOfByte, long paramLong, byte paramByte)
+  {
+    zzccx.zze(paramArrayOfByte, zzccz + paramLong, paramByte);
+  }
+  
+  static void zza(byte[] paramArrayOfByte, long paramLong1, long paramLong2, long paramLong3)
+  {
+    zzccx.zza(paramArrayOfByte, paramLong1, paramLong2, paramLong3);
+  }
+  
+  static long zzb(ByteBuffer paramByteBuffer)
+  {
+    return zzccx.zzl(paramByteBuffer, zzcdm);
+  }
+  
+  private static Field zzb(Class<?> paramClass, String paramString)
+  {
+    try
+    {
+      paramClass = paramClass.getDeclaredField(paramString);
+      paramClass.setAccessible(true);
+      return paramClass;
+    }
+    catch (Throwable paramClass)
+    {
+      for (;;) {}
+    }
+    return null;
+  }
+  
+  private static void zzb(Object paramObject, long paramLong, byte paramByte)
+  {
+    long l = 0xFFFFFFFFFFFFFFFC & paramLong;
+    int i = zzk(paramObject, l);
+    int j = ((int)paramLong & 0x3) << 3;
+    zzb(paramObject, l, (0xFF & paramByte) << j | i & (255 << j ^ 0xFFFFFFFF));
+  }
+  
+  static void zzb(Object paramObject, long paramLong, int paramInt)
+  {
+    zzccx.zzb(paramObject, paramLong, paramInt);
+  }
+  
+  private static void zzb(Object paramObject, long paramLong, boolean paramBoolean)
+  {
+    zza(paramObject, paramLong, (byte)paramBoolean);
+  }
+  
+  private static void zzc(Object paramObject, long paramLong, boolean paramBoolean)
+  {
+    zzb(paramObject, paramLong, (byte)paramBoolean);
+  }
+  
+  private static int zzk(Class<?> paramClass)
+  {
+    if (zzbuv) {
+      return zzccxzzcdo.arrayBaseOffset(paramClass);
+    }
+    return -1;
+  }
+  
+  static int zzk(Object paramObject, long paramLong)
+  {
+    return zzccx.zzk(paramObject, paramLong);
+  }
+  
+  private static int zzl(Class<?> paramClass)
+  {
+    if (zzbuv) {
+      return zzccxzzcdo.arrayIndexScale(paramClass);
+    }
+    return -1;
+  }
+  
+  static long zzl(Object paramObject, long paramLong)
+  {
+    return zzccx.zzl(paramObject, paramLong);
+  }
+  
+  private static boolean zzm(Class<?> paramClass)
+  {
+    if (!zzua.zzty()) {
+      return false;
+    }
+    try
+    {
+      Class localClass = zzbtv;
+      localClass.getMethod("peekLong", new Class[] { paramClass, Boolean.TYPE });
+      localClass.getMethod("pokeLong", new Class[] { paramClass, Long.TYPE, Boolean.TYPE });
+      localClass.getMethod("pokeInt", new Class[] { paramClass, Integer.TYPE, Boolean.TYPE });
+      localClass.getMethod("peekInt", new Class[] { paramClass, Boolean.TYPE });
+      localClass.getMethod("pokeByte", new Class[] { paramClass, Byte.TYPE });
+      localClass.getMethod("peekByte", new Class[] { paramClass });
+      localClass.getMethod("pokeByteArray", new Class[] { paramClass, [B.class, Integer.TYPE, Integer.TYPE });
+      localClass.getMethod("peekByteArray", new Class[] { paramClass, [B.class, Integer.TYPE, Integer.TYPE });
+      return true;
+    }
+    catch (Throwable paramClass) {}
+    return false;
+  }
+  
+  static boolean zzm(Object paramObject, long paramLong)
+  {
+    return zzccx.zzm(paramObject, paramLong);
+  }
+  
+  static float zzn(Object paramObject, long paramLong)
+  {
+    return zzccx.zzn(paramObject, paramLong);
+  }
+  
+  static double zzo(Object paramObject, long paramLong)
+  {
+    return zzccx.zzo(paramObject, paramLong);
+  }
+  
+  static Object zzp(Object paramObject, long paramLong)
+  {
+    return zzccxzzcdo.getObject(paramObject, paramLong);
+  }
+  
+  private static byte zzq(Object paramObject, long paramLong)
+  {
+    return (byte)(zzk(paramObject, 0xFFFFFFFFFFFFFFFC & paramLong) >>> (int)(((paramLong ^ 0xFFFFFFFFFFFFFFFF) & 0x3) << 3));
+  }
+  
+  private static byte zzr(Object paramObject, long paramLong)
+  {
+    return (byte)(zzk(paramObject, 0xFFFFFFFFFFFFFFFC & paramLong) >>> (int)((paramLong & 0x3) << 3));
+  }
+  
+  private static boolean zzs(Object paramObject, long paramLong)
+  {
+    return zzq(paramObject, paramLong) != 0;
+  }
+  
+  private static boolean zzt(Object paramObject, long paramLong)
+  {
+    return zzr(paramObject, paramLong) != 0;
+  }
+  
+  static boolean zzyi()
+  {
+    return zzbuv;
+  }
+  
+  static boolean zzyj()
+  {
+    return zzccy;
+  }
+  
+  static Unsafe zzyk()
+  {
+    try
+    {
+      Unsafe localUnsafe = (Unsafe)AccessController.doPrivileged(new zzyi());
+      return localUnsafe;
+    }
+    catch (Throwable localThrowable)
+    {
+      for (;;) {}
+    }
+    return null;
+  }
+  
+  private static boolean zzyl()
+  {
+    if (zzcay == null) {
+      return false;
+    }
+    try
+    {
+      localObject = zzcay.getClass();
+      ((Class)localObject).getMethod("objectFieldOffset", new Class[] { Field.class });
+      ((Class)localObject).getMethod("arrayBaseOffset", new Class[] { Class.class });
+      ((Class)localObject).getMethod("arrayIndexScale", new Class[] { Class.class });
+      ((Class)localObject).getMethod("getInt", new Class[] { Object.class, Long.TYPE });
+      ((Class)localObject).getMethod("putInt", new Class[] { Object.class, Long.TYPE, Integer.TYPE });
+      ((Class)localObject).getMethod("getLong", new Class[] { Object.class, Long.TYPE });
+      ((Class)localObject).getMethod("putLong", new Class[] { Object.class, Long.TYPE, Long.TYPE });
+      ((Class)localObject).getMethod("getObject", new Class[] { Object.class, Long.TYPE });
+      ((Class)localObject).getMethod("putObject", new Class[] { Object.class, Long.TYPE, Object.class });
+      if (zzua.zzty()) {
+        return true;
+      }
+      ((Class)localObject).getMethod("getByte", new Class[] { Object.class, Long.TYPE });
+      ((Class)localObject).getMethod("putByte", new Class[] { Object.class, Long.TYPE, Byte.TYPE });
+      ((Class)localObject).getMethod("getBoolean", new Class[] { Object.class, Long.TYPE });
+      ((Class)localObject).getMethod("putBoolean", new Class[] { Object.class, Long.TYPE, Boolean.TYPE });
+      ((Class)localObject).getMethod("getFloat", new Class[] { Object.class, Long.TYPE });
+      ((Class)localObject).getMethod("putFloat", new Class[] { Object.class, Long.TYPE, Float.TYPE });
+      ((Class)localObject).getMethod("getDouble", new Class[] { Object.class, Long.TYPE });
+      ((Class)localObject).getMethod("putDouble", new Class[] { Object.class, Long.TYPE, Double.TYPE });
+      return true;
+    }
+    catch (Throwable localThrowable)
+    {
+      Object localObject = logger;
+      Level localLevel = Level.WARNING;
+      String str = String.valueOf(localThrowable);
+      StringBuilder localStringBuilder = new StringBuilder(String.valueOf(str).length() + 71);
+      localStringBuilder.append("platform method missing - proto runtime falling back to safer methods: ");
+      localStringBuilder.append(str);
+      ((Logger)localObject).logp(localLevel, "com.google.protobuf.UnsafeUtil", "supportsUnsafeArrayOperations", localStringBuilder.toString());
+    }
+    return false;
+  }
+  
+  private static boolean zzym()
+  {
+    if (zzcay == null) {
+      return false;
+    }
+    try
+    {
+      localObject = zzcay.getClass();
+      ((Class)localObject).getMethod("objectFieldOffset", new Class[] { Field.class });
+      ((Class)localObject).getMethod("getLong", new Class[] { Object.class, Long.TYPE });
+      if (zzyn() == null) {
+        return false;
+      }
+      if (zzua.zzty()) {
+        return true;
+      }
+      ((Class)localObject).getMethod("getByte", new Class[] { Long.TYPE });
+      ((Class)localObject).getMethod("putByte", new Class[] { Long.TYPE, Byte.TYPE });
+      ((Class)localObject).getMethod("getInt", new Class[] { Long.TYPE });
+      ((Class)localObject).getMethod("putInt", new Class[] { Long.TYPE, Integer.TYPE });
+      ((Class)localObject).getMethod("getLong", new Class[] { Long.TYPE });
+      ((Class)localObject).getMethod("putLong", new Class[] { Long.TYPE, Long.TYPE });
+      ((Class)localObject).getMethod("copyMemory", new Class[] { Long.TYPE, Long.TYPE, Long.TYPE });
+      ((Class)localObject).getMethod("copyMemory", new Class[] { Object.class, Long.TYPE, Object.class, Long.TYPE, Long.TYPE });
+      return true;
+    }
+    catch (Throwable localThrowable)
+    {
+      Object localObject = logger;
+      Level localLevel = Level.WARNING;
+      String str = String.valueOf(localThrowable);
+      StringBuilder localStringBuilder = new StringBuilder(String.valueOf(str).length() + 71);
+      localStringBuilder.append("platform method missing - proto runtime falling back to safer methods: ");
+      localStringBuilder.append(str);
+      ((Logger)localObject).logp(localLevel, "com.google.protobuf.UnsafeUtil", "supportsUnsafeByteBufferOperations", localStringBuilder.toString());
+    }
+    return false;
+  }
+  
+  private static Field zzyn()
+  {
+    if (zzua.zzty())
+    {
+      localField = zzb(Buffer.class, "effectiveDirectAddress");
+      if (localField != null) {
+        return localField;
+      }
+    }
+    Field localField = zzb(Buffer.class, "address");
+    if ((localField != null) && (localField.getType() == Long.TYPE)) {
+      return localField;
+    }
+    return null;
+  }
+  
+  static final class zza
+    extends zzyh.zzd
+  {
+    zza(Unsafe paramUnsafe)
+    {
+      super();
+    }
+    
+    public final void zza(long paramLong, byte paramByte)
+    {
+      Memory.pokeByte((int)(paramLong & 0xFFFFFFFFFFFFFFFF), paramByte);
+    }
+    
+    public final void zza(Object paramObject, long paramLong, double paramDouble)
+    {
+      zza(paramObject, paramLong, Double.doubleToLongBits(paramDouble));
+    }
+    
+    public final void zza(Object paramObject, long paramLong, float paramFloat)
+    {
+      zzb(paramObject, paramLong, Float.floatToIntBits(paramFloat));
+    }
+    
+    public final void zza(Object paramObject, long paramLong, boolean paramBoolean)
+    {
+      if (zzyh.zzvh())
+      {
+        zzyh.zzd(paramObject, paramLong, paramBoolean);
+        return;
+      }
+      zzyh.zze(paramObject, paramLong, paramBoolean);
+    }
+    
+    public final void zza(byte[] paramArrayOfByte, long paramLong1, long paramLong2, long paramLong3)
+    {
+      Memory.pokeByteArray((int)(paramLong2 & 0xFFFFFFFFFFFFFFFF), paramArrayOfByte, (int)paramLong1, (int)paramLong3);
+    }
+    
+    public final void zze(Object paramObject, long paramLong, byte paramByte)
+    {
+      if (zzyh.zzvh())
+      {
+        zzyh.zzc(paramObject, paramLong, paramByte);
+        return;
+      }
+      zzyh.zzd(paramObject, paramLong, paramByte);
+    }
+    
+    public final boolean zzm(Object paramObject, long paramLong)
+    {
+      if (zzyh.zzvh()) {
+        return zzyh.zzw(paramObject, paramLong);
+      }
+      return zzyh.zzx(paramObject, paramLong);
+    }
+    
+    public final float zzn(Object paramObject, long paramLong)
+    {
+      return Float.intBitsToFloat(zzk(paramObject, paramLong));
+    }
+    
+    public final double zzo(Object paramObject, long paramLong)
+    {
+      return Double.longBitsToDouble(zzl(paramObject, paramLong));
+    }
+    
+    public final byte zzy(Object paramObject, long paramLong)
+    {
+      if (zzyh.zzvh()) {
+        return zzyh.zzu(paramObject, paramLong);
+      }
+      return zzyh.zzv(paramObject, paramLong);
+    }
+  }
+  
+  static final class zzb
+    extends zzyh.zzd
+  {
+    zzb(Unsafe paramUnsafe)
+    {
+      super();
+    }
+    
+    public final void zza(long paramLong, byte paramByte)
+    {
+      Memory.pokeByte(paramLong, paramByte);
+    }
+    
+    public final void zza(Object paramObject, long paramLong, double paramDouble)
+    {
+      zza(paramObject, paramLong, Double.doubleToLongBits(paramDouble));
+    }
+    
+    public final void zza(Object paramObject, long paramLong, float paramFloat)
+    {
+      zzb(paramObject, paramLong, Float.floatToIntBits(paramFloat));
+    }
+    
+    public final void zza(Object paramObject, long paramLong, boolean paramBoolean)
+    {
+      if (zzyh.zzvh())
+      {
+        zzyh.zzd(paramObject, paramLong, paramBoolean);
+        return;
+      }
+      zzyh.zze(paramObject, paramLong, paramBoolean);
+    }
+    
+    public final void zza(byte[] paramArrayOfByte, long paramLong1, long paramLong2, long paramLong3)
+    {
+      Memory.pokeByteArray(paramLong2, paramArrayOfByte, (int)paramLong1, (int)paramLong3);
+    }
+    
+    public final void zze(Object paramObject, long paramLong, byte paramByte)
+    {
+      if (zzyh.zzvh())
+      {
+        zzyh.zzc(paramObject, paramLong, paramByte);
+        return;
+      }
+      zzyh.zzd(paramObject, paramLong, paramByte);
+    }
+    
+    public final boolean zzm(Object paramObject, long paramLong)
+    {
+      if (zzyh.zzvh()) {
+        return zzyh.zzw(paramObject, paramLong);
+      }
+      return zzyh.zzx(paramObject, paramLong);
+    }
+    
+    public final float zzn(Object paramObject, long paramLong)
+    {
+      return Float.intBitsToFloat(zzk(paramObject, paramLong));
+    }
+    
+    public final double zzo(Object paramObject, long paramLong)
+    {
+      return Double.longBitsToDouble(zzl(paramObject, paramLong));
+    }
+    
+    public final byte zzy(Object paramObject, long paramLong)
+    {
+      if (zzyh.zzvh()) {
+        return zzyh.zzu(paramObject, paramLong);
+      }
+      return zzyh.zzv(paramObject, paramLong);
+    }
+  }
+  
+  static final class zzc
+    extends zzyh.zzd
+  {
+    zzc(Unsafe paramUnsafe)
+    {
+      super();
+    }
+    
+    public final void zza(long paramLong, byte paramByte)
+    {
+      zzcdo.putByte(paramLong, paramByte);
+    }
+    
+    public final void zza(Object paramObject, long paramLong, double paramDouble)
+    {
+      zzcdo.putDouble(paramObject, paramLong, paramDouble);
+    }
+    
+    public final void zza(Object paramObject, long paramLong, float paramFloat)
+    {
+      zzcdo.putFloat(paramObject, paramLong, paramFloat);
+    }
+    
+    public final void zza(Object paramObject, long paramLong, boolean paramBoolean)
+    {
+      zzcdo.putBoolean(paramObject, paramLong, paramBoolean);
+    }
+    
+    public final void zza(byte[] paramArrayOfByte, long paramLong1, long paramLong2, long paramLong3)
+    {
+      zzcdo.copyMemory(paramArrayOfByte, zzyh.zzyo() + paramLong1, null, paramLong2, paramLong3);
+    }
+    
+    public final void zze(Object paramObject, long paramLong, byte paramByte)
+    {
+      zzcdo.putByte(paramObject, paramLong, paramByte);
+    }
+    
+    public final boolean zzm(Object paramObject, long paramLong)
+    {
+      return zzcdo.getBoolean(paramObject, paramLong);
+    }
+    
+    public final float zzn(Object paramObject, long paramLong)
+    {
+      return zzcdo.getFloat(paramObject, paramLong);
+    }
+    
+    public final double zzo(Object paramObject, long paramLong)
+    {
+      return zzcdo.getDouble(paramObject, paramLong);
+    }
+    
+    public final byte zzy(Object paramObject, long paramLong)
+    {
+      return zzcdo.getByte(paramObject, paramLong);
+    }
+  }
+  
+  static abstract class zzd
+  {
+    Unsafe zzcdo;
+    
+    zzd(Unsafe paramUnsafe)
+    {
+      zzcdo = paramUnsafe;
+    }
+    
+    public abstract void zza(long paramLong, byte paramByte);
+    
+    public abstract void zza(Object paramObject, long paramLong, double paramDouble);
+    
+    public abstract void zza(Object paramObject, long paramLong, float paramFloat);
+    
+    public final void zza(Object paramObject, long paramLong1, long paramLong2)
+    {
+      zzcdo.putLong(paramObject, paramLong1, paramLong2);
+    }
+    
+    public abstract void zza(Object paramObject, long paramLong, boolean paramBoolean);
+    
+    public abstract void zza(byte[] paramArrayOfByte, long paramLong1, long paramLong2, long paramLong3);
+    
+    public final void zzb(Object paramObject, long paramLong, int paramInt)
+    {
+      zzcdo.putInt(paramObject, paramLong, paramInt);
+    }
+    
+    public abstract void zze(Object paramObject, long paramLong, byte paramByte);
+    
+    public final int zzk(Object paramObject, long paramLong)
+    {
+      return zzcdo.getInt(paramObject, paramLong);
+    }
+    
+    public final long zzl(Object paramObject, long paramLong)
+    {
+      return zzcdo.getLong(paramObject, paramLong);
+    }
+    
+    public abstract boolean zzm(Object paramObject, long paramLong);
+    
+    public abstract float zzn(Object paramObject, long paramLong);
+    
+    public abstract double zzo(Object paramObject, long paramLong);
+    
+    public abstract byte zzy(Object paramObject, long paramLong);
+  }
+}

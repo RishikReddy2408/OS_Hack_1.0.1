@@ -1,0 +1,19 @@
+package com.google.android.android.internal.measurement;
+
+import android.database.ContentObserver;
+import android.os.Handler;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+final class zzsh
+  extends ContentObserver
+{
+  zzsh(Handler paramHandler)
+  {
+    super(null);
+  }
+  
+  public final void onChange(boolean paramBoolean)
+  {
+    zzsg.zzsy().set(true);
+  }
+}

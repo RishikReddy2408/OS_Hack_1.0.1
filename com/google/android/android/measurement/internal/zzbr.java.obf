@@ -1,0 +1,49 @@
+package com.google.android.gms.measurement.internal;
+
+import com.google.android.gms.common.internal.Preconditions;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicLong;
+
+final class zzbr<V>
+  extends FutureTask<V>
+  implements Comparable<zzbr>
+{
+  private final String zzapf;
+  private final long zzaph;
+  final boolean zzapi;
+  
+  zzbr(zzbo paramZzbo, Runnable paramRunnable, boolean paramBoolean, String paramString)
+  {
+    super(paramRunnable, null);
+    Preconditions.checkNotNull(paramString);
+    zzaph = zzbo.zzkd().getAndIncrement();
+    zzapf = paramString;
+    zzapi = false;
+    if (zzaph == Long.MAX_VALUE) {
+      paramZzbo.zzgo().zzjd().zzbx("Tasks index overflow");
+    }
+  }
+  
+  zzbr(Callable<V> paramCallable, boolean paramBoolean, String paramString)
+  {
+    super(paramBoolean);
+    Object localObject;
+    Preconditions.checkNotNull(localObject);
+    zzaph = zzbo.zzkd().getAndIncrement();
+    zzapf = localObject;
+    zzapi = paramString;
+    if (zzaph == Long.MAX_VALUE) {
+      paramCallable.zzgo().zzjd().zzbx("Tasks index overflow");
+    }
+  }
+  
+  protected final void setException(Throwable paramThrowable)
+  {
+    zzapg.zzgo().zzjd().zzg(zzapf, paramThrowable);
+    if ((paramThrowable instanceof zzbp)) {
+      Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), paramThrowable);
+    }
+    super.setException(paramThrowable);
+  }
+}

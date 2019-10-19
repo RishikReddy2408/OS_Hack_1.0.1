@@ -1,0 +1,6 @@
+package com.google.android.gms.internal.measurement;
+
+abstract interface zzxa
+{
+  public abstract Object newInstance(Object paramObject);
+}

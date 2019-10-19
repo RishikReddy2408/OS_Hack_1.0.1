@@ -1,0 +1,37 @@
+package com.google.android.gms.common.api.internal;
+
+import android.os.DeadObjectException;
+import android.os.RemoteException;
+import android.os.TransactionTooLargeException;
+import android.support.annotation.NonNull;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.util.PlatformVersion;
+
+public abstract class zab
+{
+  private final int type;
+  
+  public zab(int paramInt)
+  {
+    type = paramInt;
+  }
+  
+  private static Status zaa(RemoteException paramRemoteException)
+  {
+    StringBuilder localStringBuilder = new StringBuilder();
+    if ((PlatformVersion.isAtLeastIceCreamSandwichMR1()) && ((paramRemoteException instanceof TransactionTooLargeException))) {
+      localStringBuilder.append("TransactionTooLargeException: ");
+    }
+    localStringBuilder.append(paramRemoteException.getLocalizedMessage());
+    return new Status(8, localStringBuilder.toString());
+  }
+  
+  public abstract void zaa(@NonNull Status paramStatus);
+  
+  public abstract void zaa(GoogleApiManager.zaa<?> paramZaa)
+    throws DeadObjectException;
+  
+  public abstract void zaa(@NonNull zaab paramZaab, boolean paramBoolean);
+  
+  public abstract void zaa(@NonNull RuntimeException paramRuntimeException);
+}

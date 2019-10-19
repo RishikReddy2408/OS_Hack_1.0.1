@@ -1,0 +1,12 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.PrintStream;
+
+abstract class zzsx
+{
+  private static final Throwable[] zzbrv = new Throwable[0];
+  
+  zzsx() {}
+  
+  public abstract void zza(Throwable paramThrowable, PrintStream paramPrintStream);
+}

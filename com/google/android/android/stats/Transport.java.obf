@@ -1,0 +1,7 @@
+package com.google.android.gms.stats;
+
+final class zza
+  implements WakeLock.zza
+{
+  zza() {}
+}

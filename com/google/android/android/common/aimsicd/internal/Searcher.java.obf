@@ -1,0 +1,17 @@
+package com.google.android.gms.common.api.internal;
+
+import android.app.Dialog;
+
+final class zao
+  extends zabr
+{
+  zao(zan paramZan, Dialog paramDialog) {}
+  
+  public final void zas()
+  {
+    zadl.zadj.zaq();
+    if (zadk.isShowing()) {
+      zadk.dismiss();
+    }
+  }
+}

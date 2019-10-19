@@ -1,0 +1,33 @@
+package com.google.android.gms.internal.measurement;
+
+import java.lang.reflect.Constructor;
+
+final class zzwq
+{
+  private static final zzwo zzcav = ;
+  private static final zzwo zzcaw = new zzwp();
+  
+  static zzwo zzxd()
+  {
+    return zzcav;
+  }
+  
+  static zzwo zzxe()
+  {
+    return zzcaw;
+  }
+  
+  private static zzwo zzxf()
+  {
+    try
+    {
+      zzwo localZzwo = (zzwo)Class.forName("com.google.protobuf.MapFieldSchemaFull").getDeclaredConstructor(new Class[0]).newInstance(new Object[0]);
+      return localZzwo;
+    }
+    catch (Exception localException)
+    {
+      for (;;) {}
+    }
+    return null;
+  }
+}

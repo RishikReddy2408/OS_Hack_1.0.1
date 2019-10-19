@@ -1,0 +1,27 @@
+package com.google.firebase.iid;
+
+import android.os.Bundle;
+
+final class zzam
+  extends zzak<Bundle>
+{
+  zzam(int paramInt1, int paramInt2, Bundle paramBundle)
+  {
+    super(paramInt1, 1, paramBundle);
+  }
+  
+  final boolean zzab()
+  {
+    return false;
+  }
+  
+  final void zzb(Bundle paramBundle)
+  {
+    Bundle localBundle = paramBundle.getBundle("data");
+    paramBundle = localBundle;
+    if (localBundle == null) {
+      paramBundle = Bundle.EMPTY;
+    }
+    finish(paramBundle);
+  }
+}

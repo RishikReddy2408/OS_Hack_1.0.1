@@ -1,0 +1,383 @@
+package com.google.android.gms.measurement.internal;
+
+import android.os.Binder;
+import android.support.annotation.BinderThread;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import com.google.android.gms.common.GooglePlayServicesUtilLight;
+import com.google.android.gms.common.GoogleSignatureVerifier;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.util.Clock;
+import com.google.android.gms.common.util.UidVerifier;
+import com.google.android.gms.common.util.VisibleForTesting;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+public final class zzbv
+  extends zzah
+{
+  private final zzfa zzamz;
+  private Boolean zzaql;
+  @Nullable
+  private String zzaqm;
+  
+  public zzbv(zzfa paramZzfa)
+  {
+    this(paramZzfa, null);
+  }
+  
+  private zzbv(zzfa paramZzfa, @Nullable String paramString)
+  {
+    Preconditions.checkNotNull(paramZzfa);
+    zzamz = paramZzfa;
+    zzaqm = null;
+  }
+  
+  @BinderThread
+  private final void zzb(zzh paramZzh, boolean paramBoolean)
+  {
+    Preconditions.checkNotNull(paramZzh);
+    zzc(packageName, false);
+    zzamz.zzgm().zzt(zzafx, zzagk);
+  }
+  
+  @BinderThread
+  private final void zzc(String paramString, boolean paramBoolean)
+  {
+    if ((TextUtils.isEmpty(paramString)) || (paramBoolean)) {}
+    for (;;)
+    {
+      try
+      {
+        if (zzaql == null)
+        {
+          if (("com.google.android.gms".equals(zzaqm)) || (UidVerifier.isGooglePlayServicesUid(zzamz.getContext(), Binder.getCallingUid()))) {
+            continue;
+          }
+          if (!GoogleSignatureVerifier.getInstance(zzamz.getContext()).isUidGoogleSigned(Binder.getCallingUid())) {
+            continue;
+          }
+          continue;
+          zzaql = Boolean.valueOf(paramBoolean);
+        }
+        if (zzaql.booleanValue()) {
+          break;
+        }
+        if ((zzaqm == null) && (GooglePlayServicesUtilLight.uidHasPackageName(zzamz.getContext(), Binder.getCallingUid(), paramString))) {
+          zzaqm = paramString;
+        }
+        if (paramString.equals(zzaqm)) {
+          return;
+        }
+        throw new SecurityException(String.format("Unknown calling package name '%s'.", new Object[] { paramString }));
+      }
+      catch (SecurityException localSecurityException)
+      {
+        Object localObject;
+        continue;
+      }
+      zzamz.zzgo().zzjd().zzg("Measurement Service called with invalid calling package. appId", zzap.zzbv(paramString));
+      throw localObject;
+      zzamz.zzgo().zzjd().zzbx("Measurement Service called without app package");
+      throw new SecurityException("Measurement Service called without app package");
+      paramBoolean = false;
+      continue;
+      paramBoolean = true;
+    }
+  }
+  
+  @VisibleForTesting
+  private final void zze(Runnable paramRunnable)
+  {
+    Preconditions.checkNotNull(paramRunnable);
+    if ((((Boolean)zzaf.zzakv.get()).booleanValue()) && (zzamz.zzgn().zzkb()))
+    {
+      paramRunnable.run();
+      return;
+    }
+    zzamz.zzgn().zzc(paramRunnable);
+  }
+  
+  @BinderThread
+  public final List<zzfh> zza(zzh paramZzh, boolean paramBoolean)
+  {
+    zzb(paramZzh, false);
+    Object localObject1 = zzamz.zzgn().zzb(new zzcl(this, paramZzh));
+    try
+    {
+      Object localObject2 = (List)((Future)localObject1).get();
+      localObject1 = new ArrayList(((List)localObject2).size());
+      localObject2 = ((List)localObject2).iterator();
+      while (((Iterator)localObject2).hasNext())
+      {
+        zzfj localZzfj = (zzfj)((Iterator)localObject2).next();
+        if ((paramBoolean) || (!zzfk.zzcv(name))) {
+          ((List)localObject1).add(new zzfh(localZzfj));
+        }
+      }
+      return localObject1;
+    }
+    catch (InterruptedException|ExecutionException localInterruptedException)
+    {
+      zzamz.zzgo().zzjd().zze("Failed to get user attributes. appId", zzap.zzbv(packageName), localInterruptedException);
+    }
+    return null;
+  }
+  
+  @BinderThread
+  public final List<zzl> zza(String paramString1, String paramString2, zzh paramZzh)
+  {
+    zzb(paramZzh, false);
+    paramString1 = zzamz.zzgn().zzb(new zzcd(this, paramZzh, paramString1, paramString2));
+    try
+    {
+      paramString1 = (List)paramString1.get();
+      return paramString1;
+    }
+    catch (InterruptedException|ExecutionException paramString1)
+    {
+      zzamz.zzgo().zzjd().zzg("Failed to get conditional user properties", paramString1);
+    }
+    return Collections.emptyList();
+  }
+  
+  @BinderThread
+  public final List<zzfh> zza(String paramString1, String paramString2, String paramString3, boolean paramBoolean)
+  {
+    zzc(paramString1, true);
+    paramString2 = zzamz.zzgn().zzb(new zzcc(this, paramString1, paramString2, paramString3));
+    try
+    {
+      paramString3 = (List)paramString2.get();
+      paramString2 = new ArrayList(paramString3.size());
+      paramString3 = paramString3.iterator();
+      while (paramString3.hasNext())
+      {
+        zzfj localZzfj = (zzfj)paramString3.next();
+        if ((paramBoolean) || (!zzfk.zzcv(name))) {
+          paramString2.add(new zzfh(localZzfj));
+        }
+      }
+      return paramString2;
+    }
+    catch (InterruptedException|ExecutionException paramString2)
+    {
+      zzamz.zzgo().zzjd().zze("Failed to get user attributes. appId", zzap.zzbv(paramString1), paramString2);
+    }
+    return Collections.emptyList();
+  }
+  
+  @BinderThread
+  public final List<zzfh> zza(String paramString1, String paramString2, boolean paramBoolean, zzh paramZzh)
+  {
+    zzb(paramZzh, false);
+    paramString1 = zzamz.zzgn().zzb(new zzcb(this, paramZzh, paramString1, paramString2));
+    try
+    {
+      paramString2 = (List)paramString1.get();
+      paramString1 = new ArrayList(paramString2.size());
+      paramString2 = paramString2.iterator();
+      while (paramString2.hasNext())
+      {
+        zzfj localZzfj = (zzfj)paramString2.next();
+        if ((paramBoolean) || (!zzfk.zzcv(name))) {
+          paramString1.add(new zzfh(localZzfj));
+        }
+      }
+      return paramString1;
+    }
+    catch (InterruptedException|ExecutionException paramString1)
+    {
+      zzamz.zzgo().zzjd().zze("Failed to get user attributes. appId", zzap.zzbv(packageName), paramString1);
+    }
+    return Collections.emptyList();
+  }
+  
+  @BinderThread
+  public final void zza(long paramLong, String paramString1, String paramString2, String paramString3)
+  {
+    zze(new zzcn(this, paramString2, paramString3, paramString1, paramLong));
+  }
+  
+  @BinderThread
+  public final void zza(zzad paramZzad, zzh paramZzh)
+  {
+    Preconditions.checkNotNull(paramZzad);
+    zzb(paramZzh, false);
+    zze(new zzcg(this, paramZzad, paramZzh));
+  }
+  
+  @BinderThread
+  public final void zza(zzad paramZzad, String paramString1, String paramString2)
+  {
+    Preconditions.checkNotNull(paramZzad);
+    Preconditions.checkNotEmpty(paramString1);
+    zzc(paramString1, true);
+    zze(new zzch(this, paramZzad, paramString1));
+  }
+  
+  @BinderThread
+  public final void zza(zzfh paramZzfh, zzh paramZzh)
+  {
+    Preconditions.checkNotNull(paramZzfh);
+    zzb(paramZzh, false);
+    if (paramZzfh.getValue() == null)
+    {
+      zze(new zzcj(this, paramZzfh, paramZzh));
+      return;
+    }
+    zze(new zzck(this, paramZzfh, paramZzh));
+  }
+  
+  @BinderThread
+  public final void zza(zzh paramZzh)
+  {
+    zzb(paramZzh, false);
+    zze(new zzcm(this, paramZzh));
+  }
+  
+  @BinderThread
+  public final void zza(zzl paramZzl, zzh paramZzh)
+  {
+    Preconditions.checkNotNull(paramZzl);
+    Preconditions.checkNotNull(zzahb);
+    zzb(paramZzh, false);
+    zzl localZzl = new zzl(paramZzl);
+    packageName = packageName;
+    if (zzahb.getValue() == null)
+    {
+      zze(new zzbx(this, localZzl, paramZzh));
+      return;
+    }
+    zze(new zzby(this, localZzl, paramZzh));
+  }
+  
+  @BinderThread
+  public final byte[] zza(zzad paramZzad, String paramString)
+  {
+    Preconditions.checkNotEmpty(paramString);
+    Preconditions.checkNotNull(paramZzad);
+    zzc(paramString, true);
+    zzamz.zzgo().zzjk().zzg("Log and bundle. event", zzamz.zzgl().zzbs(name));
+    long l1 = zzamz.zzbx().nanoTime() / 1000000L;
+    Object localObject = zzamz.zzgn().zzc(new zzci(this, paramZzad, paramString));
+    try
+    {
+      byte[] arrayOfByte = (byte[])((Future)localObject).get();
+      localObject = arrayOfByte;
+      if (arrayOfByte == null)
+      {
+        zzamz.zzgo().zzjd().zzg("Log and bundle returned null. appId", zzap.zzbv(paramString));
+        localObject = new byte[0];
+      }
+      long l2 = zzamz.zzbx().nanoTime() / 1000000L;
+      zzamz.zzgo().zzjk().zzd("Log and bundle processed. event, size, time_ms", zzamz.zzgl().zzbs(name), Integer.valueOf(localObject.length), Long.valueOf(l2 - l1));
+      return localObject;
+    }
+    catch (InterruptedException|ExecutionException localInterruptedException)
+    {
+      zzamz.zzgo().zzjd().zzd("Failed to log and bundle. appId, event, error", zzap.zzbv(paramString), zzamz.zzgl().zzbs(name), localInterruptedException);
+    }
+    return null;
+  }
+  
+  @VisibleForTesting
+  final zzad zzb(zzad paramZzad, zzh paramZzh)
+  {
+    boolean bool = "_cmp".equals(name);
+    int j = 0;
+    int i = j;
+    if (bool)
+    {
+      i = j;
+      if (zzaid != null) {
+        if (zzaid.size() == 0)
+        {
+          i = j;
+        }
+        else
+        {
+          String str = zzaid.getString("_cis");
+          i = j;
+          if (!TextUtils.isEmpty(str)) {
+            if (!"referrer broadcast".equals(str))
+            {
+              i = j;
+              if (!"referrer API".equals(str)) {}
+            }
+            else
+            {
+              i = j;
+              if (zzamz.zzgq().zzbg(packageName)) {
+                i = 1;
+              }
+            }
+          }
+        }
+      }
+    }
+    if (i != 0)
+    {
+      zzamz.zzgo().zzjj().zzg("Event has been filtered ", paramZzad.toString());
+      return new zzad("_cmpx", zzaid, origin, zzaip);
+    }
+    return paramZzad;
+  }
+  
+  @BinderThread
+  public final void zzb(zzh paramZzh)
+  {
+    zzb(paramZzh, false);
+    zze(new zzbw(this, paramZzh));
+  }
+  
+  @BinderThread
+  public final void zzb(zzl paramZzl)
+  {
+    Preconditions.checkNotNull(paramZzl);
+    Preconditions.checkNotNull(zzahb);
+    zzc(packageName, true);
+    zzl localZzl = new zzl(paramZzl);
+    if (zzahb.getValue() == null)
+    {
+      zze(new zzbz(this, localZzl));
+      return;
+    }
+    zze(new zzca(this, localZzl));
+  }
+  
+  @BinderThread
+  public final String zzc(zzh paramZzh)
+  {
+    zzb(paramZzh, false);
+    return zzamz.zzh(paramZzh);
+  }
+  
+  @BinderThread
+  public final void zzd(zzh paramZzh)
+  {
+    zzc(packageName, false);
+    zze(new zzcf(this, paramZzh));
+  }
+  
+  @BinderThread
+  public final List<zzl> zze(String paramString1, String paramString2, String paramString3)
+  {
+    zzc(paramString1, true);
+    paramString1 = zzamz.zzgn().zzb(new zzce(this, paramString1, paramString2, paramString3));
+    try
+    {
+      paramString1 = (List)paramString1.get();
+      return paramString1;
+    }
+    catch (InterruptedException|ExecutionException paramString1)
+    {
+      zzamz.zzgo().zzjd().zzg("Failed to get conditional user properties", paramString1);
+    }
+    return Collections.emptyList();
+  }
+}

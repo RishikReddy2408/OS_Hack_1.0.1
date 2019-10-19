@@ -1,0 +1,37 @@
+package com.google.firebase.components;
+
+import com.google.firebase.inject.Provider;
+
+final class zzj<T>
+  implements Provider<T>
+{
+  private static final Object zza = new Object();
+  private volatile Object zzb = zza;
+  private volatile Provider<T> zzc;
+  
+  zzj(ComponentFactory<T> paramComponentFactory, ComponentContainer paramComponentContainer)
+  {
+    zzc = zzk.zza(paramComponentFactory, paramComponentContainer);
+  }
+  
+  public final T get()
+  {
+    Object localObject1 = zzb;
+    if (localObject1 == zza) {
+      try
+      {
+        Object localObject2 = zzb;
+        localObject1 = localObject2;
+        if (localObject2 == zza)
+        {
+          localObject1 = zzc.get();
+          zzb = localObject1;
+          zzc = null;
+        }
+        return localObject1;
+      }
+      finally {}
+    }
+    return ?;
+  }
+}

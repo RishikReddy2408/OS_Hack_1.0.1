@@ -1,0 +1,668 @@
+package com.google.firebase;
+
+import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
+import android.support.annotation.VisibleForTesting;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
+import android.util.Log;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.api.internal.BackgroundDetector;
+import com.google.android.gms.common.api.internal.BackgroundDetector.BackgroundStateChangeListener;
+import com.google.android.gms.common.internal.Objects;
+import com.google.android.gms.common.internal.Objects.ToStringHelper;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.util.Base64Utils;
+import com.google.android.gms.common.util.ProcessUtils;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.annotations.PublicApi;
+import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.components.Component;
+import com.google.firebase.components.Component.1;
+import com.google.firebase.components.zzf;
+import com.google.firebase.events.Event;
+import com.google.firebase.events.Publisher;
+import com.google.firebase.internal.InternalTokenProvider;
+import com.google.firebase.internal.InternalTokenResult;
+import com.google.firebase.internal.zza;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.concurrent.GuardedBy;
+
+@PublicApi
+public class FirebaseApp
+{
+  @GuardedBy("LOCK")
+  static final Map<String, FirebaseApp> zza = new ArrayMap();
+  private static final List<String> zzb = Arrays.asList(new String[] { "com.google.firebase.auth.FirebaseAuth", "com.google.firebase.iid.FirebaseInstanceId" });
+  private static final List<String> zzc = Collections.singletonList("com.google.firebase.crash.FirebaseCrash");
+  private static final List<String> zzd = Arrays.asList(new String[] { "com.google.android.gms.measurement.AppMeasurement" });
+  private static final List<String> zze = Arrays.asList(new String[0]);
+  private static final Set<String> zzf = Collections.emptySet();
+  private static final Object zzg = new Object();
+  private static final Executor zzh = new zzb((byte)0);
+  private final Context zzi;
+  private final String zzj;
+  private final FirebaseOptions zzk;
+  private final zzf zzl;
+  private final SharedPreferences zzm;
+  private final Publisher zzn;
+  private final AtomicBoolean zzo = new AtomicBoolean(false);
+  private final AtomicBoolean zzp = new AtomicBoolean();
+  private final AtomicBoolean zzq;
+  private final List<IdTokenListener> zzr = new CopyOnWriteArrayList();
+  private final List<BackgroundStateChangeListener> zzs = new CopyOnWriteArrayList();
+  private final List<FirebaseAppLifecycleListener> zzt = new CopyOnWriteArrayList();
+  private InternalTokenProvider zzu;
+  private IdTokenListenersCountChangedListener zzv;
+  
+  private FirebaseApp(Context paramContext, String paramString, FirebaseOptions paramFirebaseOptions)
+  {
+    zzi = ((Context)Preconditions.checkNotNull(paramContext));
+    zzj = Preconditions.checkNotEmpty(paramString);
+    zzk = ((FirebaseOptions)Preconditions.checkNotNull(paramFirebaseOptions));
+    zzv = new zza();
+    zzm = paramContext.getSharedPreferences("com.google.firebase.common.prefs", 0);
+    zzq = new AtomicBoolean(zzb());
+    paramString = Component.1.zza(paramContext).zza();
+    zzl = new zzf(zzh, paramString, new Component[] { Component.of(paramContext, Context.class, new Class[0]), Component.of(this, FirebaseApp.class, new Class[0]), Component.of(paramFirebaseOptions, FirebaseOptions.class, new Class[0]) });
+    zzn = ((Publisher)zzl.get(Publisher.class));
+  }
+  
+  @PublicApi
+  public static List<FirebaseApp> getApps(Context arg0)
+  {
+    synchronized (zzg)
+    {
+      ArrayList localArrayList = new ArrayList(zza.values());
+      return localArrayList;
+    }
+  }
+  
+  @Nullable
+  @PublicApi
+  public static FirebaseApp getInstance()
+  {
+    synchronized (zzg)
+    {
+      Object localObject2 = (FirebaseApp)zza.get("[DEFAULT]");
+      if (localObject2 != null) {
+        return localObject2;
+      }
+      localObject2 = new StringBuilder("Default FirebaseApp is not initialized in this process ");
+      ((StringBuilder)localObject2).append(ProcessUtils.getMyProcessName());
+      ((StringBuilder)localObject2).append(". Make sure to call FirebaseApp.initializeApp(Context) first.");
+      throw new IllegalStateException(((StringBuilder)localObject2).toString());
+    }
+  }
+  
+  @PublicApi
+  public static FirebaseApp getInstance(@NonNull String paramString)
+  {
+    synchronized (zzg)
+    {
+      Object localObject1 = (FirebaseApp)zza.get(paramString.trim());
+      if (localObject1 != null) {
+        return localObject1;
+      }
+      localObject1 = zzd();
+      if (((List)localObject1).isEmpty())
+      {
+        localObject1 = "";
+      }
+      else
+      {
+        StringBuilder localStringBuilder = new StringBuilder("Available app names: ");
+        localStringBuilder.append(TextUtils.join(", ", (Iterable)localObject1));
+        localObject1 = localStringBuilder.toString();
+      }
+      throw new IllegalStateException(String.format("FirebaseApp with name %s doesn't exist. %s", new Object[] { paramString, localObject1 }));
+    }
+  }
+  
+  @KeepForSdk
+  public static String getPersistenceKey(String paramString, FirebaseOptions paramFirebaseOptions)
+  {
+    StringBuilder localStringBuilder = new StringBuilder();
+    localStringBuilder.append(Base64Utils.encodeUrlSafeNoPadding(paramString.getBytes(Charset.defaultCharset())));
+    localStringBuilder.append("+");
+    localStringBuilder.append(Base64Utils.encodeUrlSafeNoPadding(paramFirebaseOptions.getApplicationId().getBytes(Charset.defaultCharset())));
+    return localStringBuilder.toString();
+  }
+  
+  @Nullable
+  @PublicApi
+  public static FirebaseApp initializeApp(Context paramContext)
+  {
+    synchronized (zzg)
+    {
+      if (zza.containsKey("[DEFAULT]"))
+      {
+        paramContext = getInstance();
+        return paramContext;
+      }
+      FirebaseOptions localFirebaseOptions = FirebaseOptions.fromResource(paramContext);
+      if (localFirebaseOptions == null)
+      {
+        Log.d("FirebaseApp", "Default FirebaseApp failed to initialize because no default options were found. This usually means that com.google.gms:google-services was not applied to your gradle project.");
+        return null;
+      }
+      paramContext = initializeApp(paramContext, localFirebaseOptions);
+      return paramContext;
+    }
+  }
+  
+  @PublicApi
+  public static FirebaseApp initializeApp(Context paramContext, FirebaseOptions paramFirebaseOptions)
+  {
+    return initializeApp(paramContext, paramFirebaseOptions, "[DEFAULT]");
+  }
+  
+  @PublicApi
+  public static FirebaseApp initializeApp(Context paramContext, FirebaseOptions paramFirebaseOptions, String paramString)
+  {
+    zza.zza(paramContext);
+    paramString = paramString.trim();
+    if (paramContext.getApplicationContext() != null) {
+      paramContext = paramContext.getApplicationContext();
+    }
+    synchronized (zzg)
+    {
+      boolean bool = zza.containsKey(paramString);
+      StringBuilder localStringBuilder = new StringBuilder("FirebaseApp name ");
+      localStringBuilder.append(paramString);
+      localStringBuilder.append(" already exists!");
+      Preconditions.checkState(bool ^ true, localStringBuilder.toString());
+      Preconditions.checkNotNull(paramContext, "Application context cannot be null.");
+      paramContext = new FirebaseApp(paramContext, paramString, paramFirebaseOptions);
+      zza.put(paramString, paramContext);
+      paramContext.zze();
+      return paramContext;
+    }
+  }
+  
+  private static <T> void zza(Class<T> paramClass, T paramT, Iterable<String> paramIterable, boolean paramBoolean)
+  {
+    Iterator localIterator = paramIterable.iterator();
+    while (localIterator.hasNext())
+    {
+      paramIterable = (String)localIterator.next();
+      if (paramBoolean) {}
+      try
+      {
+        if (!zze.contains(paramIterable)) {
+          continue;
+        }
+        localObject = Class.forName(paramIterable).getMethod("getInstance", new Class[] { paramClass });
+        int i = ((Method)localObject).getModifiers();
+        if ((!Modifier.isPublic(i)) || (!Modifier.isStatic(i))) {
+          continue;
+        }
+        ((Method)localObject).invoke(null, new Object[] { paramT });
+      }
+      catch (ClassNotFoundException localClassNotFoundException)
+      {
+        Object localObject;
+        Throwable localThrowable;
+        break label298;
+      }
+      catch (NoSuchMethodException paramClass)
+      {
+        for (;;) {}
+      }
+      catch (IllegalAccessException localIllegalAccessException)
+      {
+        for (;;) {}
+      }
+      catch (InvocationTargetException paramIterable)
+      {
+        for (;;) {}
+      }
+      localObject = new StringBuilder("Failed to initialize ");
+      ((StringBuilder)localObject).append(paramIterable);
+      Log.wtf("FirebaseApp", ((StringBuilder)localObject).toString(), localThrowable);
+      continue;
+      Log.wtf("FirebaseApp", "Firebase API initialization failure.", paramIterable);
+      continue;
+      paramClass = new StringBuilder();
+      paramClass.append(paramIterable);
+      paramClass.append("#getInstance has been removed by Proguard. Add keep rule to prevent it.");
+      throw new IllegalStateException(paramClass.toString());
+    }
+    label298:
+    for (;;)
+    {
+      if (!zzf.contains(paramIterable))
+      {
+        localObject = new StringBuilder();
+        ((StringBuilder)localObject).append(paramIterable);
+        ((StringBuilder)localObject).append(" is not linked. Skipping initialization.");
+        Log.d("FirebaseApp", ((StringBuilder)localObject).toString());
+        break;
+      }
+      paramClass = new StringBuilder();
+      paramClass.append(paramIterable);
+      paramClass.append(" is missing, but is required. Check if it has been removed by Proguard.");
+      throw new IllegalStateException(paramClass.toString());
+      return;
+    }
+  }
+  
+  private void zza(boolean paramBoolean)
+  {
+    Log.d("FirebaseApp", "Notifying background state change listeners.");
+    Iterator localIterator = zzs.iterator();
+    while (localIterator.hasNext()) {
+      ((BackgroundStateChangeListener)localIterator.next()).onBackgroundStateChanged(paramBoolean);
+    }
+  }
+  
+  private boolean zzb()
+  {
+    if (zzm.contains("firebase_data_collection_default_enabled")) {
+      return zzm.getBoolean("firebase_data_collection_default_enabled", true);
+    }
+    try
+    {
+      Object localObject = zzi.getPackageManager();
+      if (localObject != null)
+      {
+        localObject = ((PackageManager)localObject).getApplicationInfo(zzi.getPackageName(), 128);
+        if ((localObject != null) && (metaData != null) && (metaData.containsKey("firebase_data_collection_default_enabled")))
+        {
+          boolean bool = metaData.getBoolean("firebase_data_collection_default_enabled");
+          return bool;
+        }
+      }
+      return true;
+    }
+    catch (PackageManager.NameNotFoundException localNameNotFoundException) {}
+    return true;
+  }
+  
+  private void zzc()
+  {
+    Preconditions.checkState(zzp.get() ^ true, "FirebaseApp was deleted");
+  }
+  
+  private static List<String> zzd()
+  {
+    ArrayList localArrayList = new ArrayList();
+    synchronized (zzg)
+    {
+      Iterator localIterator = zza.values().iterator();
+      while (localIterator.hasNext()) {
+        localArrayList.add(((FirebaseApp)localIterator.next()).getName());
+      }
+      Collections.sort(localArrayList);
+      return localArrayList;
+    }
+  }
+  
+  private void zze()
+  {
+    boolean bool = ContextCompat.isDeviceProtectedStorage(zzi);
+    if (bool) {
+      zzc.zza(zzi);
+    } else {
+      zzl.zza(isDefaultApp());
+    }
+    zza(FirebaseApp.class, this, zzb, bool);
+    if (isDefaultApp())
+    {
+      zza(FirebaseApp.class, this, zzc, bool);
+      zza(Context.class, zzi, zzd, bool);
+    }
+  }
+  
+  @KeepForSdk
+  public void addBackgroundStateChangeListener(BackgroundStateChangeListener paramBackgroundStateChangeListener)
+  {
+    zzc();
+    if ((zzo.get()) && (BackgroundDetector.getInstance().isInBackground())) {
+      paramBackgroundStateChangeListener.onBackgroundStateChanged(true);
+    }
+    zzs.add(paramBackgroundStateChangeListener);
+  }
+  
+  @Deprecated
+  @KeepForSdk
+  public void addIdTokenListener(@NonNull IdTokenListener paramIdTokenListener)
+  {
+    zzc();
+    Preconditions.checkNotNull(paramIdTokenListener);
+    zzr.add(paramIdTokenListener);
+    zzv.onListenerCountChanged(zzr.size());
+  }
+  
+  @KeepForSdk
+  public void addLifecycleEventListener(@NonNull FirebaseAppLifecycleListener paramFirebaseAppLifecycleListener)
+  {
+    zzc();
+    Preconditions.checkNotNull(paramFirebaseAppLifecycleListener);
+    zzt.add(paramFirebaseAppLifecycleListener);
+  }
+  
+  @PublicApi
+  public void delete()
+  {
+    if (!zzp.compareAndSet(false, true)) {
+      return;
+    }
+    synchronized (zzg)
+    {
+      zza.remove(zzj);
+      ??? = zzt.iterator();
+      while (((Iterator)???).hasNext()) {
+        ((Iterator)???).next();
+      }
+      return;
+    }
+  }
+  
+  public boolean equals(Object paramObject)
+  {
+    if (!(paramObject instanceof FirebaseApp)) {
+      return false;
+    }
+    return zzj.equals(((FirebaseApp)paramObject).getName());
+  }
+  
+  @KeepForSdk
+  public <T> T get(Class<T> paramClass)
+  {
+    zzc();
+    return zzl.get(paramClass);
+  }
+  
+  @NonNull
+  @PublicApi
+  public Context getApplicationContext()
+  {
+    zzc();
+    return zzi;
+  }
+  
+  @Deprecated
+  @KeepForSdk
+  public List<IdTokenListener> getListeners()
+  {
+    zzc();
+    return zzr;
+  }
+  
+  @NonNull
+  @PublicApi
+  public String getName()
+  {
+    zzc();
+    return zzj;
+  }
+  
+  @NonNull
+  @PublicApi
+  public FirebaseOptions getOptions()
+  {
+    zzc();
+    return zzk;
+  }
+  
+  @KeepForSdk
+  public String getPersistenceKey()
+  {
+    StringBuilder localStringBuilder = new StringBuilder();
+    localStringBuilder.append(Base64Utils.encodeUrlSafeNoPadding(getName().getBytes(Charset.defaultCharset())));
+    localStringBuilder.append("+");
+    localStringBuilder.append(Base64Utils.encodeUrlSafeNoPadding(getOptions().getApplicationId().getBytes(Charset.defaultCharset())));
+    return localStringBuilder.toString();
+  }
+  
+  @Deprecated
+  @KeepForSdk
+  public Task<GetTokenResult> getToken(boolean paramBoolean)
+  {
+    zzc();
+    if (zzu == null) {
+      return Tasks.forException(new FirebaseApiNotAvailableException("firebase-auth is not linked, please fall back to unauthenticated mode."));
+    }
+    return zzu.getAccessToken(paramBoolean);
+  }
+  
+  @Deprecated
+  @Nullable
+  @KeepForSdk
+  public String getUid()
+    throws FirebaseApiNotAvailableException
+  {
+    zzc();
+    if (zzu != null) {
+      return zzu.getUid();
+    }
+    throw new FirebaseApiNotAvailableException("firebase-auth is not linked, please fall back to unauthenticated mode.");
+  }
+  
+  public int hashCode()
+  {
+    return zzj.hashCode();
+  }
+  
+  @KeepForSdk
+  public boolean isDataCollectionDefaultEnabled()
+  {
+    zzc();
+    return zzq.get();
+  }
+  
+  @VisibleForTesting
+  @KeepForSdk
+  public boolean isDefaultApp()
+  {
+    return "[DEFAULT]".equals(getName());
+  }
+  
+  @Deprecated
+  @UiThread
+  @KeepForSdk
+  public void notifyIdTokenListeners(@NonNull InternalTokenResult paramInternalTokenResult)
+  {
+    Log.d("FirebaseApp", "Notifying auth state listeners.");
+    Iterator localIterator = zzr.iterator();
+    int i = 0;
+    while (localIterator.hasNext())
+    {
+      ((IdTokenListener)localIterator.next()).onIdTokenChanged(paramInternalTokenResult);
+      i += 1;
+    }
+    Log.d("FirebaseApp", String.format("Notified %d auth state listeners.", new Object[] { Integer.valueOf(i) }));
+  }
+  
+  @KeepForSdk
+  public void removeBackgroundStateChangeListener(BackgroundStateChangeListener paramBackgroundStateChangeListener)
+  {
+    zzc();
+    zzs.remove(paramBackgroundStateChangeListener);
+  }
+  
+  @Deprecated
+  @KeepForSdk
+  public void removeIdTokenListener(@NonNull IdTokenListener paramIdTokenListener)
+  {
+    zzc();
+    Preconditions.checkNotNull(paramIdTokenListener);
+    zzr.remove(paramIdTokenListener);
+    zzv.onListenerCountChanged(zzr.size());
+  }
+  
+  @KeepForSdk
+  public void removeLifecycleEventListener(@NonNull FirebaseAppLifecycleListener paramFirebaseAppLifecycleListener)
+  {
+    zzc();
+    Preconditions.checkNotNull(paramFirebaseAppLifecycleListener);
+    zzt.remove(paramFirebaseAppLifecycleListener);
+  }
+  
+  @PublicApi
+  public void setAutomaticResourceManagementEnabled(boolean paramBoolean)
+  {
+    zzc();
+    if (zzo.compareAndSet(paramBoolean ^ true, paramBoolean))
+    {
+      boolean bool = BackgroundDetector.getInstance().isInBackground();
+      if ((paramBoolean) && (bool))
+      {
+        zza(true);
+        return;
+      }
+      if ((!paramBoolean) && (bool)) {
+        zza(false);
+      }
+    }
+  }
+  
+  @KeepForSdk
+  public void setDataCollectionDefaultEnabled(boolean paramBoolean)
+  {
+    zzc();
+    if (zzq.compareAndSet(paramBoolean ^ true, paramBoolean))
+    {
+      zzm.edit().putBoolean("firebase_data_collection_default_enabled", paramBoolean).commit();
+      zzn.publish(new Event(DataCollectionDefaultChange.class, new DataCollectionDefaultChange(paramBoolean)));
+    }
+  }
+  
+  @Deprecated
+  @KeepForSdk
+  public void setIdTokenListenersCountChangedListener(@NonNull IdTokenListenersCountChangedListener paramIdTokenListenersCountChangedListener)
+  {
+    zzv = ((IdTokenListenersCountChangedListener)Preconditions.checkNotNull(paramIdTokenListenersCountChangedListener));
+    zzv.onListenerCountChanged(zzr.size());
+  }
+  
+  @Deprecated
+  @KeepForSdk
+  public void setTokenProvider(@NonNull InternalTokenProvider paramInternalTokenProvider)
+  {
+    zzu = ((InternalTokenProvider)Preconditions.checkNotNull(paramInternalTokenProvider));
+  }
+  
+  public String toString()
+  {
+    return Objects.toStringHelper(this).add("name", zzj).add("options", zzk).toString();
+  }
+  
+  @KeepForSdk
+  public static abstract interface BackgroundStateChangeListener
+  {
+    @KeepForSdk
+    public abstract void onBackgroundStateChanged(boolean paramBoolean);
+  }
+  
+  @Deprecated
+  @KeepForSdk
+  public static abstract interface IdTokenListener
+  {
+    @KeepForSdk
+    public abstract void onIdTokenChanged(@NonNull InternalTokenResult paramInternalTokenResult);
+  }
+  
+  @Deprecated
+  @KeepForSdk
+  public static abstract interface IdTokenListenersCountChangedListener
+  {
+    @KeepForSdk
+    public abstract void onListenerCountChanged(int paramInt);
+  }
+  
+  @TargetApi(14)
+  static final class zza
+    implements BackgroundDetector.BackgroundStateChangeListener
+  {
+    private static AtomicReference<zza> zza = new AtomicReference();
+    
+    private zza() {}
+    
+    public final void onBackgroundStateChanged(boolean paramBoolean)
+    {
+      synchronized ()
+      {
+        Iterator localIterator = new ArrayList(FirebaseApp.zza.values()).iterator();
+        while (localIterator.hasNext())
+        {
+          FirebaseApp localFirebaseApp = (FirebaseApp)localIterator.next();
+          if (FirebaseApp.zzb(localFirebaseApp).get()) {
+            FirebaseApp.zza(localFirebaseApp, paramBoolean);
+          }
+        }
+        return;
+      }
+    }
+  }
+  
+  static final class zzb
+    implements Executor
+  {
+    private static final Handler zza = new Handler(Looper.getMainLooper());
+    
+    private zzb() {}
+    
+    public final void execute(@NonNull Runnable paramRunnable)
+    {
+      zza.post(paramRunnable);
+    }
+  }
+  
+  @TargetApi(24)
+  static final class zzc
+    extends BroadcastReceiver
+  {
+    private static AtomicReference<zzc> zza = new AtomicReference();
+    private final Context zzb;
+    
+    private zzc(Context paramContext)
+    {
+      zzb = paramContext;
+    }
+    
+    public final void onReceive(Context arg1, Intent paramIntent)
+    {
+      synchronized ()
+      {
+        paramIntent = FirebaseApp.zza.values().iterator();
+        while (paramIntent.hasNext()) {
+          FirebaseApp.zza((FirebaseApp)paramIntent.next());
+        }
+        zzb.unregisterReceiver(this);
+        return;
+      }
+    }
+  }
+}

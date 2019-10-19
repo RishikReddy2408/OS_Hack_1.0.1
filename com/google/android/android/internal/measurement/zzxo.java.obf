@@ -1,0 +1,34 @@
+package com.google.android.gms.internal.measurement;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+final class zzxo
+  implements Iterator<Map.Entry<K, V>>
+{
+  private int pos = zzxm.zzb(zzcch).size();
+  private Iterator<Map.Entry<K, V>> zzccg;
+  
+  private zzxo(zzxm paramZzxm) {}
+  
+  private final Iterator<Map.Entry<K, V>> zzyb()
+  {
+    if (zzccg == null) {
+      zzccg = zzxm.zzd(zzcch).entrySet().iterator();
+    }
+    return zzccg;
+  }
+  
+  public final boolean hasNext()
+  {
+    return ((pos > 0) && (pos <= zzxm.zzb(zzcch).size())) || (zzyb().hasNext());
+  }
+  
+  public final void remove()
+  {
+    throw new UnsupportedOperationException();
+  }
+}

@@ -1,0 +1,141 @@
+package com.google.android.gms.common.internal;
+
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import com.google.android.gms.common.annotation.KeepForSdk;
+
+@KeepForSdk
+public abstract class GmsClientSupervisor
+{
+  private static final Object zzdp = new Object();
+  private static GmsClientSupervisor zzdq;
+  
+  public GmsClientSupervisor() {}
+  
+  @KeepForSdk
+  public static GmsClientSupervisor getInstance(Context paramContext)
+  {
+    synchronized (zzdp)
+    {
+      if (zzdq == null) {
+        zzdq = new zze(paramContext.getApplicationContext());
+      }
+      return zzdq;
+    }
+  }
+  
+  @KeepForSdk
+  public boolean bindService(ComponentName paramComponentName, ServiceConnection paramServiceConnection, String paramString)
+  {
+    return zza(new zza(paramComponentName, 129), paramServiceConnection, paramString);
+  }
+  
+  @KeepForSdk
+  public boolean bindService(String paramString1, ServiceConnection paramServiceConnection, String paramString2)
+  {
+    return zza(new zza(paramString1, 129), paramServiceConnection, paramString2);
+  }
+  
+  @KeepForSdk
+  public void unbindService(ComponentName paramComponentName, ServiceConnection paramServiceConnection, String paramString)
+  {
+    zzb(new zza(paramComponentName, 129), paramServiceConnection, paramString);
+  }
+  
+  @KeepForSdk
+  public void unbindService(String paramString1, ServiceConnection paramServiceConnection, String paramString2)
+  {
+    zzb(new zza(paramString1, 129), paramServiceConnection, paramString2);
+  }
+  
+  public final void zza(String paramString1, String paramString2, int paramInt, ServiceConnection paramServiceConnection, String paramString3)
+  {
+    zzb(new zza(paramString1, paramString2, paramInt), paramServiceConnection, paramString3);
+  }
+  
+  protected abstract boolean zza(zza paramZza, ServiceConnection paramServiceConnection, String paramString);
+  
+  protected abstract void zzb(zza paramZza, ServiceConnection paramServiceConnection, String paramString);
+  
+  protected static final class zza
+  {
+    private final ComponentName mComponentName;
+    private final String zzdr;
+    private final String zzds;
+    private final int zzdt;
+    
+    public zza(ComponentName paramComponentName, int paramInt)
+    {
+      zzdr = null;
+      zzds = null;
+      mComponentName = ((ComponentName)Preconditions.checkNotNull(paramComponentName));
+      zzdt = 129;
+    }
+    
+    public zza(String paramString, int paramInt)
+    {
+      zzdr = Preconditions.checkNotEmpty(paramString);
+      zzds = "com.google.android.gms";
+      mComponentName = null;
+      zzdt = 129;
+    }
+    
+    public zza(String paramString1, String paramString2, int paramInt)
+    {
+      zzdr = Preconditions.checkNotEmpty(paramString1);
+      zzds = Preconditions.checkNotEmpty(paramString2);
+      mComponentName = null;
+      zzdt = paramInt;
+    }
+    
+    public final boolean equals(Object paramObject)
+    {
+      if (this == paramObject) {
+        return true;
+      }
+      if (!(paramObject instanceof zza)) {
+        return false;
+      }
+      paramObject = (zza)paramObject;
+      return (Objects.equal(zzdr, zzdr)) && (Objects.equal(zzds, zzds)) && (Objects.equal(mComponentName, mComponentName)) && (zzdt == zzdt);
+    }
+    
+    public final ComponentName getComponentName()
+    {
+      return mComponentName;
+    }
+    
+    public final String getPackage()
+    {
+      return zzds;
+    }
+    
+    public final int hashCode()
+    {
+      return Objects.hashCode(new Object[] { zzdr, zzds, mComponentName, Integer.valueOf(zzdt) });
+    }
+    
+    public final String toString()
+    {
+      if (zzdr == null) {
+        return mComponentName.flattenToString();
+      }
+      return zzdr;
+    }
+    
+    public final Intent zzb(Context paramContext)
+    {
+      if (zzdr != null) {
+        return new Intent(zzdr).setPackage(zzds);
+      }
+      return new Intent().setComponent(mComponentName);
+    }
+    
+    public final int zzq()
+    {
+      return zzdt;
+    }
+  }
+}

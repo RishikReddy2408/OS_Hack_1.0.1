@@ -1,0 +1,682 @@
+package android.support.constraint.motion;
+
+import android.support.constraint.ConstraintAttribute;
+import android.support.constraint.ConstraintSet.Constraint;
+import android.support.constraint.motion.utils.Easing;
+import android.view.View;
+import android.view.View.MeasureSpec;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+
+class MotionPaths
+  implements Comparable<MotionPaths>
+{
+  static final int CARTESIAN = 2;
+  public static final boolean DEBUG = false;
+  static final int OFF_HEIGHT = 4;
+  static final int OFF_PATH_ROTATE = 5;
+  static final int OFF_POSITION = 0;
+  static final int OFF_WIDTH = 3;
+  static final int OFF_X = 1;
+  static final int OFF_Y = 2;
+  public static final String PAGE_KEY = "MotionPaths";
+  static final int PERPENDICULAR = 1;
+  static final int SCREEN = 3;
+  static String[] names = { "position", "x", "y", "width", "height", "pathRotate" };
+  LinkedHashMap<String, ConstraintAttribute> attributes = new LinkedHashMap();
+  float height;
+  int mDrawPath = 0;
+  Easing mKeyFrameEasing;
+  int mMode = 0;
+  int mPathMotionArc = FieldInfo.UNSET;
+  float mPathRotate = NaN.0F;
+  float mProgress = NaN.0F;
+  double[] mTempDelta = new double[18];
+  double[] mTempValue = new double[18];
+  float position;
+  float time;
+  float width;
+  float x;
+  float y;
+  
+  public MotionPaths() {}
+  
+  public MotionPaths(int paramInt1, int paramInt2, KeyPosition paramKeyPosition, MotionPaths paramMotionPaths1, MotionPaths paramMotionPaths2)
+  {
+    switch (mPositionType)
+    {
+    default: 
+      initCartesian(paramKeyPosition, paramMotionPaths1, paramMotionPaths2);
+      return;
+    case 2: 
+      initScreen(paramInt1, paramInt2, paramKeyPosition, paramMotionPaths1, paramMotionPaths2);
+      return;
+    }
+    initPath(paramKeyPosition, paramMotionPaths1, paramMotionPaths2);
+  }
+  
+  private boolean diff(float paramFloat1, float paramFloat2)
+  {
+    if ((!Float.isNaN(paramFloat1)) && (!Float.isNaN(paramFloat2)))
+    {
+      if (Math.abs(paramFloat1 - paramFloat2) > 1.0E-6F) {
+        return true;
+      }
+    }
+    else if (Float.isNaN(paramFloat1) != Float.isNaN(paramFloat2)) {
+      return true;
+    }
+    return false;
+  }
+  
+  private static final float xRotate(float paramFloat1, float paramFloat2, float paramFloat3, float paramFloat4, float paramFloat5, float paramFloat6)
+  {
+    return (paramFloat5 - paramFloat3) * paramFloat2 - (paramFloat6 - paramFloat4) * paramFloat1 + paramFloat3;
+  }
+  
+  private static final float yRotate(float paramFloat1, float paramFloat2, float paramFloat3, float paramFloat4, float paramFloat5, float paramFloat6)
+  {
+    return (paramFloat5 - paramFloat3) * paramFloat1 + (paramFloat6 - paramFloat4) * paramFloat2 + paramFloat4;
+  }
+  
+  public void applyParameters(ConstraintSet.Constraint paramConstraint)
+  {
+    mKeyFrameEasing = Easing.getInterpolator(mTransitionEasing);
+    mPathMotionArc = mPathMotionArc;
+    mPathRotate = mPathRotate;
+    mDrawPath = mDrawPath;
+    mProgress = mProgress;
+    attributes.putAll(mCustomConstraints);
+  }
+  
+  public int compareTo(MotionPaths paramMotionPaths)
+  {
+    return Float.compare(position, position);
+  }
+  
+  void different(MotionPaths paramMotionPaths, boolean[] paramArrayOfBoolean, String[] paramArrayOfString)
+  {
+    paramArrayOfBoolean[0] |= diff(position, position);
+    paramArrayOfBoolean[1] |= diff(x, x);
+    paramArrayOfBoolean[2] |= diff(y, y);
+    paramArrayOfBoolean[3] |= diff(width, width);
+    int i = paramArrayOfBoolean[4];
+    paramArrayOfBoolean[4] = (diff(height, height) | i);
+  }
+  
+  void fillStandard(double[] paramArrayOfDouble, int[] paramArrayOfInt)
+  {
+    float[] arrayOfFloat = new float[6];
+    float f = position;
+    int i = 0;
+    arrayOfFloat[0] = f;
+    arrayOfFloat[1] = x;
+    arrayOfFloat[2] = y;
+    arrayOfFloat[3] = width;
+    arrayOfFloat[4] = height;
+    arrayOfFloat[5] = mPathRotate;
+    int k;
+    for (int j = 0; i < paramArrayOfInt.length; j = k)
+    {
+      k = j;
+      if (paramArrayOfInt[i] < arrayOfFloat.length)
+      {
+        paramArrayOfDouble[j] = arrayOfFloat[paramArrayOfInt[i]];
+        k = j + 1;
+      }
+      i += 1;
+    }
+  }
+  
+  void getCenter(int[] paramArrayOfInt, double[] paramArrayOfDouble, float[] paramArrayOfFloat, int paramInt)
+  {
+    float f5 = x;
+    float f4 = y;
+    float f3 = width;
+    float f2 = height;
+    int i = 0;
+    while (i < paramArrayOfInt.length)
+    {
+      float f1 = (float)paramArrayOfDouble[i];
+      switch (paramArrayOfInt[i])
+      {
+      default: 
+        break;
+      case 4: 
+        f2 = f1;
+        break;
+      case 3: 
+        f3 = f1;
+        break;
+      case 2: 
+        f4 = f1;
+        break;
+      case 1: 
+        f5 = f1;
+      }
+      i += 1;
+    }
+    paramArrayOfFloat[paramInt] = (f5 + f3 / 2.0F + 0.0F);
+    paramArrayOfFloat[(paramInt + 1)] = (f4 + f2 / 2.0F + 0.0F);
+  }
+  
+  int getCustomData(String paramString, double[] paramArrayOfDouble, int paramInt)
+  {
+    paramString = (ConstraintAttribute)attributes.get(paramString);
+    if (paramString.noOfInterpValues() == 1)
+    {
+      paramArrayOfDouble[paramInt] = paramString.getValueToInterpolate();
+      return 1;
+    }
+    int j = paramString.noOfInterpValues();
+    float[] arrayOfFloat = new float[j];
+    paramString.getValuesToInterpolate(arrayOfFloat);
+    int i = 0;
+    while (i < j)
+    {
+      paramArrayOfDouble[paramInt] = arrayOfFloat[i];
+      i += 1;
+      paramInt += 1;
+    }
+    return j;
+  }
+  
+  int getCustomDataCount(String paramString)
+  {
+    return ((ConstraintAttribute)attributes.get(paramString)).noOfInterpValues();
+  }
+  
+  void getRect(int[] paramArrayOfInt, double[] paramArrayOfDouble, float[] paramArrayOfFloat, int paramInt)
+  {
+    float f4 = x;
+    float f3 = y;
+    float f5 = width;
+    float f2 = height;
+    int i = 0;
+    while (i < paramArrayOfInt.length)
+    {
+      f1 = (float)paramArrayOfDouble[i];
+      float f6 = f4;
+      float f7 = f3;
+      float f8 = f5;
+      float f9 = f2;
+      switch (paramArrayOfInt[i])
+      {
+      default: 
+        f6 = f4;
+        f7 = f3;
+        f8 = f5;
+        f9 = f2;
+        break;
+      case 4: 
+        f6 = f4;
+        f7 = f3;
+        f8 = f5;
+        f9 = f1;
+        break;
+      case 3: 
+        f6 = f4;
+        f7 = f3;
+        f8 = f1;
+        f9 = f2;
+        break;
+      case 2: 
+        f6 = f4;
+        f7 = f1;
+        f8 = f5;
+        f9 = f2;
+        break;
+      case 1: 
+        f9 = f2;
+        f8 = f5;
+        f7 = f3;
+        f6 = f1;
+      }
+      i += 1;
+      f4 = f6;
+      f3 = f7;
+      f5 = f8;
+      f2 = f9;
+    }
+    float f1 = f5 + f4;
+    f2 += f3;
+    Float.isNaN(NaN.0F);
+    Float.isNaN(NaN.0F);
+    i = paramInt + 1;
+    paramArrayOfFloat[paramInt] = (f4 + 0.0F);
+    paramInt = i + 1;
+    paramArrayOfFloat[i] = (f3 + 0.0F);
+    i = paramInt + 1;
+    paramArrayOfFloat[paramInt] = (f1 + 0.0F);
+    paramInt = i + 1;
+    paramArrayOfFloat[i] = (f3 + 0.0F);
+    i = paramInt + 1;
+    paramArrayOfFloat[paramInt] = (f1 + 0.0F);
+    paramInt = i + 1;
+    paramArrayOfFloat[i] = (f2 + 0.0F);
+    paramArrayOfFloat[paramInt] = (f4 + 0.0F);
+    paramArrayOfFloat[(paramInt + 1)] = (f2 + 0.0F);
+  }
+  
+  boolean hasCustomData(String paramString)
+  {
+    return attributes.containsKey(paramString);
+  }
+  
+  void initCartesian(KeyPosition paramKeyPosition, MotionPaths paramMotionPaths1, MotionPaths paramMotionPaths2)
+  {
+    float f1 = mFramePosition / 100.0F;
+    time = f1;
+    mDrawPath = mDrawPath;
+    if (Float.isNaN(mSizePercent)) {
+      f2 = f1;
+    } else {
+      f2 = mSizePercent;
+    }
+    float f7 = width;
+    float f8 = width;
+    float f3 = height;
+    float f4 = height;
+    position = time;
+    float f5 = x;
+    float f12 = width / 2.0F;
+    float f6 = y;
+    float f9 = height / 2.0F;
+    float f13 = x;
+    float f14 = width / 2.0F;
+    float f10 = y;
+    float f11 = height / 2.0F;
+    f5 = f13 + f14 - (f5 + f12);
+    f6 = f10 + f11 - (f6 + f9);
+    f10 = x;
+    f9 = (f7 - f8) * f2;
+    f7 = f9 / 2.0F;
+    x = ((int)(f10 + f5 * f1 - f7));
+    f10 = y;
+    float f2 = (f3 - f4) * f2;
+    f8 = f2 / 2.0F;
+    y = ((int)(f10 + f6 * f1 - f8));
+    width = ((int)(width + f9));
+    height = ((int)(height + f2));
+    if (Float.isNaN(mPercentX)) {
+      f2 = f1;
+    } else {
+      f2 = mPercentX;
+    }
+    boolean bool = Float.isNaN(mAltPercentY);
+    f4 = 0.0F;
+    if (bool) {
+      f3 = 0.0F;
+    } else {
+      f3 = mAltPercentY;
+    }
+    if (!Float.isNaN(mPercentY)) {
+      f1 = mPercentY;
+    }
+    if (!Float.isNaN(mAltPercentX)) {
+      f4 = mAltPercentX;
+    }
+    mMode = 2;
+    x = ((int)(x + f2 * f5 + f4 * f6 - f7));
+    y = ((int)(y + f5 * f3 + f6 * f1 - f8));
+    mKeyFrameEasing = Easing.getInterpolator(mTransitionEasing);
+    mPathMotionArc = mPathMotionArc;
+  }
+  
+  void initPath(KeyPosition paramKeyPosition, MotionPaths paramMotionPaths1, MotionPaths paramMotionPaths2)
+  {
+    float f2 = mFramePosition / 100.0F;
+    time = f2;
+    mDrawPath = mDrawPath;
+    if (Float.isNaN(mSizePercent)) {
+      f1 = f2;
+    } else {
+      f1 = mSizePercent;
+    }
+    float f6 = width;
+    float f7 = width;
+    float f3 = height;
+    float f4 = height;
+    position = time;
+    if (!Float.isNaN(mPercentX)) {
+      f2 = mPercentX;
+    }
+    float f5 = x;
+    float f12 = width / 2.0F;
+    float f8 = y;
+    float f9 = height / 2.0F;
+    float f13 = x;
+    float f14 = width / 2.0F;
+    float f10 = y;
+    float f11 = height / 2.0F;
+    f5 = f13 + f14 - (f5 + f12);
+    f9 = f10 + f11 - (f8 + f9);
+    f10 = x;
+    f8 = f5 * f2;
+    f7 = (f6 - f7) * f1;
+    f6 = f7 / 2.0F;
+    x = ((int)(f10 + f8 - f6));
+    f10 = y;
+    f2 *= f9;
+    float f1 = (f3 - f4) * f1;
+    f3 = f1 / 2.0F;
+    y = ((int)(f10 + f2 - f3));
+    width = ((int)(width + f7));
+    height = ((int)(height + f1));
+    if (Float.isNaN(mPercentY)) {
+      f1 = 0.0F;
+    } else {
+      f1 = mPercentY;
+    }
+    f4 = -f9;
+    mMode = 1;
+    x = ((int)(x + f8 - f6));
+    y = ((int)(y + f2 - f3));
+    x += f4 * f1;
+    y += f5 * f1;
+    mKeyFrameEasing = Easing.getInterpolator(mTransitionEasing);
+    mPathMotionArc = mPathMotionArc;
+  }
+  
+  void initScreen(int paramInt1, int paramInt2, KeyPosition paramKeyPosition, MotionPaths paramMotionPaths1, MotionPaths paramMotionPaths2)
+  {
+    float f2 = mFramePosition / 100.0F;
+    time = f2;
+    mDrawPath = mDrawPath;
+    if (Float.isNaN(mSizePercent)) {
+      f1 = f2;
+    } else {
+      f1 = mSizePercent;
+    }
+    float f9 = width;
+    float f10 = width;
+    float f7 = height;
+    float f8 = height;
+    position = time;
+    float f11 = x;
+    float f12 = width / 2.0F;
+    float f3 = y;
+    float f4 = height / 2.0F;
+    float f13 = x;
+    float f14 = width / 2.0F;
+    float f5 = y;
+    float f6 = height / 2.0F;
+    float f15 = x;
+    f9 = (f9 - f10) * f1;
+    f10 = f9 / 2.0F;
+    x = ((int)(f15 + (f13 + f14 - (f11 + f12)) * f2 - f10));
+    f11 = y;
+    float f1 = (f7 - f8) * f1;
+    f7 = f1 / 2.0F;
+    y = ((int)(f11 + (f5 + f6 - (f3 + f4)) * f2 - f7));
+    width = ((int)(width + f9));
+    height = ((int)(height + f1));
+    mMode = 3;
+    if (!Float.isNaN(mPercentX))
+    {
+      paramInt1 = (int)(paramInt1 - width);
+      x = ((int)(mPercentX * paramInt1 - f10));
+    }
+    if (!Float.isNaN(mPercentY))
+    {
+      paramInt1 = (int)(paramInt2 - height);
+      y = ((int)(mPercentY * paramInt1 - f7));
+    }
+    mKeyFrameEasing = Easing.getInterpolator(mTransitionEasing);
+    mPathMotionArc = mPathMotionArc;
+  }
+  
+  void setBounds(float paramFloat1, float paramFloat2, float paramFloat3, float paramFloat4)
+  {
+    x = paramFloat1;
+    y = paramFloat2;
+    width = paramFloat3;
+    height = paramFloat4;
+  }
+  
+  void setDpDt(float paramFloat1, float paramFloat2, float[] paramArrayOfFloat, int[] paramArrayOfInt, double[] paramArrayOfDouble1, double[] paramArrayOfDouble2)
+  {
+    int i = 0;
+    float f5 = 0.0F;
+    float f3 = 0.0F;
+    float f4 = 0.0F;
+    float f9;
+    for (float f2 = 0.0F; i < paramArrayOfInt.length; f2 = f9)
+    {
+      f1 = (float)paramArrayOfDouble1[i];
+      double d = paramArrayOfDouble2[i];
+      float f6 = f5;
+      float f7 = f3;
+      float f8 = f4;
+      f9 = f2;
+      switch (paramArrayOfInt[i])
+      {
+      default: 
+        f6 = f5;
+        f7 = f3;
+        f8 = f4;
+        f9 = f2;
+        break;
+      case 4: 
+        f6 = f5;
+        f7 = f3;
+        f8 = f4;
+        f9 = f1;
+        break;
+      case 3: 
+        f6 = f5;
+        f7 = f1;
+        f8 = f4;
+        f9 = f2;
+        break;
+      case 2: 
+        f6 = f5;
+        f7 = f3;
+        f8 = f1;
+        f9 = f2;
+        break;
+      case 1: 
+        f9 = f2;
+        f8 = f4;
+        f7 = f3;
+        f6 = f1;
+      }
+      i += 1;
+      f5 = f6;
+      f3 = f7;
+      f4 = f8;
+    }
+    float f1 = f5 - 0.0F * f3 / 2.0F;
+    f4 -= 0.0F * f2 / 2.0F;
+    paramArrayOfFloat[0] = (f1 * (1.0F - paramFloat1) + (f3 * 1.0F + f1) * paramFloat1 + 0.0F);
+    paramArrayOfFloat[1] = (f4 * (1.0F - paramFloat2) + (f2 * 1.0F + f4) * paramFloat2 + 0.0F);
+  }
+  
+  void setView(View paramView, int[] paramArrayOfInt, double[] paramArrayOfDouble1, double[] paramArrayOfDouble2, double[] paramArrayOfDouble3)
+  {
+    float f11 = x;
+    float f10 = y;
+    float f9 = width;
+    float f8 = height;
+    if ((paramArrayOfInt.length != 0) && (mTempValue.length <= paramArrayOfInt[(paramArrayOfInt.length - 1)]))
+    {
+      i = paramArrayOfInt[(paramArrayOfInt.length - 1)] + 1;
+      mTempValue = new double[i];
+      mTempDelta = new double[i];
+    }
+    Arrays.fill(mTempValue, NaN.0D);
+    int j = 0;
+    int i = 0;
+    while (i < paramArrayOfInt.length)
+    {
+      mTempValue[paramArrayOfInt[i]] = paramArrayOfDouble1[i];
+      mTempDelta[paramArrayOfInt[i]] = paramArrayOfDouble2[i];
+      i += 1;
+    }
+    float f5 = NaN.0F;
+    float f6 = 0.0F;
+    float f7 = 0.0F;
+    float f3 = 0.0F;
+    float f4 = 0.0F;
+    i = j;
+    double d1;
+    float f1;
+    float f2;
+    while (i < mTempValue.length)
+    {
+      boolean bool = Double.isNaN(mTempValue[i]);
+      d1 = 0.0D;
+      float f12;
+      float f13;
+      float f14;
+      float f15;
+      float f16;
+      float f17;
+      float f18;
+      float f19;
+      float f20;
+      if ((bool) && ((paramArrayOfDouble3 == null) || (paramArrayOfDouble3[i] == 0.0D)))
+      {
+        f12 = f11;
+        f13 = f10;
+        f14 = f9;
+        f15 = f8;
+        f16 = f5;
+        f17 = f6;
+        f18 = f7;
+        f19 = f3;
+        f20 = f4;
+      }
+      else
+      {
+        if (paramArrayOfDouble3 != null) {
+          d1 = paramArrayOfDouble3[i];
+        }
+        if (!Double.isNaN(mTempValue[i])) {
+          for (;;)
+          {
+            d1 = mTempValue[i] + d1;
+          }
+        }
+        f1 = (float)d1;
+        f2 = (float)mTempDelta[i];
+        f12 = f11;
+        f13 = f10;
+        f14 = f9;
+        f15 = f8;
+        f16 = f5;
+        f17 = f6;
+        f18 = f7;
+        f19 = f3;
+        f20 = f4;
+        switch (i)
+        {
+        default: 
+          f12 = f11;
+          f13 = f10;
+          f14 = f9;
+          f15 = f8;
+          f16 = f5;
+          f17 = f6;
+          f18 = f7;
+          f19 = f3;
+          f20 = f4;
+          break;
+        case 5: 
+          f12 = f11;
+          f13 = f10;
+          f14 = f9;
+          f15 = f8;
+          f16 = f1;
+          f17 = f6;
+          f18 = f7;
+          f19 = f3;
+          f20 = f4;
+          break;
+        case 4: 
+          f12 = f11;
+          f13 = f10;
+          f14 = f9;
+          f15 = f1;
+          f16 = f5;
+          f17 = f6;
+          f18 = f7;
+          f19 = f3;
+          f20 = f2;
+          break;
+        case 3: 
+          f12 = f11;
+          f13 = f10;
+          f14 = f1;
+          f15 = f8;
+          f16 = f5;
+          f17 = f6;
+          f18 = f2;
+          f19 = f3;
+          f20 = f4;
+          break;
+        case 2: 
+          f12 = f11;
+          f13 = f1;
+          f14 = f9;
+          f15 = f8;
+          f16 = f5;
+          f17 = f6;
+          f18 = f7;
+          f19 = f2;
+          f20 = f4;
+          break;
+        case 1: 
+          f20 = f4;
+          f19 = f3;
+          f18 = f7;
+          f17 = f2;
+          f16 = f5;
+          f15 = f8;
+          f14 = f9;
+          f13 = f10;
+          f12 = f1;
+        }
+      }
+      i += 1;
+      f11 = f12;
+      f10 = f13;
+      f9 = f14;
+      f8 = f15;
+      f5 = f16;
+      f6 = f17;
+      f7 = f18;
+      f3 = f19;
+      f4 = f20;
+    }
+    if (Float.isNaN(f5))
+    {
+      if (!Float.isNaN(NaN.0F)) {
+        paramView.setRotation(NaN.0F);
+      }
+    }
+    else
+    {
+      f1 = NaN.0F;
+      if (Float.isNaN(NaN.0F)) {
+        f1 = 0.0F;
+      }
+      f2 = f7 / 2.0F;
+      f4 /= 2.0F;
+      d1 = f1;
+      double d2 = f5;
+      double d3 = Math.toDegrees(Math.atan2(f3 + f4, f6 + f2));
+      Double.isNaN(d2);
+      Double.isNaN(d1);
+      paramView.setRotation((float)(d1 + (d2 + d3)));
+    }
+    i = (int)f11;
+    j = (int)f10;
+    int k = (int)f9;
+    int m = (int)f8;
+    if ((k != paramView.getWidth()) || (m != paramView.getHeight())) {
+      paramView.measure(View.MeasureSpec.makeMeasureSpec(k, 1073741824), View.MeasureSpec.makeMeasureSpec(m, 1073741824));
+    }
+    paramView.layout(i, j, i + k, j + m);
+  }
+}

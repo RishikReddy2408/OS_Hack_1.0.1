@@ -1,0 +1,19 @@
+package com.google.android.gms.internal.measurement;
+
+public abstract interface zzvf<T extends zzvf<T>>
+  extends Comparable<T>
+{
+  public abstract zzwu zza(zzwu paramZzwu, zzwt paramZzwt);
+  
+  public abstract zzwz zza(zzwz paramZzwz1, zzwz paramZzwz2);
+  
+  public abstract int zzc();
+  
+  public abstract zzyq zzvw();
+  
+  public abstract zzyv zzvx();
+  
+  public abstract boolean zzvy();
+  
+  public abstract boolean zzvz();
+}

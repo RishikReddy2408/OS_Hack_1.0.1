@@ -1,0 +1,89 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.IOException;
+
+public abstract class zzzg
+{
+  protected volatile int zzcfm = -1;
+  
+  public zzzg() {}
+  
+  public static final <T extends zzzg> T zza(T paramT, byte[] paramArrayOfByte)
+    throws zzzf
+  {
+    return zzb(paramT, paramArrayOfByte, 0, paramArrayOfByte.length);
+  }
+  
+  public static final void zza(zzzg paramZzzg, byte[] paramArrayOfByte, int paramInt1, int paramInt2)
+  {
+    try
+    {
+      paramArrayOfByte = zzyy.zzk(paramArrayOfByte, 0, paramInt2);
+      paramZzzg.zza(paramArrayOfByte);
+      paramArrayOfByte.zzyt();
+      return;
+    }
+    catch (IOException paramZzzg)
+    {
+      throw new RuntimeException("Serializing to a byte array threw an IOException (should never happen).", paramZzzg);
+    }
+  }
+  
+  private static final <T extends zzzg> T zzb(T paramT, byte[] paramArrayOfByte, int paramInt1, int paramInt2)
+    throws zzzf
+  {
+    try
+    {
+      paramArrayOfByte = zzyx.zzj(paramArrayOfByte, 0, paramInt2);
+      paramT.zza(paramArrayOfByte);
+      paramArrayOfByte.zzan(0);
+      return paramT;
+    }
+    catch (IOException paramT)
+    {
+      throw new RuntimeException("Reading from a byte array threw an IOException (should never happen).", paramT);
+    }
+    catch (zzzf paramT)
+    {
+      throw paramT;
+    }
+  }
+  
+  public String toString()
+  {
+    return zzzh.zzc(this);
+  }
+  
+  public abstract zzzg zza(zzyx paramZzyx)
+    throws IOException;
+  
+  public void zza(zzyy paramZzyy)
+    throws IOException
+  {}
+  
+  protected int zzf()
+  {
+    return 0;
+  }
+  
+  public final int zzvu()
+  {
+    int i = zzf();
+    zzcfm = i;
+    return i;
+  }
+  
+  public zzzg zzyu()
+    throws CloneNotSupportedException
+  {
+    return (zzzg)super.clone();
+  }
+  
+  public final int zzza()
+  {
+    if (zzcfm < 0) {
+      zzvu();
+    }
+    return zzcfm;
+  }
+}

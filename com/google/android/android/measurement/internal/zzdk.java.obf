@@ -1,0 +1,13 @@
+package com.google.android.gms.measurement.internal;
+
+final class zzdk
+  implements Runnable
+{
+  zzdk(zzcs paramZzcs, long paramLong) {}
+  
+  public final void run()
+  {
+    zzarc.zzgp().zzanp.set(zzark);
+    zzarc.zzgo().zzjk().zzg("Minimum session duration set", Long.valueOf(zzark));
+  }
+}

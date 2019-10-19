@@ -1,0 +1,106 @@
+package android.support.v7.recyclerview.extensions;
+
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
+import android.support.v7.util.DiffUtil.ItemCallback;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
+public final class AsyncDifferConfig<T>
+{
+  @NonNull
+  private final Executor mBackgroundThreadExecutor;
+  @NonNull
+  private final DiffUtil.ItemCallback<T> mDiffCallback;
+  @NonNull
+  private final Executor mMainThreadExecutor;
+  
+  private AsyncDifferConfig(@NonNull Executor paramExecutor1, @NonNull Executor paramExecutor2, @NonNull DiffUtil.ItemCallback<T> paramItemCallback)
+  {
+    mMainThreadExecutor = paramExecutor1;
+    mBackgroundThreadExecutor = paramExecutor2;
+    mDiffCallback = paramItemCallback;
+  }
+  
+  @NonNull
+  public Executor getBackgroundThreadExecutor()
+  {
+    return mBackgroundThreadExecutor;
+  }
+  
+  @NonNull
+  public DiffUtil.ItemCallback<T> getDiffCallback()
+  {
+    return mDiffCallback;
+  }
+  
+  @NonNull
+  @RestrictTo({android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP})
+  public Executor getMainThreadExecutor()
+  {
+    return mMainThreadExecutor;
+  }
+  
+  public static final class Builder<T>
+  {
+    private static Executor sDiffExecutor = null;
+    private static final Object sExecutorLock = new Object();
+    private static final Executor sMainThreadExecutor = new MainThreadExecutor(null);
+    private Executor mBackgroundThreadExecutor;
+    private final DiffUtil.ItemCallback<T> mDiffCallback;
+    private Executor mMainThreadExecutor;
+    
+    public Builder(@NonNull DiffUtil.ItemCallback<T> paramItemCallback)
+    {
+      mDiffCallback = paramItemCallback;
+    }
+    
+    @NonNull
+    public AsyncDifferConfig<T> build()
+    {
+      if (mMainThreadExecutor == null) {
+        mMainThreadExecutor = sMainThreadExecutor;
+      }
+      if (mBackgroundThreadExecutor == null) {
+        synchronized (sExecutorLock)
+        {
+          if (sDiffExecutor == null) {
+            sDiffExecutor = Executors.newFixedThreadPool(2);
+          }
+          mBackgroundThreadExecutor = sDiffExecutor;
+        }
+      }
+      return new AsyncDifferConfig(mMainThreadExecutor, mBackgroundThreadExecutor, mDiffCallback, null);
+    }
+    
+    @NonNull
+    public Builder<T> setBackgroundThreadExecutor(Executor paramExecutor)
+    {
+      mBackgroundThreadExecutor = paramExecutor;
+      return this;
+    }
+    
+    @NonNull
+    @RestrictTo({android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP})
+    public Builder<T> setMainThreadExecutor(Executor paramExecutor)
+    {
+      mMainThreadExecutor = paramExecutor;
+      return this;
+    }
+    
+    private static class MainThreadExecutor
+      implements Executor
+    {
+      final Handler mHandler = new Handler(Looper.getMainLooper());
+      
+      private MainThreadExecutor() {}
+      
+      public void execute(@NonNull Runnable paramRunnable)
+      {
+        mHandler.post(paramRunnable);
+      }
+    }
+  }
+}

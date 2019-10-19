@@ -1,0 +1,35 @@
+package com.google.android.gms.internal.measurement;
+
+import java.io.IOException;
+import java.util.Map.Entry;
+
+abstract class zzva<T extends zzvf<T>>
+{
+  zzva() {}
+  
+  abstract Object zza(zzuz paramZzuz, zzwt paramZzwt, int paramInt);
+  
+  abstract <UT, UB> UB zza(zzxi paramZzxi, Object paramObject, zzuz paramZzuz, zzvd<T> paramZzvd, UB paramUB, zzyb<UT, UB> paramZzyb)
+    throws IOException;
+  
+  abstract void zza(zzud paramZzud, Object paramObject, zzuz paramZzuz, zzvd<T> paramZzvd)
+    throws IOException;
+  
+  abstract void zza(zzxi paramZzxi, Object paramObject, zzuz paramZzuz, zzvd<T> paramZzvd)
+    throws IOException;
+  
+  abstract void zza(zzyw paramZzyw, Map.Entry<?, ?> paramEntry)
+    throws IOException;
+  
+  abstract void zza(Object paramObject, zzvd<T> paramZzvd);
+  
+  abstract int zzb(Map.Entry<?, ?> paramEntry);
+  
+  abstract boolean zze(zzwt paramZzwt);
+  
+  abstract zzvd<T> zzs(Object paramObject);
+  
+  abstract zzvd<T> zzt(Object paramObject);
+  
+  abstract void zzu(Object paramObject);
+}

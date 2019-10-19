@@ -1,0 +1,1073 @@
+package android.support.constraint.motion;
+
+import D;
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.RectF;
+import android.support.constraint.ConstraintAttribute;
+import android.support.constraint.ConstraintSet;
+import android.support.constraint.motion.utils.CurveFit;
+import android.support.constraint.motion.utils.Easing;
+import android.support.constraint.solver.widgets.ConstraintWidget;
+import android.util.SparseArray;
+import android.view.View;
+import android.view.View.MeasureSpec;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Set;
+
+public class MotionController
+{
+  private static final boolean DEBUG = false;
+  public static final int DRAW_PATH_AS_CONFIGURED = 4;
+  public static final int DRAW_PATH_BASIC = 1;
+  public static final int DRAW_PATH_CARTESIAN = 3;
+  public static final int DRAW_PATH_NONE = 0;
+  public static final int DRAW_PATH_RECTANGLE = 5;
+  public static final int DRAW_PATH_RELATIVE = 2;
+  public static final int DRAW_PATH_SCREEN = 6;
+  public static final int HORIZONTAL_PATH_X = 2;
+  public static final int HORIZONTAL_PATH_Y = 3;
+  private static final String PAGE_KEY = "MotionController";
+  public static final int PATH_PERCENT = 0;
+  public static final int PATH_PERPENDICULAR = 1;
+  public static final int VERTICAL_PATH_X = 4;
+  public static final int VERTICAL_PATH_Y = 5;
+  private int MAX_DIMENSION = 4;
+  String[] attributeTable;
+  private float[] buff = new float[MAX_DIMENSION];
+  int hostId;
+  private CurveFit mArcSpline;
+  private int[] mAttributeInterpCount;
+  private String[] mAttributeNames;
+  private HashMap<String, SplineSet> mAttributesMap;
+  private int mCurveFitType = -1;
+  double[] mCycleData = new double[18];
+  private HashMap<String, KeyCycleOscillator> mCycleMap;
+  private int mDrawPath = 0;
+  private MotionPaths mEndMotionPath = new MotionPaths();
+  private MotionConstrainedPoint mEndPoint = new MotionConstrainedPoint();
+  private double[] mInterpolateData;
+  private int[] mInterpolateVariables;
+  private double[] mInterpolateVelocity;
+  private ArrayList<Key> mKeyList;
+  private ArrayList<MotionPaths> mMotionPaths = new ArrayList();
+  private CurveFit[] mSpline;
+  private MotionPaths mStartMotionPath = new MotionPaths();
+  private MotionConstrainedPoint mStartPoint = new MotionConstrainedPoint();
+  private HashMap<String, TimeCycleSplineSet> mTimeCycleAttributesMap;
+  private float[] mVelocity = new float[1];
+  View mView;
+  double[] mmCycleVelocity;
+  float stagger_offset = 0.0F;
+  float stagger_scale = 1.0F;
+  
+  MotionController(View paramView)
+  {
+    setView(paramView);
+  }
+  
+  private float getAdjustedPosition(float paramFloat, float[] paramArrayOfFloat)
+  {
+    float f3 = 0.0F;
+    float f4 = 1.0F;
+    float f1;
+    if (paramArrayOfFloat != null)
+    {
+      paramArrayOfFloat[0] = 1.0F;
+      f1 = paramFloat;
+    }
+    else
+    {
+      f1 = paramFloat;
+      if (stagger_scale != 1.0D)
+      {
+        f2 = paramFloat;
+        if (paramFloat < stagger_offset) {
+          f2 = 0.0F;
+        }
+        f1 = f2;
+        if (f2 > stagger_offset)
+        {
+          f1 = f2;
+          if (f2 < 1.0D) {
+            f1 = (f2 - stagger_offset) * stagger_scale;
+          }
+        }
+      }
+    }
+    Easing localEasing = mStartMotionPath.mKeyFrameEasing;
+    paramFloat = NaN.0F;
+    Iterator localIterator = mMotionPaths.iterator();
+    float f2 = f3;
+    while (localIterator.hasNext())
+    {
+      MotionPaths localMotionPaths = (MotionPaths)localIterator.next();
+      if (mKeyFrameEasing != null) {
+        if (time < f1)
+        {
+          localEasing = mKeyFrameEasing;
+          f2 = time;
+        }
+        else if (Float.isNaN(paramFloat))
+        {
+          paramFloat = time;
+        }
+      }
+    }
+    f3 = f1;
+    if (localEasing != null)
+    {
+      if (Float.isNaN(paramFloat)) {
+        paramFloat = f4;
+      }
+      paramFloat -= f2;
+      double d = (f1 - f2) / paramFloat;
+      paramFloat = (float)localEasing.transform(d) * paramFloat + f2;
+      f3 = paramFloat;
+      if (paramArrayOfFloat != null)
+      {
+        paramArrayOfFloat[0] = ((float)localEasing.getDiff(d));
+        f3 = paramFloat;
+      }
+    }
+    return f3;
+  }
+  
+  private float getPreCycleDistance()
+  {
+    float[] arrayOfFloat = new float[2];
+    float f5 = 1.0F / 99.0F;
+    double d1 = 0.0D;
+    double d2 = 0.0D;
+    int i = 0;
+    float f1;
+    for (float f2 = 0.0F; i < 100; f2 = f1)
+    {
+      float f6 = i * f5;
+      double d3 = f6;
+      Easing localEasing = mStartMotionPath.mKeyFrameEasing;
+      f1 = NaN.0F;
+      Iterator localIterator = mMotionPaths.iterator();
+      float f3 = 0.0F;
+      while (localIterator.hasNext())
+      {
+        MotionPaths localMotionPaths = (MotionPaths)localIterator.next();
+        if (mKeyFrameEasing != null) {
+          if (time < f6)
+          {
+            f3 = time;
+            localEasing = mKeyFrameEasing;
+          }
+          else if (Float.isNaN(f1))
+          {
+            f1 = time;
+          }
+        }
+      }
+      if (localEasing != null)
+      {
+        float f4 = f1;
+        if (Float.isNaN(f1)) {
+          f4 = 1.0F;
+        }
+        f1 = f4 - f3;
+        d3 = (float)localEasing.transform((f6 - f3) / f1) * f1 + f3;
+      }
+      mSpline[0].getPos(d3, mInterpolateData);
+      mStartMotionPath.getCenter(mInterpolateVariables, mInterpolateData, arrayOfFloat, 0);
+      f1 = f2;
+      if (i > 0)
+      {
+        d3 = f2;
+        double d4 = arrayOfFloat[1];
+        Double.isNaN(d4);
+        double d5 = arrayOfFloat[0];
+        Double.isNaN(d5);
+        d1 = Math.hypot(d1 - d4, d2 - d5);
+        Double.isNaN(d3);
+        f1 = (float)(d3 + d1);
+      }
+      d2 = arrayOfFloat[0];
+      d1 = arrayOfFloat[1];
+      i += 1;
+    }
+    return f2;
+  }
+  
+  private void insertKey(MotionPaths paramMotionPaths)
+  {
+    int i = Collections.binarySearch(mMotionPaths, paramMotionPaths);
+    mMotionPaths.add(-i - 1, paramMotionPaths);
+  }
+  
+  private void readView(MotionPaths paramMotionPaths)
+  {
+    paramMotionPaths.setBounds((int)mView.getX(), (int)mView.getY(), mView.getWidth(), mView.getHeight());
+  }
+  
+  void addKeys(ArrayList paramArrayList)
+  {
+    mKeyList = paramArrayList;
+  }
+  
+  int buildKeyFrames(float[] paramArrayOfFloat, int[] paramArrayOfInt)
+  {
+    if (paramArrayOfFloat != null)
+    {
+      double[] arrayOfDouble = mSpline[0].getTimePoints();
+      if (paramArrayOfInt != null)
+      {
+        Iterator localIterator = mMotionPaths.iterator();
+        i = 0;
+        while (localIterator.hasNext())
+        {
+          paramArrayOfInt[i] = nextmMode;
+          i += 1;
+        }
+      }
+      int i = 0;
+      int j = 0;
+      while (i < arrayOfDouble.length)
+      {
+        mSpline[0].getPos(arrayOfDouble[i], mInterpolateData);
+        mStartMotionPath.getCenter(mInterpolateVariables, mInterpolateData, paramArrayOfFloat, j);
+        j += 2;
+        i += 1;
+      }
+      return j / 2;
+    }
+    return 0;
+  }
+  
+  void buildPath(float[] paramArrayOfFloat, int paramInt)
+  {
+    float f6 = 1.0F / (paramInt - 1);
+    Object localObject1 = mAttributesMap;
+    KeyCycleOscillator localKeyCycleOscillator2 = null;
+    if (localObject1 == null) {
+      localObject1 = null;
+    } else {
+      localObject1 = (SplineSet)mAttributesMap.get("translationX");
+    }
+    SplineSet localSplineSet;
+    if (mAttributesMap == null) {
+      localSplineSet = null;
+    } else {
+      localSplineSet = (SplineSet)mAttributesMap.get("translationY");
+    }
+    KeyCycleOscillator localKeyCycleOscillator1;
+    if (mCycleMap == null) {
+      localKeyCycleOscillator1 = null;
+    } else {
+      localKeyCycleOscillator1 = (KeyCycleOscillator)mCycleMap.get("translationX");
+    }
+    if (mCycleMap != null) {
+      localKeyCycleOscillator2 = (KeyCycleOscillator)mCycleMap.get("translationY");
+    }
+    int i = 0;
+    while (i < paramInt)
+    {
+      float f3 = i * f6;
+      float f2 = stagger_scale;
+      float f4 = 0.0F;
+      float f1 = f3;
+      if (f2 != 1.0F)
+      {
+        f2 = f3;
+        if (f3 < stagger_offset) {
+          f2 = 0.0F;
+        }
+        f1 = f2;
+        if (f2 > stagger_offset)
+        {
+          f1 = f2;
+          if (f2 < 1.0D) {
+            f1 = (f2 - stagger_offset) * stagger_scale;
+          }
+        }
+      }
+      double d = f1;
+      Object localObject2 = mStartMotionPath.mKeyFrameEasing;
+      f2 = NaN.0F;
+      Object localObject4 = mMotionPaths.iterator();
+      f3 = f4;
+      while (((Iterator)localObject4).hasNext())
+      {
+        MotionPaths localMotionPaths = (MotionPaths)((Iterator)localObject4).next();
+        f4 = f2;
+        float f5 = f3;
+        localObject3 = localObject2;
+        if (mKeyFrameEasing != null) {
+          if (time < f1)
+          {
+            localObject3 = mKeyFrameEasing;
+            f5 = time;
+            f4 = f2;
+          }
+          else
+          {
+            f4 = f2;
+            f5 = f3;
+            localObject3 = localObject2;
+            if (Float.isNaN(f2))
+            {
+              f4 = time;
+              localObject3 = localObject2;
+              f5 = f3;
+            }
+          }
+        }
+        f2 = f4;
+        f3 = f5;
+        localObject2 = localObject3;
+      }
+      if (localObject2 != null)
+      {
+        f4 = f2;
+        if (Float.isNaN(f2)) {
+          f4 = 1.0F;
+        }
+        f2 = f4 - f3;
+        d = (float)((Easing)localObject2).transform((f1 - f3) / f2) * f2 + f3;
+      }
+      mSpline[0].getPos(d, mInterpolateData);
+      if ((mArcSpline != null) && (mInterpolateData.length > 0)) {
+        mArcSpline.getPos(d, mInterpolateData);
+      }
+      localObject2 = mStartMotionPath;
+      Object localObject3 = mInterpolateVariables;
+      localObject4 = mInterpolateData;
+      int j = i * 2;
+      ((MotionPaths)localObject2).getCenter((int[])localObject3, (double[])localObject4, paramArrayOfFloat, j);
+      if (localKeyCycleOscillator1 != null) {
+        paramArrayOfFloat[j] += localKeyCycleOscillator1.scale(f1);
+      } else if (localObject1 != null) {
+        paramArrayOfFloat[j] += ((SplineSet)localObject1).floatValue(f1);
+      }
+      if (localKeyCycleOscillator2 != null)
+      {
+        j += 1;
+        paramArrayOfFloat[j] += localKeyCycleOscillator2.scale(f1);
+      }
+      else if (localSplineSet != null)
+      {
+        j += 1;
+        paramArrayOfFloat[j] += localSplineSet.floatValue(f1);
+      }
+      i += 1;
+    }
+  }
+  
+  void buildRect(float paramFloat, float[] paramArrayOfFloat, int paramInt)
+  {
+    paramFloat = getAdjustedPosition(paramFloat, null);
+    mSpline[0].getPos(paramFloat, mInterpolateData);
+    mStartMotionPath.getRect(mInterpolateVariables, mInterpolateData, paramArrayOfFloat, paramInt);
+  }
+  
+  void buildRectangles(float[] paramArrayOfFloat, int paramInt)
+  {
+    float f1 = 1.0F / (paramInt - 1);
+    int i = 0;
+    while (i < paramInt)
+    {
+      float f2 = getAdjustedPosition(i * f1, null);
+      mSpline[0].getPos(f2, mInterpolateData);
+      mStartMotionPath.getRect(mInterpolateVariables, mInterpolateData, paramArrayOfFloat, i * 8);
+      i += 1;
+    }
+  }
+  
+  int getAttributeValues(String paramString, float[] paramArrayOfFloat, int paramInt)
+  {
+    paramString = (SplineSet)mAttributesMap.get(paramString);
+    if (paramString == null) {
+      return -1;
+    }
+    paramInt = 0;
+    while (paramInt < paramArrayOfFloat.length)
+    {
+      paramArrayOfFloat[paramInt] = paramString.floatValue(paramInt / (paramArrayOfFloat.length - 1));
+      paramInt += 1;
+    }
+    return paramArrayOfFloat.length;
+  }
+  
+  void getDpDt(float paramFloat1, float paramFloat2, float paramFloat3, float[] paramArrayOfFloat)
+  {
+    Object localObject = mSpline;
+    int i = 0;
+    if (localObject != null)
+    {
+      paramFloat1 = getAdjustedPosition(paramFloat1, mVelocity);
+      localObject = mSpline[0];
+      double d1 = paramFloat1;
+      ((CurveFit)localObject).getSlope(d1, mInterpolateVelocity);
+      mSpline[0].getPos(d1, mInterpolateData);
+      paramFloat1 = mVelocity[0];
+      while (i < mInterpolateVelocity.length)
+      {
+        localObject = mInterpolateVelocity;
+        d1 = localObject[i];
+        double d2 = paramFloat1;
+        Double.isNaN(d2);
+        localObject[i] = (d1 * d2);
+        i += 1;
+      }
+      mStartMotionPath.setDpDt(paramFloat2, paramFloat3, paramArrayOfFloat, mInterpolateVariables, mInterpolateVelocity, mInterpolateData);
+      return;
+    }
+    paramFloat1 = mEndMotionPath.x - mStartMotionPath.x;
+    float f1 = mEndMotionPath.y - mStartMotionPath.y;
+    float f2 = mEndMotionPath.width;
+    float f3 = mStartMotionPath.width;
+    float f4 = mEndMotionPath.height;
+    float f5 = mStartMotionPath.height;
+    paramArrayOfFloat[0] = (paramFloat1 * (1.0F - paramFloat2) + (f2 - f3 + paramFloat1) * paramFloat2);
+    paramArrayOfFloat[1] = (f1 * (1.0F - paramFloat3) + (f4 - f5 + f1) * paramFloat3);
+  }
+  
+  public int getDrawPath()
+  {
+    int i = mStartMotionPath.mDrawPath;
+    Iterator localIterator = mMotionPaths.iterator();
+    while (localIterator.hasNext()) {
+      i = Math.max(i, nextmDrawPath);
+    }
+    return Math.max(i, mEndMotionPath.mDrawPath);
+  }
+  
+  float getFinalX()
+  {
+    return mEndMotionPath.x;
+  }
+  
+  float getFinalY()
+  {
+    return mEndMotionPath.y;
+  }
+  
+  MotionPaths getKeyFrame(int paramInt)
+  {
+    return (MotionPaths)mMotionPaths.get(paramInt);
+  }
+  
+  float getKeyFrameParameter(int paramInt, float paramFloat1, float paramFloat2)
+  {
+    float f1 = mEndMotionPath.x - mStartMotionPath.x;
+    float f2 = mEndMotionPath.y - mStartMotionPath.y;
+    float f6 = mStartMotionPath.x;
+    float f7 = mStartMotionPath.width / 2.0F;
+    float f4 = mStartMotionPath.y;
+    float f5 = mStartMotionPath.height / 2.0F;
+    float f3 = (float)Math.hypot(f1, f2);
+    if (f3 < 1.0E-7D) {
+      return NaN.0F;
+    }
+    paramFloat1 -= f6 + f7;
+    paramFloat2 -= f4 + f5;
+    if ((float)Math.hypot(paramFloat1, paramFloat2) == 0.0F) {
+      return 0.0F;
+    }
+    f4 = paramFloat1 * f1 + paramFloat2 * f2;
+    switch (paramInt)
+    {
+    default: 
+      return 0.0F;
+    case 5: 
+      return paramFloat2 / f2;
+    case 4: 
+      return paramFloat1 / f2;
+    case 3: 
+      return paramFloat2 / f1;
+    case 2: 
+      return paramFloat1 / f1;
+    case 1: 
+      return (float)Math.sqrt(f3 * f3 - f4 * f4);
+    }
+    return f4 / f3;
+  }
+  
+  KeyPositionBase getPositionKeyframe(int paramInt1, int paramInt2, float paramFloat1, float paramFloat2)
+  {
+    RectF localRectF1 = new RectF();
+    left = mStartMotionPath.x;
+    top = mStartMotionPath.y;
+    right = (left + mStartMotionPath.width);
+    bottom = (top + mStartMotionPath.height);
+    RectF localRectF2 = new RectF();
+    left = mEndMotionPath.x;
+    top = mEndMotionPath.y;
+    right = (left + mEndMotionPath.width);
+    bottom = (top + mEndMotionPath.height);
+    Iterator localIterator = mKeyList.iterator();
+    while (localIterator.hasNext())
+    {
+      Object localObject = (FieldInfo)localIterator.next();
+      if ((localObject instanceof KeyPositionBase))
+      {
+        localObject = (KeyPositionBase)localObject;
+        if (((KeyPositionBase)localObject).intersects(paramInt1, paramInt2, localRectF1, localRectF2, paramFloat1, paramFloat2)) {
+          return localObject;
+        }
+      }
+    }
+    return null;
+  }
+  
+  boolean interpolate(View paramView, float paramFloat, long paramLong)
+  {
+    Object localObject1;
+    if (mAttributesMap != null)
+    {
+      localObject1 = mAttributesMap.values().iterator();
+      while (((Iterator)localObject1).hasNext()) {
+        ((SplineSet)((Iterator)localObject1).next()).setProperty(paramView, paramFloat);
+      }
+    }
+    Object localObject2;
+    boolean bool1;
+    Object localObject3;
+    if (mTimeCycleAttributesMap != null)
+    {
+      localObject2 = mTimeCycleAttributesMap.values().iterator();
+      localObject1 = null;
+      bool1 = false;
+      while (((Iterator)localObject2).hasNext())
+      {
+        localObject3 = (TimeCycleSplineSet)((Iterator)localObject2).next();
+        if ((localObject3 instanceof TimeCycleSplineSet.PathRotate)) {
+          localObject1 = (TimeCycleSplineSet.PathRotate)localObject3;
+        } else {
+          bool1 |= ((TimeCycleSplineSet)localObject3).setProperty(paramView, paramFloat, paramLong);
+        }
+      }
+    }
+    else
+    {
+      localObject1 = null;
+      bool1 = false;
+    }
+    int i;
+    if (mSpline != null)
+    {
+      float f = getAdjustedPosition(paramFloat, null);
+      localObject2 = mSpline[0];
+      double d = f;
+      ((CurveFit)localObject2).getPos(d, mInterpolateData);
+      mSpline[0].getSlope(d, mInterpolateVelocity);
+      if ((mArcSpline != null) && (mInterpolateData.length > 0))
+      {
+        mArcSpline.getPos(d, mInterpolateData);
+        mArcSpline.getSlope(d, mInterpolateVelocity);
+      }
+      mStartMotionPath.setView(paramView, mInterpolateVariables, mInterpolateData, mInterpolateVelocity, null);
+      if (mAttributesMap != null)
+      {
+        localObject2 = mAttributesMap.values().iterator();
+        while (((Iterator)localObject2).hasNext())
+        {
+          localObject3 = (SplineSet)((Iterator)localObject2).next();
+          if ((localObject3 instanceof SplineSet.PathRotate)) {
+            ((SplineSet.PathRotate)localObject3).setPathRotate(paramView, paramFloat, mInterpolateVelocity[0], mInterpolateVelocity[1]);
+          }
+        }
+      }
+      boolean bool2 = bool1;
+      if (localObject1 != null) {
+        bool2 = ((TimeCycleSplineSet.PathRotate)localObject1).setPathRotate(paramView, paramFloat, paramLong, mInterpolateVelocity[0], mInterpolateVelocity[1]) | bool1;
+      }
+      i = 1;
+      while (i < mSpline.length)
+      {
+        mSpline[i].getPos(d, buff);
+        ((ConstraintAttribute)mStartMotionPath.attributes.get(mAttributeNames[(i - 1)])).setInterpolatedValue(paramView, buff);
+        i += 1;
+      }
+      if (paramFloat <= 0.0F)
+      {
+        paramView.setVisibility(mStartPoint.visibility);
+        bool1 = bool2;
+      }
+      else if (paramFloat >= 1.0F)
+      {
+        paramView.setVisibility(mEndPoint.visibility);
+        bool1 = bool2;
+      }
+      else
+      {
+        bool1 = bool2;
+        if (mEndPoint.visibility != mStartPoint.visibility)
+        {
+          paramView.setVisibility(0);
+          bool1 = bool2;
+        }
+      }
+    }
+    else
+    {
+      i = (int)(mStartMotionPath.x + (mEndMotionPath.x - mStartMotionPath.x) * paramFloat);
+      int j = (int)(mStartMotionPath.y + (mEndMotionPath.y - mStartMotionPath.y) * paramFloat);
+      int k = (int)(mStartMotionPath.width + (mEndMotionPath.width - mStartMotionPath.width) * paramFloat);
+      int m = (int)(mStartMotionPath.height + (mEndMotionPath.height - mStartMotionPath.height) * paramFloat);
+      if ((mEndMotionPath.width != mStartMotionPath.width) || (mEndMotionPath.height != mStartMotionPath.height)) {
+        paramView.measure(View.MeasureSpec.makeMeasureSpec(k, 1073741824), View.MeasureSpec.makeMeasureSpec(m, 1073741824));
+      }
+      paramView.layout(i, j, i + k, j + m);
+    }
+    if (mCycleMap != null)
+    {
+      localObject1 = mCycleMap.values().iterator();
+      while (((Iterator)localObject1).hasNext())
+      {
+        localObject2 = (KeyCycleOscillator)((Iterator)localObject1).next();
+        if ((localObject2 instanceof KeyCycleOscillator.PathRotateSet)) {
+          ((KeyCycleOscillator.PathRotateSet)localObject2).setPathRotate(paramView, paramFloat, mInterpolateVelocity[0], mInterpolateVelocity[1]);
+        } else {
+          ((KeyCycleOscillator)localObject2).setProperty(paramView, paramFloat);
+        }
+      }
+    }
+    return bool1;
+  }
+  
+  String name()
+  {
+    return mView.getContext().getResources().getResourceEntryName(mView.getId());
+  }
+  
+  void positionKeyframe(View paramView, KeyPositionBase paramKeyPositionBase, float paramFloat1, float paramFloat2, String[] paramArrayOfString, float[] paramArrayOfFloat)
+  {
+    RectF localRectF1 = new RectF();
+    left = mStartMotionPath.x;
+    top = mStartMotionPath.y;
+    right = (left + mStartMotionPath.width);
+    bottom = (top + mStartMotionPath.height);
+    RectF localRectF2 = new RectF();
+    left = mEndMotionPath.x;
+    top = mEndMotionPath.y;
+    right = (left + mEndMotionPath.width);
+    bottom = (top + mEndMotionPath.height);
+    paramKeyPositionBase.positionAttributes(paramView, localRectF1, localRectF2, paramFloat1, paramFloat2, paramArrayOfString, paramArrayOfFloat);
+  }
+  
+  public void setDrawPath(int paramInt)
+  {
+    mStartMotionPath.mDrawPath = paramInt;
+  }
+  
+  void setEndState(ConstraintWidget paramConstraintWidget, ConstraintSet paramConstraintSet)
+  {
+    mEndMotionPath.time = 1.0F;
+    mEndMotionPath.position = 1.0F;
+    readView(mEndMotionPath);
+    mEndMotionPath.setBounds(paramConstraintWidget.getX(), paramConstraintWidget.getY(), paramConstraintWidget.getWidth(), paramConstraintWidget.getHeight());
+    mEndMotionPath.applyParameters(paramConstraintSet.getParameters(hostId));
+    mEndPoint.setState(paramConstraintWidget, paramConstraintSet, hostId);
+  }
+  
+  void setStartCurrentState(View paramView)
+  {
+    mStartMotionPath.time = 0.0F;
+    mStartMotionPath.position = 0.0F;
+    mStartMotionPath.setBounds(paramView.getX(), paramView.getY(), paramView.getWidth(), paramView.getHeight());
+    mStartPoint.setState(paramView);
+  }
+  
+  void setStartState(ConstraintWidget paramConstraintWidget, ConstraintSet paramConstraintSet)
+  {
+    mStartMotionPath.time = 0.0F;
+    mStartMotionPath.position = 0.0F;
+    readView(mStartMotionPath);
+    mStartMotionPath.setBounds(paramConstraintWidget.getX(), paramConstraintWidget.getY(), paramConstraintWidget.getWidth(), paramConstraintWidget.getHeight());
+    mStartMotionPath.applyParameters(paramConstraintSet.getParameters(hostId));
+    mStartPoint.setState(paramConstraintWidget, paramConstraintSet, hostId);
+  }
+  
+  public void setView(View paramView)
+  {
+    mView = paramView;
+    hostId = paramView.getId();
+  }
+  
+  public void setup(int paramInt1, int paramInt2, float paramFloat)
+  {
+    Object localObject4 = new HashSet();
+    Object localObject2 = new HashSet();
+    HashSet localHashSet = new HashSet();
+    Object localObject3 = new HashMap();
+    mStartPoint.different(mEndPoint, (HashSet)localObject2);
+    if (mKeyList != null)
+    {
+      localObject1 = mKeyList.iterator();
+      while (((Iterator)localObject1).hasNext())
+      {
+        localObject5 = (FieldInfo)((Iterator)localObject1).next();
+        if ((localObject5 instanceof KeyPosition))
+        {
+          localObject5 = (KeyPosition)localObject5;
+          insertKey(new MotionPaths(paramInt1, paramInt2, (KeyPosition)localObject5, mStartMotionPath, mEndMotionPath));
+          if (mCurveFit != FieldInfo.UNSET) {
+            mCurveFitType = mCurveFit;
+          }
+        }
+        else if ((localObject5 instanceof KeyCycle))
+        {
+          ((FieldInfo)localObject5).getAttributeNames(localHashSet);
+        }
+        else if ((localObject5 instanceof KeyTimeCycle))
+        {
+          ((FieldInfo)localObject5).getAttributeNames((HashSet)localObject4);
+        }
+        else
+        {
+          ((FieldInfo)localObject5).setInterpolation((HashMap)localObject3);
+          ((FieldInfo)localObject5).getAttributeNames((HashSet)localObject2);
+        }
+      }
+    }
+    Object localObject8;
+    Object localObject9;
+    if (!((HashSet)localObject2).isEmpty())
+    {
+      mAttributesMap = new HashMap();
+      localObject5 = ((HashSet)localObject2).iterator();
+      while (((Iterator)localObject5).hasNext())
+      {
+        localObject6 = (String)((Iterator)localObject5).next();
+        if (((String)localObject6).startsWith("CUSTOM,"))
+        {
+          localObject1 = new SparseArray();
+          localObject7 = localObject6.split(",")[1];
+          localObject8 = mKeyList.iterator();
+          while (((Iterator)localObject8).hasNext())
+          {
+            localObject9 = (FieldInfo)((Iterator)localObject8).next();
+            if (mCustomConstraints != null)
+            {
+              ConstraintAttribute localConstraintAttribute = (ConstraintAttribute)mCustomConstraints.get(localObject7);
+              if (localConstraintAttribute != null) {
+                ((SparseArray)localObject1).append(mFramePosition, localConstraintAttribute);
+              }
+            }
+          }
+          localObject1 = SplineSet.makeCustomSpline((String)localObject6, (SparseArray)localObject1);
+        }
+        else
+        {
+          localObject1 = SplineSet.makeSpline((String)localObject6);
+        }
+        if (localObject1 != null)
+        {
+          ((SplineSet)localObject1).setType((String)localObject6);
+          mAttributesMap.put(localObject6, localObject1);
+        }
+      }
+      if (mKeyList != null)
+      {
+        localObject1 = mKeyList.iterator();
+        while (((Iterator)localObject1).hasNext())
+        {
+          localObject5 = (FieldInfo)((Iterator)localObject1).next();
+          if ((localObject5 instanceof KeyAttributes)) {
+            ((FieldInfo)localObject5).addValues(mAttributesMap);
+          }
+        }
+      }
+      mStartPoint.addValues(mAttributesMap, 0);
+      mEndPoint.addValues(mAttributesMap, 100);
+      localObject1 = mAttributesMap.keySet().iterator();
+      while (((Iterator)localObject1).hasNext())
+      {
+        localObject5 = (String)((Iterator)localObject1).next();
+        if (((HashMap)localObject3).containsKey(localObject5)) {
+          paramInt1 = ((Integer)((HashMap)localObject3).get(localObject5)).intValue();
+        } else {
+          paramInt1 = 0;
+        }
+        ((SplineSet)mAttributesMap.get(localObject5)).setup(paramInt1);
+      }
+    }
+    if (!((HashSet)localObject4).isEmpty())
+    {
+      mTimeCycleAttributesMap = new HashMap();
+      localObject4 = ((HashSet)localObject4).iterator();
+      while (((Iterator)localObject4).hasNext())
+      {
+        localObject5 = (String)((Iterator)localObject4).next();
+        if (((String)localObject5).startsWith("CUSTOM,"))
+        {
+          localObject1 = new SparseArray();
+          localObject6 = localObject5.split(",")[1];
+          localObject7 = mKeyList.iterator();
+          while (((Iterator)localObject7).hasNext())
+          {
+            localObject8 = (FieldInfo)((Iterator)localObject7).next();
+            if (mCustomConstraints != null)
+            {
+              localObject9 = (ConstraintAttribute)mCustomConstraints.get(localObject6);
+              if (localObject9 != null) {
+                ((SparseArray)localObject1).append(mFramePosition, localObject9);
+              }
+            }
+          }
+          localObject1 = TimeCycleSplineSet.makeCustomSpline((String)localObject5, (SparseArray)localObject1);
+        }
+        else
+        {
+          localObject1 = TimeCycleSplineSet.makeSpline((String)localObject5);
+        }
+        if (localObject1 != null)
+        {
+          ((TimeCycleSplineSet)localObject1).setType((String)localObject5);
+          mTimeCycleAttributesMap.put(localObject5, localObject1);
+        }
+      }
+      if (mKeyList != null)
+      {
+        localObject1 = mKeyList.iterator();
+        while (((Iterator)localObject1).hasNext())
+        {
+          localObject4 = (FieldInfo)((Iterator)localObject1).next();
+          if ((localObject4 instanceof KeyTimeCycle)) {
+            ((KeyTimeCycle)localObject4).addTimeValues(mTimeCycleAttributesMap);
+          }
+        }
+      }
+      localObject1 = mTimeCycleAttributesMap.keySet().iterator();
+      while (((Iterator)localObject1).hasNext())
+      {
+        localObject4 = (String)((Iterator)localObject1).next();
+        if (((HashMap)localObject3).containsKey(localObject4)) {
+          paramInt1 = ((Integer)((HashMap)localObject3).get(localObject4)).intValue();
+        } else {
+          paramInt1 = 0;
+        }
+        ((TimeCycleSplineSet)mTimeCycleAttributesMap.get(localObject4)).setup(paramInt1);
+      }
+    }
+    Object localObject5 = new MotionPaths[mMotionPaths.size() + 2];
+    localObject5[0] = mStartMotionPath;
+    localObject5[(localObject5.length - 1)] = mEndMotionPath;
+    if ((mMotionPaths.size() > 0) && (mCurveFitType == -1)) {
+      mCurveFitType = 0;
+    }
+    Object localObject1 = mMotionPaths.iterator();
+    paramInt1 = 1;
+    while (((Iterator)localObject1).hasNext())
+    {
+      localObject5[paramInt1] = ((MotionPaths)((Iterator)localObject1).next());
+      paramInt1 += 1;
+    }
+    localObject1 = new HashSet();
+    localObject3 = mEndMotionPath.attributes.keySet().iterator();
+    while (((Iterator)localObject3).hasNext())
+    {
+      localObject4 = (String)((Iterator)localObject3).next();
+      if (mStartMotionPath.attributes.containsKey(localObject4))
+      {
+        localObject6 = new StringBuilder();
+        ((StringBuilder)localObject6).append("CUSTOM,");
+        ((StringBuilder)localObject6).append((String)localObject4);
+        if (!((HashSet)localObject2).contains(((StringBuilder)localObject6).toString())) {
+          ((HashSet)localObject1).add(localObject4);
+        }
+      }
+    }
+    mAttributeNames = ((String[])((HashSet)localObject1).toArray(new String[0]));
+    mAttributeInterpCount = new int[mAttributeNames.length];
+    paramInt1 = 0;
+    while (paramInt1 < mAttributeNames.length)
+    {
+      localObject1 = mAttributeNames[paramInt1];
+      mAttributeInterpCount[paramInt1] = 1;
+      paramInt2 = 0;
+      while (paramInt2 < localObject5.length)
+      {
+        if (attributes.containsKey(localObject1))
+        {
+          mAttributeInterpCount[paramInt1] = ((ConstraintAttribute)attributes.get(localObject1)).noOfInterpValues();
+          break;
+        }
+        paramInt2 += 1;
+      }
+      paramInt1 += 1;
+    }
+    localObject1 = new boolean[18 + mAttributeNames.length];
+    paramInt1 = 1;
+    while (paramInt1 < localObject5.length)
+    {
+      localObject5[paramInt1].different(localObject5[(paramInt1 - 1)], (boolean[])localObject1, mAttributeNames);
+      paramInt1 += 1;
+    }
+    paramInt1 = 1;
+    int i;
+    for (paramInt2 = 0; paramInt1 < localObject1.length; paramInt2 = i)
+    {
+      i = paramInt2;
+      if (localObject1[paramInt1] != 0) {
+        i = paramInt2 + 1;
+      }
+      paramInt1 += 1;
+    }
+    mInterpolateVariables = new int[paramInt2];
+    mInterpolateData = new double[mInterpolateVariables.length];
+    mInterpolateVelocity = new double[mInterpolateVariables.length];
+    paramInt1 = 1;
+    for (paramInt2 = 0; paramInt1 < localObject1.length; paramInt2 = i)
+    {
+      i = paramInt2;
+      if (localObject1[paramInt1] != 0)
+      {
+        mInterpolateVariables[paramInt2] = paramInt1;
+        i = paramInt2 + 1;
+      }
+      paramInt1 += 1;
+    }
+    Object localObject6 = (double[][])Array.newInstance(D.class, new int[] { localObject5.length, mInterpolateVariables.length });
+    Object localObject7 = new double[localObject5.length];
+    paramInt1 = 0;
+    while (paramInt1 < localObject5.length)
+    {
+      localObject5[paramInt1].fillStandard(localObject6[paramInt1], mInterpolateVariables);
+      localObject7[paramInt1] = time;
+      paramInt1 += 1;
+    }
+    paramInt1 = 0;
+    while (paramInt1 < mInterpolateVariables.length)
+    {
+      if (mInterpolateVariables[paramInt1] < MotionPaths.names.length)
+      {
+        localObject1 = new StringBuilder();
+        ((StringBuilder)localObject1).append(MotionPaths.names[mInterpolateVariables[paramInt1]]);
+        ((StringBuilder)localObject1).append(" [");
+        localObject1 = ((StringBuilder)localObject1).toString();
+        paramInt2 = 0;
+        while (paramInt2 < localObject5.length)
+        {
+          localObject2 = new StringBuilder();
+          ((StringBuilder)localObject2).append((String)localObject1);
+          ((StringBuilder)localObject2).append(localObject6[paramInt2][paramInt1]);
+          localObject1 = ((StringBuilder)localObject2).toString();
+          paramInt2 += 1;
+        }
+      }
+      paramInt1 += 1;
+    }
+    mSpline = new CurveFit[mAttributeNames.length + 1];
+    paramInt1 = 0;
+    while (paramInt1 < mAttributeNames.length)
+    {
+      localObject8 = mAttributeNames[paramInt1];
+      localObject1 = null;
+      i = 0;
+      localObject2 = null;
+      paramInt2 = 0;
+      while (paramInt2 < localObject5.length)
+      {
+        localObject4 = localObject2;
+        localObject3 = localObject1;
+        int j = i;
+        if (localObject5[paramInt2].hasCustomData((String)localObject8))
+        {
+          localObject3 = localObject1;
+          if (localObject1 == null)
+          {
+            localObject2 = new double[localObject5.length];
+            localObject3 = (double[][])Array.newInstance(D.class, new int[] { localObject5.length, localObject5[paramInt2].getCustomDataCount((String)localObject8) });
+          }
+          localObject2[i] = time;
+          localObject5[paramInt2].getCustomData((String)localObject8, localObject3[i], 0);
+          j = i + 1;
+          localObject4 = localObject2;
+        }
+        paramInt2 += 1;
+        localObject2 = localObject4;
+        localObject1 = localObject3;
+        i = j;
+      }
+      localObject2 = Arrays.copyOf((double[])localObject2, i);
+      localObject1 = (double[][])Arrays.copyOf((Object[])localObject1, i);
+      localObject3 = mSpline;
+      paramInt1 += 1;
+      localObject3[paramInt1] = CurveFit.get(mCurveFitType, (double[])localObject2, (double[][])localObject1);
+    }
+    mSpline[0] = CurveFit.get(mCurveFitType, (double[])localObject7, (double[][])localObject6);
+    if (0mPathMotionArc != FieldInfo.UNSET)
+    {
+      paramInt2 = localObject5.length;
+      localObject1 = new int[paramInt2];
+      localObject2 = new double[paramInt2];
+      localObject3 = (double[][])Array.newInstance(D.class, new int[] { paramInt2, 2 });
+      paramInt1 = 0;
+      while (paramInt1 < paramInt2)
+      {
+        localObject1[paramInt1] = mPathMotionArc;
+        localObject2[paramInt1] = time;
+        localObject3[paramInt1][0] = x;
+        localObject3[paramInt1][1] = y;
+        paramInt1 += 1;
+      }
+      mArcSpline = CurveFit.getArc((int[])localObject1, (double[])localObject2, (double[][])localObject3);
+    }
+    paramFloat = NaN.0F;
+    mCycleMap = new HashMap();
+    if (mKeyList != null)
+    {
+      localObject1 = localHashSet.iterator();
+      while (((Iterator)localObject1).hasNext())
+      {
+        localObject2 = (String)((Iterator)localObject1).next();
+        localObject3 = KeyCycleOscillator.makeSpline((String)localObject2);
+        if (localObject3 != null)
+        {
+          float f = paramFloat;
+          if (((KeyCycleOscillator)localObject3).variesByPath())
+          {
+            f = paramFloat;
+            if (Float.isNaN(paramFloat)) {
+              f = getPreCycleDistance();
+            }
+          }
+          ((KeyCycleOscillator)localObject3).setType((String)localObject2);
+          mCycleMap.put(localObject2, localObject3);
+          paramFloat = f;
+        }
+      }
+      localObject1 = mKeyList.iterator();
+      while (((Iterator)localObject1).hasNext())
+      {
+        localObject2 = (FieldInfo)((Iterator)localObject1).next();
+        if ((localObject2 instanceof KeyCycle)) {
+          ((KeyCycle)localObject2).addCycleValues(mCycleMap);
+        }
+      }
+      localObject1 = mCycleMap.values().iterator();
+      while (((Iterator)localObject1).hasNext()) {
+        ((KeyCycleOscillator)((Iterator)localObject1).next()).setup(paramFloat);
+      }
+    }
+  }
+  
+  public String toString()
+  {
+    StringBuilder localStringBuilder = new StringBuilder();
+    localStringBuilder.append(" start: x: ");
+    localStringBuilder.append(mStartMotionPath.x);
+    localStringBuilder.append(" y: ");
+    localStringBuilder.append(mStartMotionPath.y);
+    localStringBuilder.append(" end: x: ");
+    localStringBuilder.append(mEndMotionPath.x);
+    localStringBuilder.append(" y: ");
+    localStringBuilder.append(mEndMotionPath.y);
+    return localStringBuilder.toString();
+  }
+}

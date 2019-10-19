@@ -1,0 +1,35 @@
+package com.google.firebase.events;
+
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.internal.Preconditions;
+
+@KeepForSdk
+public class Event<T>
+{
+  private final Class<T> zza;
+  private final T zzb;
+  
+  @KeepForSdk
+  public Event(Class<T> paramClass, T paramT)
+  {
+    zza = ((Class)Preconditions.checkNotNull(paramClass));
+    zzb = Preconditions.checkNotNull(paramT);
+  }
+  
+  @KeepForSdk
+  public T getPayload()
+  {
+    return zzb;
+  }
+  
+  @KeepForSdk
+  public Class<T> getType()
+  {
+    return zza;
+  }
+  
+  public String toString()
+  {
+    return String.format("Event{type: %s, payload: %s}", new Object[] { zza, zzb });
+  }
+}

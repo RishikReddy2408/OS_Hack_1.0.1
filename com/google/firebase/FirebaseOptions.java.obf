@@ -1,0 +1,191 @@
+package com.google.firebase;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.internal.Objects;
+import com.google.android.gms.common.internal.Objects.ToStringHelper;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.internal.StringResourceValueReader;
+import com.google.android.gms.common.util.Strings;
+import com.google.firebase.annotations.PublicApi;
+
+@PublicApi
+public final class FirebaseOptions
+{
+  private final String zza;
+  private final String zzb;
+  private final String zzc;
+  private final String zzd;
+  private final String zze;
+  private final String zzf;
+  private final String zzg;
+  
+  private FirebaseOptions(@NonNull String paramString1, @NonNull String paramString2, @Nullable String paramString3, @Nullable String paramString4, @Nullable String paramString5, @Nullable String paramString6, @Nullable String paramString7)
+  {
+    Preconditions.checkState(Strings.isEmptyOrWhitespace(paramString1) ^ true, "ApplicationId must be set.");
+    zzb = paramString1;
+    zza = paramString2;
+    zzc = paramString3;
+    zzd = paramString4;
+    zze = paramString5;
+    zzf = paramString6;
+    zzg = paramString7;
+  }
+  
+  @PublicApi
+  public static FirebaseOptions fromResource(Context paramContext)
+  {
+    paramContext = new StringResourceValueReader(paramContext);
+    String str = paramContext.getString("google_app_id");
+    if (TextUtils.isEmpty(str)) {
+      return null;
+    }
+    return new FirebaseOptions(str, paramContext.getString("google_api_key"), paramContext.getString("firebase_database_url"), paramContext.getString("ga_trackingId"), paramContext.getString("gcm_defaultSenderId"), paramContext.getString("google_storage_bucket"), paramContext.getString("project_id"));
+  }
+  
+  public final boolean equals(Object paramObject)
+  {
+    if (!(paramObject instanceof FirebaseOptions)) {
+      return false;
+    }
+    paramObject = (FirebaseOptions)paramObject;
+    return (Objects.equal(zzb, zzb)) && (Objects.equal(zza, zza)) && (Objects.equal(zzc, zzc)) && (Objects.equal(zzd, zzd)) && (Objects.equal(zze, zze)) && (Objects.equal(zzf, zzf)) && (Objects.equal(zzg, zzg));
+  }
+  
+  @PublicApi
+  public final String getApiKey()
+  {
+    return zza;
+  }
+  
+  @PublicApi
+  public final String getApplicationId()
+  {
+    return zzb;
+  }
+  
+  @PublicApi
+  public final String getDatabaseUrl()
+  {
+    return zzc;
+  }
+  
+  @KeepForSdk
+  public final String getGaTrackingId()
+  {
+    return zzd;
+  }
+  
+  @PublicApi
+  public final String getGcmSenderId()
+  {
+    return zze;
+  }
+  
+  @PublicApi
+  public final String getProjectId()
+  {
+    return zzg;
+  }
+  
+  @PublicApi
+  public final String getStorageBucket()
+  {
+    return zzf;
+  }
+  
+  public final int hashCode()
+  {
+    return Objects.hashCode(new Object[] { zzb, zza, zzc, zzd, zze, zzf, zzg });
+  }
+  
+  public final String toString()
+  {
+    return Objects.toStringHelper(this).add("applicationId", zzb).add("apiKey", zza).add("databaseUrl", zzc).add("gcmSenderId", zze).add("storageBucket", zzf).add("projectId", zzg).toString();
+  }
+  
+  @PublicApi
+  public static final class Builder
+  {
+    private String zza;
+    private String zzb;
+    private String zzc;
+    private String zzd;
+    private String zze;
+    private String zzf;
+    private String zzg;
+    
+    @PublicApi
+    public Builder() {}
+    
+    @PublicApi
+    public Builder(FirebaseOptions paramFirebaseOptions)
+    {
+      zzb = FirebaseOptions.zza(paramFirebaseOptions);
+      zza = FirebaseOptions.zzb(paramFirebaseOptions);
+      zzc = FirebaseOptions.zzc(paramFirebaseOptions);
+      zzd = FirebaseOptions.zzd(paramFirebaseOptions);
+      zze = FirebaseOptions.zze(paramFirebaseOptions);
+      zzf = FirebaseOptions.zzf(paramFirebaseOptions);
+      zzg = FirebaseOptions.zzg(paramFirebaseOptions);
+    }
+    
+    @PublicApi
+    public final FirebaseOptions build()
+    {
+      return new FirebaseOptions(zzb, zza, zzc, zzd, zze, zzf, zzg, (byte)0);
+    }
+    
+    @PublicApi
+    public final Builder setApiKey(@NonNull String paramString)
+    {
+      zza = Preconditions.checkNotEmpty(paramString, "ApiKey must be set.");
+      return this;
+    }
+    
+    @PublicApi
+    public final Builder setApplicationId(@NonNull String paramString)
+    {
+      zzb = Preconditions.checkNotEmpty(paramString, "ApplicationId must be set.");
+      return this;
+    }
+    
+    @PublicApi
+    public final Builder setDatabaseUrl(@Nullable String paramString)
+    {
+      zzc = paramString;
+      return this;
+    }
+    
+    @KeepForSdk
+    public final Builder setGaTrackingId(@Nullable String paramString)
+    {
+      zzd = paramString;
+      return this;
+    }
+    
+    @PublicApi
+    public final Builder setGcmSenderId(@Nullable String paramString)
+    {
+      zze = paramString;
+      return this;
+    }
+    
+    @PublicApi
+    public final Builder setProjectId(@Nullable String paramString)
+    {
+      zzg = paramString;
+      return this;
+    }
+    
+    @PublicApi
+    public final Builder setStorageBucket(@Nullable String paramString)
+    {
+      zzf = paramString;
+      return this;
+    }
+  }
+}

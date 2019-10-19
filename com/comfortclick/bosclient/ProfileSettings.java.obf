@@ -1,0 +1,316 @@
+package com.comfortclick.bosclient;
+
+import android.app.Dialog;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import com.comfortclick.bosclient.profiles.Controller;
+import com.comfortclick.bosclient.profiles.Profile;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+
+public class ProfileSettings
+{
+  MainActivity mActivity;
+  
+  public ProfileSettings() {}
+  
+  private String appendPrefix(String paramString)
+  {
+    if ((paramString != null) && (!paramString.isEmpty()))
+    {
+      Object localObject = paramString;
+      if (!paramString.startsWith("http"))
+      {
+        localObject = new StringBuilder();
+        ((StringBuilder)localObject).append("https://");
+        ((StringBuilder)localObject).append(paramString);
+        localObject = ((StringBuilder)localObject).toString();
+      }
+      paramString = (String)localObject;
+      if (!((String)localObject).endsWith("/"))
+      {
+        paramString = new StringBuilder();
+        paramString.append((String)localObject);
+        paramString.append("/");
+        paramString = paramString.toString();
+      }
+      return paramString;
+    }
+    return "";
+  }
+  
+  public void showProfileSettings(final MainActivity paramMainActivity, final Profile paramProfile, final boolean paramBoolean1, final boolean paramBoolean2, int paramInt)
+  {
+    mActivity = paramMainActivity;
+    final Dialog localDialog = new Dialog(paramMainActivity);
+    localDialog.setContentView(2131296302);
+    localDialog.setCancelable(true);
+    Object localObject1 = (LinearLayout)localDialog.findViewById(2131165316);
+    final CheckBox localCheckBox1 = (CheckBox)localDialog.findViewById(2131165242);
+    Object localObject2 = (TextView)localDialog.findViewById(2131165402);
+    final TextView localTextView4 = (TextView)localDialog.findViewById(2131165268);
+    final TextView localTextView5 = (TextView)localDialog.findViewById(2131165271);
+    paramMainActivity = (TextView)localDialog.findViewById(2131165272);
+    final TextView localTextView1 = (TextView)localDialog.findViewById(2131165269);
+    final TextView localTextView2 = (TextView)localDialog.findViewById(2131165273);
+    final TextView localTextView6 = (TextView)localDialog.findViewById(2131165270);
+    final CheckBox localCheckBox2 = (CheckBox)localDialog.findViewById(2131165243);
+    Button localButton1 = (Button)localDialog.findViewById(2131165235);
+    Button localButton2 = (Button)localDialog.findViewById(2131165234);
+    final RelativeLayout localRelativeLayout = (RelativeLayout)localDialog.findViewById(2131165346);
+    if (paramBoolean1) {
+      localDialog.setTitle(2131492865);
+    } else {
+      localDialog.setTitle(profileName);
+    }
+    localCheckBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+    {
+      public void onCheckedChanged(CompoundButton paramAnonymousCompoundButton, boolean paramAnonymousBoolean)
+      {
+        if (localCheckBox1.isChecked())
+        {
+          localTextView4.setVisibility(8);
+          val$labelAccessID.setVisibility(8);
+          val$layoutMore.setVisibility(0);
+          localRelativeLayout.requestFocus();
+          return;
+        }
+        localTextView4.setVisibility(0);
+        val$labelAccessID.setVisibility(0);
+        val$layoutMore.setVisibility(8);
+      }
+    });
+    if (manual)
+    {
+      localTextView4.setVisibility(8);
+      ((TextView)localObject2).setVisibility(8);
+      ((LinearLayout)localObject1).setVisibility(0);
+    }
+    else
+    {
+      localTextView4.setVisibility(0);
+      ((TextView)localObject2).setVisibility(0);
+      ((LinearLayout)localObject1).setVisibility(8);
+    }
+    localCheckBox1.setChecked(manual);
+    localTextView4.setText(accessID);
+    localTextView5.setText(profileName);
+    paramMainActivity.setText(serverAddress);
+    localTextView1.setText(localAddress);
+    localTextView2.setText(username);
+    localTextView6.setText(password);
+    localCheckBox2.setChecked(rememberMe);
+    if ((!localCheckBox1.isChecked()) && (!paramBoolean1) && (!paramBoolean2))
+    {
+      localRelativeLayout.requestFocus();
+    }
+    else
+    {
+      localObject1 = paramMainActivity;
+      localObject2 = localTextView1;
+      if (paramInt == 2)
+      {
+        TextView localTextView3 = localTextView2;
+        Toast.makeText(mActivity, mActivity.getString(2131492876), 1).show();
+        if (((TextView)localObject2).getText().toString().isEmpty())
+        {
+          ((TextView)localObject2).requestFocus();
+        }
+        else if (((TextView)localObject1).getText().toString().isEmpty())
+        {
+          ((TextView)localObject1).requestFocus();
+        }
+        else if (paramInt == 1)
+        {
+          Toast.makeText(mActivity, mActivity.getString(2131492877), 1).show();
+          if (localTextView3.getText().toString().isEmpty()) {
+            localTextView3.requestFocus();
+          } else if (localTextView6.getText().toString().isEmpty()) {
+            localTextView6.requestFocus();
+          } else {
+            localTextView3.requestFocus();
+          }
+        }
+        else if (localCheckBox1.isChecked())
+        {
+          localRelativeLayout.requestFocus();
+        }
+      }
+    }
+    localButton1.setOnClickListener(new View.OnClickListener()
+    {
+      public void onClick(View paramAnonymousView)
+      {
+        paramProfilemanual = localCheckBox1.isChecked();
+        paramProfileusername = localTextView2.getText().toString();
+        paramProfilepassword = localTextView6.getText().toString();
+        paramProfilerememberMe = localCheckBox2.isChecked();
+        if (paramProfilemanual)
+        {
+          paramProfileprofileName = localTextView5.getText().toString();
+          paramProfileserverAddress = ProfileSettings.this.appendPrefix(paramMainActivity.getText().toString());
+          paramProfilelocalAddress = ProfileSettings.this.appendPrefix(localTextView1.getText().toString());
+          if (paramBoolean1) {
+            mActivity.ProfileList.add(paramProfile);
+          }
+          localDialog.dismiss();
+          if (paramBoolean2)
+          {
+            mActivity.connect(paramProfile);
+            return;
+          }
+          com.comfortclick.bosclient.helpers.ProfileSettings.saveProfiles(mActivity, mActivity.ProfileList);
+          mActivity.refreshFavListItems();
+          return;
+        }
+        paramProfileaccessID = localTextView4.getText().toString();
+        paramAnonymousView = new ProfileSettings.RetrieveControllerJsonTask(ProfileSettings.this);
+        StringBuilder localStringBuilder = new StringBuilder();
+        localStringBuilder.append(mActivity.getString(2131492931));
+        localStringBuilder.append("WebService/BOSService.asmx/GetControllerJson");
+        paramAnonymousView = (ProfileSettings.RetrieveControllerJsonTask)paramAnonymousView.execute(new String[] { localStringBuilder.toString(), paramProfileaccessID });
+        dialog = localDialog;
+        profile = paramProfile;
+        addingProfile = paramBoolean1;
+        connect = paramBoolean2;
+      }
+    });
+    localButton2.setOnClickListener(new View.OnClickListener()
+    {
+      public void onClick(View paramAnonymousView)
+      {
+        localDialog.cancel();
+      }
+    });
+    localDialog.show();
+  }
+  
+  class RetrieveControllerJsonTask
+    extends AsyncTask<String, Void, String>
+  {
+    public boolean addingProfile;
+    public boolean connect;
+    public Dialog dialog;
+    public Profile profile;
+    
+    RetrieveControllerJsonTask() {}
+    
+    protected String doInBackground(String... paramVarArgs)
+    {
+      String str = "";
+      localObject1 = str;
+      try
+      {
+        Object localObject2 = (HttpURLConnection)new URL(paramVarArgs[0]).openConnection();
+        localObject1 = str;
+        ((HttpURLConnection)localObject2).setReadTimeout(15000);
+        localObject1 = str;
+        ((HttpURLConnection)localObject2).setConnectTimeout(15000);
+        localObject1 = str;
+        ((HttpURLConnection)localObject2).setRequestMethod("POST");
+        localObject1 = str;
+        ((HttpURLConnection)localObject2).setDoInput(true);
+        localObject1 = str;
+        ((HttpURLConnection)localObject2).setDoOutput(true);
+        localObject1 = str;
+        Object localObject3 = ((HttpURLConnection)localObject2).getOutputStream();
+        localObject1 = str;
+        BufferedWriter localBufferedWriter = new BufferedWriter(new OutputStreamWriter((OutputStream)localObject3, "UTF-8"));
+        localObject1 = str;
+        StringBuilder localStringBuilder = new StringBuilder();
+        localObject1 = str;
+        localStringBuilder.append("accessID=");
+        localObject1 = str;
+        localStringBuilder.append(paramVarArgs[1]);
+        localObject1 = str;
+        localBufferedWriter.write(localStringBuilder.toString());
+        localObject1 = str;
+        localBufferedWriter.flush();
+        localObject1 = str;
+        localBufferedWriter.close();
+        localObject1 = str;
+        ((OutputStream)localObject3).close();
+        localObject1 = str;
+        localObject2 = new BufferedReader(new InputStreamReader(((HttpURLConnection)localObject2).getInputStream()));
+        for (paramVarArgs = str;; paramVarArgs = ((StringBuilder)localObject3).toString())
+        {
+          localObject1 = paramVarArgs;
+          str = ((BufferedReader)localObject2).readLine();
+          localObject1 = paramVarArgs;
+          if (str == null) {
+            break;
+          }
+          localObject1 = paramVarArgs;
+          localObject3 = new StringBuilder();
+          localObject1 = paramVarArgs;
+          ((StringBuilder)localObject3).append(paramVarArgs);
+          localObject1 = paramVarArgs;
+          ((StringBuilder)localObject3).append(str);
+          localObject1 = paramVarArgs;
+        }
+        return localObject1;
+      }
+      catch (Exception paramVarArgs)
+      {
+        Log.d(paramVarArgs.getMessage(), paramVarArgs.toString());
+      }
+    }
+    
+    protected void onPostExecute(String paramString)
+    {
+      try
+      {
+        Gson localGson = new Gson();
+        Type localType = new TypeToken() {}.getType();
+        if (paramString.isEmpty())
+        {
+          Toast.makeText(mActivity, mActivity.getString(2131492880), 1).show();
+          return;
+        }
+        paramString = (Controller)localGson.fromJson(paramString, localType);
+        profile.accessID = AccessID;
+        profile.profileName = ServerName;
+        profile.serverAddress = ProfileSettings.this.appendPrefix(PublicAddress);
+        profile.localAddress = ProfileSettings.this.appendPrefix(LocalAddress);
+        profile.publicKey = PublicKey;
+        profile.gatewayAddress = GatewayAddress;
+        if (addingProfile) {
+          mActivity.ProfileList.add(profile);
+        }
+        dialog.hide();
+        if (connect)
+        {
+          mActivity.connect(profile);
+          return;
+        }
+        com.comfortclick.bosclient.helpers.ProfileSettings.saveProfiles(mActivity, mActivity.ProfileList);
+        mActivity.refreshFavListItems();
+        return;
+      }
+      catch (Exception paramString)
+      {
+        for (;;) {}
+      }
+      Toast.makeText(mActivity, mActivity.getString(2131492880), 1).show();
+    }
+  }
+}

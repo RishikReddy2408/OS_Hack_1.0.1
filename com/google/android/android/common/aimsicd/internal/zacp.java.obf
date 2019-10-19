@@ -1,0 +1,98 @@
+package com.google.android.gms.common.api.internal;
+
+import android.os.IBinder;
+import android.os.RemoteException;
+import com.google.android.gms.common.api.Api.AnyClientKey;
+import com.google.android.gms.common.api.Api.Client;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.common.util.VisibleForTesting;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+
+public final class zacp
+{
+  public static final Status zakw = new Status(8, "The connection to Google Play services was lost");
+  private static final BasePendingResult<?>[] zakx = new BasePendingResult[0];
+  private final Map<Api.AnyClientKey<?>, Api.Client> zagy;
+  @VisibleForTesting
+  final Set<BasePendingResult<?>> zaky = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap()));
+  private final zacs zakz = new zacq(this);
+  
+  public zacp(Map<Api.AnyClientKey<?>, Api.Client> paramMap)
+  {
+    zagy = paramMap;
+  }
+  
+  public final void release()
+  {
+    BasePendingResult[] arrayOfBasePendingResult = (BasePendingResult[])zaky.toArray(zakx);
+    int j = arrayOfBasePendingResult.length;
+    int i = 0;
+    while (i < j)
+    {
+      BasePendingResult localBasePendingResult = arrayOfBasePendingResult[i];
+      localBasePendingResult.zaa(null);
+      IBinder localIBinder;
+      zacr localZacr;
+      if (localBasePendingResult.zam() == null)
+      {
+        if (localBasePendingResult.zat()) {
+          zaky.remove(localBasePendingResult);
+        }
+      }
+      else
+      {
+        localBasePendingResult.setResultCallback(null);
+        localIBinder = ((Api.Client)zagy.get(((BaseImplementation.ApiMethodImpl)localBasePendingResult).getClientKey())).getServiceBrokerBinder();
+        if (localBasePendingResult.isReady())
+        {
+          localBasePendingResult.zaa(new zacr(localBasePendingResult, null, localIBinder, null));
+        }
+        else if ((localIBinder != null) && (localIBinder.isBinderAlive()))
+        {
+          localZacr = new zacr(localBasePendingResult, null, localIBinder, null);
+          localBasePendingResult.zaa(localZacr);
+        }
+      }
+      try
+      {
+        localIBinder.linkToDeath(localZacr, 0);
+      }
+      catch (RemoteException localRemoteException)
+      {
+        for (;;) {}
+      }
+      localBasePendingResult.cancel();
+      localBasePendingResult.zam().intValue();
+      throw new NullPointerException();
+      localBasePendingResult.zaa(null);
+      localBasePendingResult.cancel();
+      localBasePendingResult.zam().intValue();
+      throw new NullPointerException();
+      zaky.remove(localBasePendingResult);
+      i += 1;
+    }
+  }
+  
+  final void zab(BasePendingResult<? extends Result> paramBasePendingResult)
+  {
+    zaky.add(paramBasePendingResult);
+    paramBasePendingResult.zaa(zakz);
+  }
+  
+  public final void zabx()
+  {
+    BasePendingResult[] arrayOfBasePendingResult = (BasePendingResult[])zaky.toArray(zakx);
+    int j = arrayOfBasePendingResult.length;
+    int i = 0;
+    while (i < j)
+    {
+      arrayOfBasePendingResult[i].zab(zakw);
+      i += 1;
+    }
+  }
+}

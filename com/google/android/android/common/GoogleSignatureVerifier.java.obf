@@ -1,0 +1,210 @@
+package com.google.android.gms.common;
+
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.Signature;
+import android.util.Log;
+import com.google.android.gms.common.annotation.KeepForSdk;
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.common.internal.ShowFirstParty;
+import com.google.android.gms.common.wrappers.PackageManagerWrapper;
+import com.google.android.gms.common.wrappers.Wrappers;
+import javax.annotation.CheckReturnValue;
+
+@CheckReturnValue
+@KeepForSdk
+@ShowFirstParty
+public class GoogleSignatureVerifier
+{
+  private static GoogleSignatureVerifier zzal;
+  private final Context mContext;
+  private volatile String zzam;
+  
+  private GoogleSignatureVerifier(Context paramContext)
+  {
+    mContext = paramContext.getApplicationContext();
+  }
+  
+  @KeepForSdk
+  public static GoogleSignatureVerifier getInstance(Context paramContext)
+  {
+    Preconditions.checkNotNull(paramContext);
+    try
+    {
+      if (zzal == null)
+      {
+        zzc.zza(paramContext);
+        zzal = new GoogleSignatureVerifier(paramContext);
+      }
+      return zzal;
+    }
+    finally {}
+  }
+  
+  private static zze zza(PackageInfo paramPackageInfo, zze... paramVarArgs)
+  {
+    if (signatures == null) {
+      return null;
+    }
+    if (signatures.length != 1)
+    {
+      Log.w("GoogleSignatureVerifier", "Package has more than one signature.");
+      return null;
+    }
+    paramPackageInfo = signatures;
+    int i = 0;
+    paramPackageInfo = new zzf(paramPackageInfo[0].toByteArray());
+    while (i < paramVarArgs.length)
+    {
+      if (paramVarArgs[i].equals(paramPackageInfo)) {
+        return paramVarArgs[i];
+      }
+      i += 1;
+    }
+    return null;
+  }
+  
+  private final zzm zza(PackageInfo paramPackageInfo)
+  {
+    boolean bool = GooglePlayServicesUtilLight.honorsDebugCertificates(mContext);
+    if (paramPackageInfo == null) {
+      return zzm.zzb("null pkg");
+    }
+    if (signatures.length != 1) {
+      return zzm.zzb("single cert required");
+    }
+    zzf localZzf = new zzf(signatures[0].toByteArray());
+    String str = packageName;
+    zzm localZzm = zzc.zza(str, localZzf, bool);
+    if ((zzac) && (applicationInfo != null) && ((applicationInfo.flags & 0x2) != 0) && ((!bool) || (zzazzac))) {
+      return zzm.zzb("debuggable release cert app rejected");
+    }
+    return localZzm;
+  }
+  
+  private final zzm zza(String paramString, int paramInt)
+  {
+    try
+    {
+      zzm localZzm = zza(Wrappers.packageManager(mContext).zza(paramString, 64, paramInt));
+      return localZzm;
+    }
+    catch (PackageManager.NameNotFoundException localNameNotFoundException)
+    {
+      for (;;) {}
+    }
+    paramString = String.valueOf(paramString);
+    if (paramString.length() != 0) {
+      paramString = "no pkg ".concat(paramString);
+    } else {
+      paramString = new String("no pkg ");
+    }
+    return zzm.zzb(paramString);
+  }
+  
+  public static boolean zza(PackageInfo paramPackageInfo, boolean paramBoolean)
+  {
+    if ((paramPackageInfo != null) && (signatures != null))
+    {
+      if (paramBoolean) {
+        paramPackageInfo = zza(paramPackageInfo, zzh.zzx);
+      } else {
+        paramPackageInfo = zza(paramPackageInfo, new zze[] { zzh.zzx[0] });
+      }
+      if (paramPackageInfo != null) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  private final zzm zzc(String paramString)
+  {
+    if (paramString == null) {
+      return zzm.zzb("null pkg");
+    }
+    if (paramString.equals(zzam)) {
+      return zzm.zze();
+    }
+    try
+    {
+      Object localObject = Wrappers.packageManager(mContext).getPackageInfo(paramString, 64);
+      localObject = zza((PackageInfo)localObject);
+      if (zzac) {
+        zzam = paramString;
+      }
+      return localObject;
+    }
+    catch (PackageManager.NameNotFoundException localNameNotFoundException)
+    {
+      for (;;) {}
+    }
+    paramString = String.valueOf(paramString);
+    if (paramString.length() != 0) {
+      paramString = "no pkg ".concat(paramString);
+    } else {
+      paramString = new String("no pkg ");
+    }
+    return zzm.zzb(paramString);
+  }
+  
+  @KeepForSdk
+  public boolean isGooglePublicSignedPackage(PackageInfo paramPackageInfo)
+  {
+    if (paramPackageInfo == null) {
+      return false;
+    }
+    if (zza(paramPackageInfo, false)) {
+      return true;
+    }
+    if (zza(paramPackageInfo, true))
+    {
+      if (GooglePlayServicesUtilLight.honorsDebugCertificates(mContext)) {
+        return true;
+      }
+      Log.w("GoogleSignatureVerifier", "Test-keys aren't accepted on this build.");
+    }
+    return false;
+  }
+  
+  @KeepForSdk
+  @ShowFirstParty
+  public boolean isPackageGoogleSigned(String paramString)
+  {
+    paramString = zzc(paramString);
+    paramString.zzf();
+    return zzac;
+  }
+  
+  @KeepForSdk
+  @ShowFirstParty
+  public boolean isUidGoogleSigned(int paramInt)
+  {
+    String[] arrayOfString = Wrappers.packageManager(mContext).getPackagesForUid(paramInt);
+    Object localObject;
+    int j;
+    int i;
+    if ((arrayOfString != null) && (arrayOfString.length != 0))
+    {
+      localObject = null;
+      j = arrayOfString.length;
+      i = 0;
+    }
+    while (i < j)
+    {
+      zzm localZzm = zza(arrayOfString[i], paramInt);
+      localObject = localZzm;
+      if (!zzac)
+      {
+        i += 1;
+        localObject = localZzm;
+        continue;
+        localObject = zzm.zzb("no pkgs");
+      }
+    }
+    ((zzm)localObject).zzf();
+    return zzac;
+  }
+}

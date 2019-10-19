@@ -1,0 +1,468 @@
+package com.comfortclick.bosclient.profiles;
+
+import android.os.AsyncTask;
+import android.text.TextUtils;
+import android.util.Log;
+import android.util.Patterns;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.URI;
+import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.regex.Pattern;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.X509TrustManager;
+import org.json.JSONObject;
+
+public class Profile
+{
+  public String accessID;
+  public String gatewayAddress;
+  public long lastTime;
+  public String localAddress;
+  public boolean manual;
+  public String password;
+  public String profileName;
+  public String publicKey;
+  public boolean rememberMe;
+  public String serverAddress;
+  public String username;
+  
+  public Profile(Controller paramController)
+  {
+    manual = false;
+    accessID = AccessID;
+    profileName = ServerName;
+    localAddress = LocalAddress;
+    serverAddress = PublicAddress;
+    gatewayAddress = GatewayAddress;
+    publicKey = PublicKey;
+    username = "";
+    password = "";
+    lastTime = new Date().getTime();
+    rememberMe = true;
+  }
+  
+  public Profile(Profile paramProfile)
+  {
+    manual = manual;
+    accessID = accessID;
+    profileName = profileName;
+    localAddress = localAddress;
+    serverAddress = serverAddress;
+    gatewayAddress = gatewayAddress;
+    publicKey = publicKey;
+    username = username;
+    password = password;
+    lastTime = lastTime;
+    rememberMe = rememberMe;
+  }
+  
+  public Profile(Boolean paramBoolean, String paramString1, String paramString2, String paramString3, String paramString4)
+  {
+    manual = paramBoolean.booleanValue();
+    accessID = "";
+    profileName = paramString1;
+    serverAddress = paramString2;
+    username = paramString3;
+    password = paramString4;
+    lastTime = new Date().getTime();
+    rememberMe = true;
+  }
+  
+  public Profile(String paramString1, String paramString2, String paramString3)
+  {
+    manual = false;
+    accessID = paramString1;
+    username = paramString2;
+    password = paramString3;
+    lastTime = new Date().getTime();
+    rememberMe = true;
+  }
+  
+  private ArrayList<byte[]> getDeviceIPAddresses()
+  {
+    localArrayList = new ArrayList();
+    try
+    {
+      Enumeration localEnumeration1 = NetworkInterface.getNetworkInterfaces();
+      while (localEnumeration1.hasMoreElements())
+      {
+        Enumeration localEnumeration2 = ((NetworkInterface)localEnumeration1.nextElement()).getInetAddresses();
+        while (localEnumeration2.hasMoreElements())
+        {
+          InetAddress localInetAddress = (InetAddress)localEnumeration2.nextElement();
+          if ((!localInetAddress.isLoopbackAddress()) && (!localInetAddress.isLinkLocalAddress()) && (localInetAddress.isSiteLocalAddress())) {
+            localArrayList.add(localInetAddress.getAddress());
+          }
+        }
+      }
+      return localArrayList;
+    }
+    catch (SocketException localSocketException)
+    {
+      localSocketException.printStackTrace();
+    }
+  }
+  
+  private Boolean isLocalIpAddress(String paramString)
+  {
+    if (TextUtils.isEmpty(paramString)) {
+      return Boolean.valueOf(false);
+    }
+    for (;;)
+    {
+      int[] arrayOfInt1;
+      int[] arrayOfInt2;
+      try
+      {
+        paramString = new URI(paramString);
+        if (!paramString.getHost().matches(Patterns.IP_ADDRESS.toString())) {
+          return Boolean.valueOf(false);
+        }
+        paramString = InetAddress.getByName(paramString.getHost()).getAddress();
+        ArrayList localArrayList = getDeviceIPAddresses();
+        int i = 0;
+        if (i < localArrayList.size())
+        {
+          byte[] arrayOfByte = (byte[])localArrayList.get(i);
+          arrayOfInt1 = new int[arrayOfByte.length];
+          arrayOfInt2 = new int[paramString.length];
+          j = 0;
+          if (j < arrayOfByte.length)
+          {
+            arrayOfByte[j] &= 0xFF;
+            j += 1;
+            continue;
+            if (j >= arrayOfInt2.length) {
+              break label178;
+            }
+            paramString[j] &= 0xFF;
+            j += 1;
+            continue;
+            if (j != 0) {
+              return Boolean.valueOf(true);
+            }
+            i += 1;
+          }
+        }
+        else
+        {
+          return Boolean.valueOf(false);
+        }
+      }
+      catch (Exception paramString)
+      {
+        paramString.printStackTrace();
+      }
+      int j = 0;
+      continue;
+      label178:
+      j = arrayOfInt1[0];
+      if (j <= 127)
+      {
+        if (arrayOfInt2[0] != arrayOfInt1[0]) {}
+      }
+      else {
+        while (j <= 191 ? (arrayOfInt2[0] == arrayOfInt1[0]) || (arrayOfInt2[1] == arrayOfInt1[1]) : (j <= 223) && (arrayOfInt2[0] == arrayOfInt1[0]) && (arrayOfInt2[1] == arrayOfInt1[1]) && (arrayOfInt2[2] == arrayOfInt1[2]))
+        {
+          j = 1;
+          break;
+        }
+      }
+      j = 0;
+    }
+  }
+  
+  public void connect(IProfileCallback paramIProfileCallback)
+  {
+    if (manual)
+    {
+      if (isLocalIpAddress(localAddress).booleanValue())
+      {
+        paramIProfileCallback.connectToAddress(localAddress);
+        return;
+      }
+      if (!TextUtils.isEmpty(serverAddress)) {
+        paramIProfileCallback.connectToAddress(serverAddress);
+      }
+    }
+    else
+    {
+      GetServerAddressTask localGetServerAddressTask = new GetServerAddressTask(null);
+      Receiver = paramIProfileCallback;
+      Profile = this;
+      localGetServerAddressTask.execute(new String[] { "" });
+    }
+  }
+  
+  public String getInfoText()
+  {
+    StringBuilder localStringBuilder = new StringBuilder();
+    Object localObject;
+    if (manual)
+    {
+      if (!TextUtils.isEmpty(serverAddress)) {
+        localObject = serverAddress;
+      } else {
+        localObject = localAddress;
+      }
+    }
+    else {
+      localObject = accessID;
+    }
+    localStringBuilder.append((String)localObject);
+    if (!TextUtils.isEmpty(username))
+    {
+      localObject = new StringBuilder();
+      ((StringBuilder)localObject).append(" (");
+      ((StringBuilder)localObject).append(username);
+      ((StringBuilder)localObject).append(")");
+      localObject = ((StringBuilder)localObject).toString();
+    }
+    else
+    {
+      localObject = "";
+    }
+    localStringBuilder.append((String)localObject);
+    return localStringBuilder.toString();
+  }
+  
+  public void update(Controller paramController)
+  {
+    profileName = ServerName;
+    localAddress = LocalAddress;
+    serverAddress = PublicAddress;
+    gatewayAddress = GatewayAddress;
+    publicKey = PublicKey;
+    lastTime = new Date().getTime();
+  }
+  
+  public void updatePushToken(String paramString1, String paramString2)
+  {
+    GetServerAddressTask localGetServerAddressTask = new GetServerAddressTask(null);
+    UpdatePush = true;
+    OldToken = paramString1;
+    NewToken = paramString2;
+    localGetServerAddressTask.execute(new String[] { "" });
+  }
+  
+  private class GetServerAddressTask
+    extends AsyncTask<String, Void, String>
+  {
+    String NewToken;
+    String OldToken;
+    Profile Profile;
+    IProfileCallback Receiver;
+    boolean UpdatePush;
+    
+    private GetServerAddressTask() {}
+    
+    private Boolean CheckAccessID(String paramString)
+    {
+      try
+      {
+        if (manual) {
+          return Boolean.valueOf(true);
+        }
+        Object localObject1 = new StringBuilder();
+        ((StringBuilder)localObject1).append(paramString);
+        ((StringBuilder)localObject1).append("GetAccessID");
+        Object localObject2 = new URL(((StringBuilder)localObject1).toString());
+        paramString = new HostnameVerifier()
+        {
+          public boolean verify(String paramAnonymousString, SSLSession paramAnonymousSSLSession)
+          {
+            return paramAnonymousString.equals(val$url.getHost());
+          }
+        };
+        localObject1 = SSLContext.getInstance("TLS");
+        X509TrustManager local3 = new X509TrustManager()
+        {
+          public void checkClientTrusted(X509Certificate[] paramAnonymousArrayOfX509Certificate, String paramAnonymousString)
+            throws CertificateException
+          {}
+          
+          public void checkServerTrusted(X509Certificate[] paramAnonymousArrayOfX509Certificate, String paramAnonymousString)
+            throws CertificateException
+          {}
+          
+          public X509Certificate[] getAcceptedIssuers()
+          {
+            return new X509Certificate[0];
+          }
+        };
+        SecureRandom localSecureRandom = new SecureRandom();
+        ((SSLContext)localObject1).init(null, new X509TrustManager[] { local3 }, localSecureRandom);
+        localObject2 = (HttpsURLConnection)((URL)localObject2).openConnection();
+        ((HttpsURLConnection)localObject2).setHostnameVerifier(paramString);
+        ((HttpsURLConnection)localObject2).setSSLSocketFactory(((SSLContext)localObject1).getSocketFactory());
+        ((HttpsURLConnection)localObject2).setReadTimeout(3000);
+        ((HttpsURLConnection)localObject2).setConnectTimeout(3000);
+        ((HttpsURLConnection)localObject2).setRequestMethod("GET");
+        if (((HttpsURLConnection)localObject2).getResponseCode() == 200)
+        {
+          paramString = new BufferedReader(new InputStreamReader(((HttpsURLConnection)localObject2).getInputStream())).readLine();
+          if (((String)new Gson().fromJson(paramString, String.class)).equals(accessID)) {
+            return Boolean.valueOf(true);
+          }
+        }
+      }
+      catch (Exception paramString)
+      {
+        Log.d(paramString.getMessage(), paramString.toString());
+      }
+      return Boolean.valueOf(false);
+    }
+    
+    protected String doInBackground(String... paramVarArgs)
+    {
+      try
+      {
+        paramVarArgs = new StringBuilder();
+        paramVarArgs.append(Receiver.getCloudUrl());
+        paramVarArgs.append("WebService/BOSService.asmx/GetServerAddressesJson");
+        Object localObject1 = (HttpURLConnection)new URL(paramVarArgs.toString()).openConnection();
+        ((HttpURLConnection)localObject1).setReadTimeout(5000);
+        ((HttpURLConnection)localObject1).setConnectTimeout(5000);
+        ((HttpURLConnection)localObject1).setRequestMethod("POST");
+        ((HttpURLConnection)localObject1).setDoInput(true);
+        ((HttpURLConnection)localObject1).setDoOutput(true);
+        paramVarArgs = ((HttpURLConnection)localObject1).getOutputStream();
+        Object localObject2 = new BufferedWriter(new OutputStreamWriter(paramVarArgs, "UTF-8"));
+        StringBuilder localStringBuilder = new StringBuilder();
+        localStringBuilder.append("accessID=");
+        localStringBuilder.append(accessID);
+        ((BufferedWriter)localObject2).write(localStringBuilder.toString());
+        ((BufferedWriter)localObject2).flush();
+        ((BufferedWriter)localObject2).close();
+        paramVarArgs.close();
+        paramVarArgs = new StringBuilder();
+        localObject1 = new BufferedReader(new InputStreamReader(((HttpURLConnection)localObject1).getInputStream()));
+        for (;;)
+        {
+          localObject2 = ((BufferedReader)localObject1).readLine();
+          if (localObject2 == null) {
+            break;
+          }
+          paramVarArgs.append((String)localObject2);
+        }
+        localObject1 = new Gson();
+        localObject2 = new TypeToken() {}.getType();
+        paramVarArgs = (Profile.ServerAddresses)((Gson)localObject1).fromJson(paramVarArgs.toString(), (Type)localObject2);
+        serverAddress = ServerAddress;
+        localAddress = LocalAddress;
+        gatewayAddress = GatewayAddress;
+        publicKey = PublicKey;
+        Receiver.updateProfile(Profile);
+      }
+      catch (Exception paramVarArgs)
+      {
+        for (;;) {}
+      }
+      paramVarArgs = "";
+      if ((Profile.this.isLocalIpAddress(localAddress).booleanValue()) && (CheckAccessID(localAddress).booleanValue())) {
+        return localAddress;
+      }
+      if (!TextUtils.isEmpty(serverAddress)) {
+        return serverAddress;
+      }
+      if (!TextUtils.isEmpty(gatewayAddress)) {
+        paramVarArgs = gatewayAddress;
+      }
+      return paramVarArgs;
+    }
+    
+    protected void onPostExecute(String paramString)
+    {
+      if (!paramString.isEmpty())
+      {
+        StringBuilder localStringBuilder = new StringBuilder();
+        localStringBuilder.append(paramString);
+        if (paramString.endsWith("/")) {
+          paramString = "";
+        } else {
+          paramString = "/";
+        }
+        localStringBuilder.append(paramString);
+        paramString = localStringBuilder.toString();
+        if (Receiver != null)
+        {
+          Receiver.connectToAddress(paramString);
+          return;
+        }
+        if (UpdatePush) {
+          updatePushToken(paramString, OldToken, NewToken);
+        }
+      }
+      else if (Receiver != null)
+      {
+        Receiver.disconnect();
+      }
+    }
+    
+    void updatePushToken(final String paramString1, final String paramString2, final String paramString3)
+    {
+      new Thread(new Runnable()
+      {
+        public void run()
+        {
+          try
+          {
+            Object localObject = new StringBuilder();
+            ((StringBuilder)localObject).append(paramString1);
+            ((StringBuilder)localObject).append("UpdateAndroidPushToken");
+            localObject = (HttpURLConnection)new URL(((StringBuilder)localObject).toString()).openConnection();
+            ((HttpURLConnection)localObject).setReadTimeout(15000);
+            ((HttpURLConnection)localObject).setConnectTimeout(15000);
+            ((HttpURLConnection)localObject).setRequestMethod("POST");
+            ((HttpURLConnection)localObject).setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            ((HttpURLConnection)localObject).setDoInput(true);
+            localObject = ((HttpURLConnection)localObject).getOutputStream();
+            BufferedWriter localBufferedWriter = new BufferedWriter(new OutputStreamWriter((OutputStream)localObject, "UTF-8"));
+            JSONObject localJSONObject = new JSONObject();
+            localJSONObject.put("OldToken", paramString2);
+            localJSONObject.put("NewToken", paramString3);
+            localBufferedWriter.write(localJSONObject.toString());
+            localBufferedWriter.flush();
+            localBufferedWriter.close();
+            ((OutputStream)localObject).close();
+            return;
+          }
+          catch (Exception localException)
+          {
+            Log.d(localException.getMessage(), localException.toString());
+          }
+        }
+      }).start();
+    }
+  }
+  
+  class ServerAddresses
+  {
+    public String GatewayAddress;
+    public String LocalAddress;
+    public String PublicKey;
+    public String ServerAddress;
+    
+    ServerAddresses() {}
+  }
+}

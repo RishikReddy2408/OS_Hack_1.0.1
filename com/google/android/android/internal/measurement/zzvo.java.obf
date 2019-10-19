@@ -1,0 +1,94 @@
+package com.google.android.gms.internal.measurement;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+
+public final class zzvo
+{
+  private static final Charset ISO_8859_1;
+  static final Charset UTF_8 = Charset.forName("UTF-8");
+  public static final byte[] zzbzj;
+  private static final ByteBuffer zzbzk;
+  private static final zzuo zzbzl;
+  
+  static
+  {
+    ISO_8859_1 = Charset.forName("ISO-8859-1");
+    byte[] arrayOfByte = new byte[0];
+    zzbzj = arrayOfByte;
+    zzbzk = ByteBuffer.wrap(arrayOfByte);
+    arrayOfByte = zzbzj;
+    zzbzl = zzuo.zza(arrayOfByte, 0, arrayOfByte.length, false);
+  }
+  
+  static <T> T checkNotNull(T paramT)
+  {
+    if (paramT != null) {
+      return paramT;
+    }
+    throw new NullPointerException();
+  }
+  
+  public static int hashCode(byte[] paramArrayOfByte)
+  {
+    int i = paramArrayOfByte.length;
+    i = zza(i, paramArrayOfByte, 0, i);
+    if (i == 0) {
+      return 1;
+    }
+    return i;
+  }
+  
+  static int zza(int paramInt1, byte[] paramArrayOfByte, int paramInt2, int paramInt3)
+  {
+    int i = paramInt1;
+    paramInt1 = paramInt2;
+    while (paramInt1 < paramInt2 + paramInt3)
+    {
+      i = i * 31 + paramArrayOfByte[paramInt1];
+      paramInt1 += 1;
+    }
+    return i;
+  }
+  
+  static <T> T zza(T paramT, String paramString)
+  {
+    if (paramT != null) {
+      return paramT;
+    }
+    throw new NullPointerException(paramString);
+  }
+  
+  static Object zzb(Object paramObject1, Object paramObject2)
+  {
+    return ((zzwt)paramObject1).zzwd().zza((zzwt)paramObject2).zzwi();
+  }
+  
+  public static int zzbf(long paramLong)
+  {
+    return (int)(paramLong ^ paramLong >>> 32);
+  }
+  
+  static boolean zzf(zzwt paramZzwt)
+  {
+    return false;
+  }
+  
+  public static boolean zzl(byte[] paramArrayOfByte)
+  {
+    return zzyj.zzl(paramArrayOfByte);
+  }
+  
+  public static String zzm(byte[] paramArrayOfByte)
+  {
+    return new String(paramArrayOfByte, UTF_8);
+  }
+  
+  public static int zzw(boolean paramBoolean)
+  {
+    if (paramBoolean) {
+      return 1231;
+    }
+    return 1237;
+  }
+}
