@@ -6,9 +6,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="52878179-05bd-4109-8a1e-89c3b36404f0" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/com/comfortclick/bosclient/profiles/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/com/comfortclick/bosclient/profiles/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="3c967cd0-1004-47b1-9c79-0f7706a21a5f" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,8 +14,16 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="BuildConfig.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/BuildConfig.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state />
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="50" />
@@ -26,14 +32,24 @@
     <option name="height" value="970" />
   </component>
   <component name="ProjectView">
-    <navigator proportions="" version="1">
+    <navigator currentView="ProjectPane" proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="AndroidView" />
       <pane id="PackagesPane" />
-      <pane id="ProjectPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="bosclient" type="b2602c69:ProjectViewProjectNode" />
+              <item name="bosclient" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="AndroidView" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -105,11 +121,11 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="52878179-05bd-4109-8a1e-89c3b36404f0" name="Default" comment="" />
-      <created>1571471106607</created>
+      <changelist id="3c967cd0-1004-47b1-9c79-0f7706a21a5f" name="Default" comment="" />
+      <created>1571484351139</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1571471106607</updated>
+      <updated>1571484351139</updated>
     </task>
     <servers />
   </component>
@@ -122,7 +138,7 @@
       <window_info anchor="right" id="Capture Analysis" order="3" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
@@ -143,5 +159,17 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/BuildConfig.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BuildConfig.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state />
+      </provider>
+    </entry>
   </component>
 </project>
