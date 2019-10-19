@@ -1,10 +1,8 @@
 package android.arch.core.executor;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import java.util.concurrent.Executor;
-
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 @RestrictTo({android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP})
 public class ArchTaskExecutor
   extends TaskExecutor
@@ -30,15 +28,12 @@ public class ArchTaskExecutor
   private TaskExecutor mDefaultTaskExecutor = new DefaultTaskExecutor();
   @NonNull
   private TaskExecutor mDelegate = mDefaultTaskExecutor;
-  
   private ArchTaskExecutor() {}
-  
   @NonNull
   public static Executor getIOThreadExecutor()
   {
     return sIOThreadExecutor;
-  }
-  
+  } 
   @NonNull
   public static ArchTaskExecutor getInstance()
   {
@@ -54,28 +49,23 @@ public class ArchTaskExecutor
     }
     finally {}
   }
-  
   @NonNull
   public static Executor getMainThreadExecutor()
   {
     return sMainThreadExecutor;
   }
-  
   public void executeOnDiskIO(Runnable paramRunnable)
   {
     mDelegate.executeOnDiskIO(paramRunnable);
   }
-  
   public boolean isMainThread()
   {
     return mDelegate.isMainThread();
   }
-  
   public void postToMainThread(Runnable paramRunnable)
   {
     mDelegate.postToMainThread(paramRunnable);
   }
-  
   public void setDelegate(@Nullable TaskExecutor paramTaskExecutor)
   {
     TaskExecutor localTaskExecutor = paramTaskExecutor;
