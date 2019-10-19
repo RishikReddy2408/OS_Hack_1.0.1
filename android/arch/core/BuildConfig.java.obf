@@ -1,5 +1,5 @@
 package android.arch.core;
-
+//Nikhil
 public final class BuildConfig
 {
   public static final String APPLICATION_ID = "android.arch.core";
@@ -11,3 +11,4 @@ public final class BuildConfig
   
   public BuildConfig() {}
 }
+//Nikhil
