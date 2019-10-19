@@ -16,7 +16,7 @@
 
 void use()//usage
 {
-     fprintf(stderr, "Usage: gss-client [-port port] [-d] host service \ msg\n");
+     fprintf(stderr, "Usage: gss-client [-port port] [-d] host service msg\n");
      exit(1);
 }
 int server_connection(host, port)
