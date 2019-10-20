@@ -6,6 +6,7 @@ tube — Radius of the tube. 0.4(by default).
 radialSegments — 8(by default)
 tubularSegments — 6(by default)
 arc — Central angle. Default is Math.PI * 2.*/
+/*defines all necessary parameters in order to do motion detection */
 let material = new THREE.MeshBasicMaterial({ color: 0x0071C5 });
 let torus = new THREE.Mesh(torusGeometry, material);
 scene.add(torus);
