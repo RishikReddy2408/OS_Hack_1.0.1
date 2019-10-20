@@ -105,7 +105,7 @@ public class PreferencesFragment
         }
         localEditor.apply();
       }
-      else if (localEditTextPreference.getKey().equalsIgnoreCase("pref_set_dimming_time_key"))
+      else if (localEditTextPreference.getKey().equalsIgnoreCase("pref_set_dimming_time_key")) //sets the time for which the lights have to be dimmed according to the user.
       {
         if (Integer.parseInt(localEditTextPreference.getText()) <= 0)
         {
@@ -116,7 +116,7 @@ public class PreferencesFragment
         localEditor.putString("pref_set_dimming_time_key", localEditTextPreference.getText());
         localEditor.apply();
       }
-      else if (localEditTextPreference.getKey().equalsIgnoreCase("pref_set_dimming_value_key"))
+      else if (localEditTextPreference.getKey().equalsIgnoreCase("pref_set_dimming_value_key")) //Sets tha amount to which the lights have to be dimmed.
       {
         int i = Integer.parseInt(localEditTextPreference.getText());
         if ((i > 0) && (i <= 100))
