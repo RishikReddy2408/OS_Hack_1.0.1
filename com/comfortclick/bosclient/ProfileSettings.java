@@ -163,8 +163,8 @@ public class ProfileSettings
       public void onClick(View paramAnonymousView)
       {
         paramProfilemanual = localCheckBox1.isChecked();
-        paramProfileusername = localTextView4.getText().toString();
-        paramProfilepassword = localTextView5.getText().toString();
+        paramProfileusername = localTextView4.getText().toString(); //getst the username from the user.
+        paramProfilepassword = localTextView5.getText().toString();  //gets the password from the user
         paramProfilerememberMe = localCheckBox2.isChecked();
         if (paramProfilemanual)
         {
