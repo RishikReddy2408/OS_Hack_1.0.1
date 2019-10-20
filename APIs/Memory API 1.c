@@ -4,7 +4,7 @@ int find(int time[], int n){
     int i, minimum = time[0], pos = 0;
  
     for(i = 1; i < n; ++i){
-        if(time[i] < minimum){
+        if(time[i] < minimum){   //finds the minimal time of each process.
             minimum = time[i];
             pos = i;
         }
