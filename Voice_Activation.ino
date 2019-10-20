@@ -1,7 +1,3 @@
-//Coded By: Angelo Casimiro (4/27/14)
-//Voice Activated Arduino (Bluetooth + Android)
-//Feel free to modify it but remember to give credit
-
 String voice;
 int 
 led1 = 2, //Connect LED 1 To Pin #2 
